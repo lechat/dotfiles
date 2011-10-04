@@ -13,6 +13,7 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-commentary'
 Bundle 'klen/pylint-mode'
 Bundle 'msanders/snipmate.vim'
+Bundle 'tpope/vim-fugitive'
  
 filetype plugin indent on
 
