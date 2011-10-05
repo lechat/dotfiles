@@ -14,6 +14,7 @@ Bundle 'tpope/vim-commentary'
 Bundle 'klen/pylint-mode'
 Bundle 'msanders/snipmate.vim'
 Bundle 'tpope/vim-fugitive'
+Bundle 'vim-scripts/EasyGrep'
  
 filetype plugin indent on
 
