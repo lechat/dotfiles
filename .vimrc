@@ -15,6 +15,10 @@ Bundle 'klen/pylint-mode'
 Bundle 'msanders/snipmate.vim'
 Bundle 'tpope/vim-fugitive'
 Bundle 'vim-scripts/EasyGrep'
+Bundle 'scrooloose/nerdtree'
+Bundle 'talek/obvious-resize'
+Bundle 'ervandew/supertab'
+Bundle 'vim-scripts/mru.vim'
  
 filetype plugin indent on
 
