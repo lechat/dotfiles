@@ -19,6 +19,7 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'talek/obvious-resize'
 Bundle 'ervandew/supertab'
 Bundle 'vim-scripts/mru.vim'
+Bundle 'rson/vim-conque'
  
 filetype plugin indent on
 
@@ -35,9 +36,9 @@ set wildmode=list:longest,full
 
 if has('gui_running')
   set gfn=Liberation\ Mono\ Bold\ 10
-  set lines=35
-  set columns=145
-  winpos 100 100
+  set lines=999
+  set columns=999
+  winpos 1 1
   set guioptions-=T " remove the toolbar
   map  <silent>  <S-Insert>  "+p
   imap <silent>  <S-Insert>  <Esc>"+pa
@@ -80,6 +81,8 @@ let g:PyLintDissabledMessages = 'C0103,C0111,C0301,W0141,W0142,W0232,E1120,R0903
 let g:PyLintCWindow = 1
 let g:PyLintSigns = 1
 let g:PyLintOnWrite = 1
+let NERDTreeIgnore = ['\.pyc$', '\.class$']
+autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
 
 map <F2> :NERDTreeToggle<CR>
 
