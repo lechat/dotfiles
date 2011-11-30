@@ -27,6 +27,7 @@ filetype plugin indent on
 set nocompatible
 set softtabstop=4
 set shiftwidth=4
+set tabstop=4
 set expandtab
 set autoindent
 set showmatch
@@ -44,7 +45,7 @@ if has('gui_running')
   imap <silent>  <S-Insert>  <Esc>"+pa
 endif
 
-colorscheme molokai
+colorscheme zenburn
 
 filetype on
 set nu
