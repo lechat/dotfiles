@@ -20,6 +20,7 @@ Bundle 'talek/obvious-resize'
 Bundle 'ervandew/supertab'
 Bundle 'vim-scripts/mru.vim'
 Bundle 'rson/vim-conque'
+Bundle 'avidal/flake8.vim'
  
 filetype plugin indent on
 
@@ -86,4 +87,4 @@ let NERDTreeIgnore = ['\.pyc$', '\.class$']
 autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
 
 map <F2> :NERDTreeToggle<CR>
-
+map <F8> :Gst<CR>
