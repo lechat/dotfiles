@@ -21,6 +21,7 @@ Bundle 'ervandew/supertab'
 Bundle 'vim-scripts/mru.vim'
 Bundle 'rson/vim-conque'
 Bundle 'avidal/flake8.vim'
+Bundle 'kien/ctrlp.vim'
  
 filetype plugin indent on
 
@@ -47,6 +48,7 @@ if has('gui_running')
 endif
 
 colorscheme zenburn
+highlight Pmenu guibg=RoyalBlue
 
 filetype on
 set nu
@@ -64,11 +66,16 @@ set hlsearch " highlight search terms
 set scrolloff=3 " minimum lines to keep above and below cursor
 
 function! CleverTab()
-   if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
-      return "\<Tab>"
-   else
-      return "\<C-N>"
-   endif
+  if pumvisible()
+    return "\<C-N>"
+  endif
+  if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
+    return "\<Tab>"
+  elseif exists('&omnifunc') && &omnifunc != ''
+    return "\<C-X>\<C-O>"
+  else
+    return "\<C-N>"
+  endif
 endfunction
 
 inoremap <Tab> <C-R>=CleverTab()<CR>
@@ -84,7 +91,15 @@ let g:PyLintCWindow = 1
 let g:PyLintSigns = 1
 let g:PyLintOnWrite = 1
 let NERDTreeIgnore = ['\.pyc$', '\.class$']
-autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
+autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
+autocmd FileType python setlocal omnifunc=pysmell#Complete
 
 map <F2> :NERDTreeToggle<CR>
 map <F8> :Gst<CR>
+
+" CtrlP settings
+set wildignore+=*/.git/*,*.sw*,*.pyc,*.class
+let g:ctrlp_by_filename = 0
+let g:ctrlp_match_window_reversed = 1
+let g:ctrlp_dotfiles = 1
+
