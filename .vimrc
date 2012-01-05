@@ -98,7 +98,7 @@ map <F2> :NERDTreeToggle<CR>
 map <F8> :Gst<CR>
 
 " CtrlP settings
-set wildignore+=*/.git/*,*.sw*,*.pyc,*.class
+set wildignore+=*.sw*,*.pyc,*.class
 let g:ctrlp_by_filename = 0
 let g:ctrlp_match_window_reversed = 1
 let g:ctrlp_dotfiles = 1
