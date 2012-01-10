@@ -42,7 +42,7 @@ plugins=(git svn python)
 
 source $ZSH/oh-my-zsh.sh
 
-alias ls-al='ls -al'
+alias ls-al='nocorrect ls -al'
 
 # Customize to your needs...
 export PATH=/usr/local/bin:/usr/bin:/bin:/home/xleap/bin:/usr/local/sbin:/usr/sbin:/sbin
