@@ -22,6 +22,7 @@ Bundle 'vim-scripts/mru.vim'
 Bundle 'rson/vim-conque'
 Bundle 'avidal/flake8.vim'
 Bundle 'kien/ctrlp.vim'
+Bundle 'Lokaltog/vim-powerline.git'
  
 filetype plugin indent on
 
@@ -47,7 +48,9 @@ if has('gui_running')
   imap <silent>  <S-Insert>  <Esc>"+pa
 endif
 
-colorscheme zenburn
+"colorscheme zenburn
+colorscheme wombat
+set t_Co=256 " Explicitly tell vim that the terminal has 256 colors
 highlight Pmenu guibg=RoyalBlue
 
 filetype on
@@ -57,6 +60,7 @@ set nobackup
 set ruler " show the ruler
 set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%)%{fugitive#statusline()} " a ruler on steroids
 set showcmd " show partial commands in status line and
+set laststatus=2 " Always show the statusline
 
 set backspace=indent,eol,start
 
@@ -89,7 +93,7 @@ noremap <silent> <C-Right> :ObviousResizeRight<CR>
 let g:PyLintDissabledMessages = 'C0103,C0111,C0301,W0141,W0142,W0232,E1120,R0903,R0904,R0913,R0914,W0622'
 let g:PyLintCWindow = 1
 let g:PyLintSigns = 1
-let g:PyLintOnWrite = 1
+"let g:PyLintOnWrite = 1
 let NERDTreeIgnore = ['\.pyc$', '\.class$']
 autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
 autocmd FileType python setlocal omnifunc=pysmell#Complete
