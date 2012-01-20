@@ -107,3 +107,6 @@ let g:ctrlp_by_filename = 0
 let g:ctrlp_match_window_reversed = 1
 let g:ctrlp_dotfiles = 1
 
+let g:ConqueTerm_Color = 2
+let g:ConqueTerm_TERM = 'xterm-256color'
+let g:ConqueTerm_FastMode = 1
