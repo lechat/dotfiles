@@ -23,6 +23,7 @@ Bundle 'rson/vim-conque'
 Bundle 'avidal/flake8.vim'
 Bundle 'kien/ctrlp.vim'
 Bundle 'Lokaltog/vim-powerline.git'
+Bundle 'tpope/vim-unimpaired'
  
 filetype plugin indent on
 
@@ -107,6 +108,13 @@ let g:ctrlp_by_filename = 0
 let g:ctrlp_match_window_reversed = 1
 let g:ctrlp_dotfiles = 1
 
+function! s:Shell()
+  execute 'ConqueTermSplit zsh'
+endfunction
+command! Shell call s:Shell()
 let g:ConqueTerm_Color = 2
 let g:ConqueTerm_TERM = 'xterm-256color'
 let g:ConqueTerm_FastMode = 1
+
+" This command will open all grep results in quickfix window
+autocmd QuickFixCmdPost *grep* cwindow
