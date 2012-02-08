@@ -40,7 +40,8 @@ set wildmenu
 set wildmode=list:longest,full
 
 if has('gui_running')
-  set gfn=Liberation\ Mono\ Bold\ 10
+  " set gfn=Liberation\ Mono\ Bold\ 10
+  set gfn=Consolas\ 10
   set lines=999
   set columns=999
   winpos 1 1
@@ -52,7 +53,7 @@ endif
 "colorscheme zenburn
 colorscheme wombat
 set t_Co=256 " Explicitly tell vim that the terminal has 256 colors
-highlight Pmenu guibg=RoyalBlue
+" highlight Pmenu guibg=RoyalBlue
 
 filetype on
 set nu
@@ -112,9 +113,12 @@ function! s:Shell()
   execute 'ConqueTermSplit zsh'
 endfunction
 command! Shell call s:Shell()
-let g:ConqueTerm_Color = 2
+" let g:ConqueTerm_Color = 2
 let g:ConqueTerm_TERM = 'xterm-256color'
-let g:ConqueTerm_FastMode = 1
+let g:ConqueTerm_ToggleKey = '<F12>'
+" let g:ConqueTerm_FastMode = 1
+"
+let g:EasyGrepRecursive = 1                         "'Recursive mode'for EasyGrep
 
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow

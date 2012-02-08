@@ -44,6 +44,10 @@ plugins=(git svn python)
 source $ZSH/oh-my-zsh.sh
 
 alias ls-al='nocorrect ls -al'
+alias grep='grep -n -I'
 
 # Customize to your needs...
 export PATH=/usr/local/bin:/usr/bin:/bin:/home/xleap/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
+
