@@ -24,7 +24,7 @@ ln -s ~/dotfiles/.vimrc ~/.vimrc
 ln -s ~/dotfiles/.vim ~/.vim
 ln -s ~/dotfiles/.zshrc ~/.zshrc
 
-git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 
 echo "Don't forget to run :BundleInstall! command in vim"
