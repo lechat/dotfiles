@@ -10,20 +10,30 @@ Bundle 'gmarik/vundle'
 " My Bundles here:
 "
 " original repos on github
-Bundle 'tpope/vim-commentary'
-Bundle 'klen/pylint-mode'
-Bundle 'msanders/snipmate.vim'
-Bundle 'tpope/vim-fugitive'
-Bundle 'vim-scripts/EasyGrep'
-Bundle 'scrooloose/nerdtree'
-Bundle 'talek/obvious-resize'
-Bundle 'ervandew/supertab'
-Bundle 'vim-scripts/mru.vim'
-Bundle 'rson/vim-conque'
-Bundle 'avidal/flake8.vim'
-Bundle 'kien/ctrlp.vim'
-Bundle 'Lokaltog/vim-powerline.git'
-Bundle 'tpope/vim-unimpaired'
+Bundle 'tpope/vim-commentary'           
+" Comments lines on pressing \\\ (3 times \)
+Bundle 'klen/python-mode'               
+" Provides pylint, flake8, python key binding, etc.
+Bundle 'tpope/vim-fugitive'             
+" Git plugin
+Bundle 'vim-scripts/EasyGrep'           
+" Grep plugin
+Bundle 'scrooloose/nerdtree'            
+" Filesystem manipulation
+Bundle 'talek/obvious-resize'           
+" Resize split windows with Ctrl+move keys
+Bundle 'ervandew/supertab'              
+" Dropdown suggestions on TAB key press
+Bundle 'vim-scripts/mru.vim'            
+" Most recently used files
+Bundle 'rson/vim-conque'                
+" Shell within VIM buffer
+Bundle 'kien/ctrlp.vim'                 
+" Find files on Ctrl+P press
+Bundle 'Lokaltog/vim-powerline.git'     
+" Better status line
+Bundle 'tpope/vim-unimpaired'           
+" Navigate quickfix list with ]q and ]Q
  
 filetype plugin indent on
 
@@ -92,9 +102,9 @@ noremap <silent> <C-Left> :ObviousResizeLeft<CR>
 noremap <silent> <C-Right> :ObviousResizeRight<CR> 
 
 " Options for Pylint-mode
-let g:PyLintDissabledMessages = 'C0103,C0111,C0301,W0141,W0142,W0232,E1120,R0903,R0904,R0913,R0914,W0622'
-let g:PyLintCWindow = 1
-let g:PyLintSigns = 1
+" let g:PyLintDissabledMessages = 'C0103,C0111,C0301,W0141,W0142,W0232,E1120,R0903,R0904,R0913,R0914,W0622'
+" let g:PyLintCWindow = 1
+" let g:PyLintSigns = 1
 "let g:PyLintOnWrite = 1
 let NERDTreeIgnore = ['\.pyc$', '\.class$']
 autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
@@ -122,3 +132,6 @@ let g:EasyGrepRecursive = 1                         "'Recursive mode'for EasyGre
 
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow
+
+" This command is to avoid bug in pylint-mode 0.5.6
+let g:pymode_lint_message = 0
