@@ -107,7 +107,7 @@ noremap <silent> <C-Right> :ObviousResizeRight<CR>
 " let g:PyLintSigns = 1
 "let g:PyLintOnWrite = 1
 let NERDTreeIgnore = ['\.pyc$', '\.class$']
-autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
+" autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
 autocmd FileType python setlocal omnifunc=pysmell#Complete
 
 map <F2> :NERDTreeToggle<CR>
@@ -133,5 +133,9 @@ let g:EasyGrepRecursive = 1                         "'Recursive mode'for EasyGre
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow
 
+let g:pymode_lint_config = "$HOME/pylint.rc"
 " This command is to avoid bug in pylint-mode 0.5.6
 let g:pymode_lint_message = 0
+let g:pymode_lint_onfly = 1
+let g:pymode_lint_checker = "pylint"
+let g:pymode_rope = 0
