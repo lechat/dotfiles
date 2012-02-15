@@ -81,6 +81,8 @@ set hlsearch " highlight search terms
 
 set scrolloff=3 " minimum lines to keep above and below cursor
 
+set foldmethod=syntax
+
 function! CleverTab()
   if pumvisible()
     return "\<C-N>"
@@ -133,9 +135,32 @@ let g:EasyGrepRecursive = 1                         "'Recursive mode'for EasyGre
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow
 
-let g:pymode_lint_config = "$HOME/pylint.rc"
+let g:pymode_lint_config = "$HOME/.pylintrc"
 " This command is to avoid bug in pylint-mode 0.5.6
 let g:pymode_lint_message = 0
-let g:pymode_lint_onfly = 1
+let g:pymode_lint_onfly = 0
 let g:pymode_lint_checker = "pylint"
-let g:pymode_rope = 0
+let g:pymode_lint_hold = 1
+
+
+" Fugitive
+nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>ga :Gwrite<CR>
+nnoremap <leader>gc :Gcommit %<CR>
+nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>gl :Glog<CR>
+nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gr :Gremove<CR>
+nnoremap <leader>gpl :Git pull origin master<CR>
+nnoremap <leader>gps :Git push origin master<CR>
+
+noremap <F9> :emenu Git.<TAB>
+menu Git.Status :Gstatus<CR>
+menu Git.Diff :Gdiff<CR>
+menu Git.Commit :Gcommit %<CR>
+menu Git.Checkout :Gread<CR>
+menu Git.Remove :Gremove<CR>
+menu Git.Move :Gmove<CR>
+menu Git.Log :Glog<CR>
+menu Git.Blame :Gblame<CR>
+
