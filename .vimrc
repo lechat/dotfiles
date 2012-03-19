@@ -81,7 +81,7 @@ set hlsearch " highlight search terms
 
 set scrolloff=3 " minimum lines to keep above and below cursor
 
-set foldmethod=syntax
+"set foldmethod=syntax
 
 function! CleverTab()
   if pumvisible()
@@ -112,8 +112,8 @@ let NERDTreeIgnore = ['\.pyc$', '\.class$']
 " autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
 autocmd FileType python setlocal omnifunc=pysmell#Complete
 
+nnoremap <leader>z :NERDTreeToggle<CR>
 map <F2> :NERDTreeToggle<CR>
-map <F8> :Gst<CR>
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
@@ -144,7 +144,7 @@ let g:pymode_lint_hold = 1
 
 
 " Fugitive
-nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gg :Gstatus<CR>
 nnoremap <leader>ga :Gwrite<CR>
 nnoremap <leader>gc :Gcommit %<CR>
 nnoremap <leader>gd :Gdiff<CR>
@@ -164,3 +164,11 @@ menu Git.Move :Gmove<CR>
 menu Git.Log :Glog<CR>
 menu Git.Blame :Gblame<CR>
 
+inoremap  <Up>     <NOP>
+inoremap  <Down>   <NOP>
+inoremap  <Left>   <NOP>
+inoremap  <Right>  <NOP>
+noremap   <Up>     <NOP>
+noremap   <Down>   <NOP>
+noremap   <Left>   <NOP>
+noremap   <Right>  <NOP>
