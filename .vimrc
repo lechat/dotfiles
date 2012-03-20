@@ -34,6 +34,8 @@ Bundle 'Lokaltog/vim-powerline.git'
 " Better status line
 Bundle 'tpope/vim-unimpaired'           
 " Navigate quickfix list with ]q and ]Q
+Bundle 'majutsushi/tagbar'
+" Show tags in source file 
  
 filetype plugin indent on
 
@@ -81,7 +83,7 @@ set hlsearch " highlight search terms
 
 set scrolloff=3 " minimum lines to keep above and below cursor
 
-"set foldmethod=syntax
+set foldmethod=manual
 
 function! CleverTab()
   if pumvisible()
@@ -114,6 +116,7 @@ autocmd FileType python setlocal omnifunc=pysmell#Complete
 
 nnoremap <leader>z :NERDTreeToggle<CR>
 map <F2> :NERDTreeToggle<CR>
+nnoremap <leader>t :TagbarToggle<CR>
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
