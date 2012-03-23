@@ -83,6 +83,7 @@ set hlsearch " highlight search terms
 
 set scrolloff=3 " minimum lines to keep above and below cursor
 
+set nofoldenable
 set foldmethod=manual
 
 function! CleverTab()
@@ -128,6 +129,8 @@ function! s:Shell()
   execute 'ConqueTermSplit zsh'
 endfunction
 command! Shell call s:Shell()
+nnoremap <leader>s :Shell<CR>
+
 " let g:ConqueTerm_Color = 2
 let g:ConqueTerm_TERM = 'xterm-256color'
 let g:ConqueTerm_ToggleKey = '<F12>'
