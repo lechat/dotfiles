@@ -51,6 +51,9 @@ set showmatch
 set wildmenu
 set wildmode=list:longest,full
 
+set cursorline                  " hilight cursor line
+set cursorcolumn                " and column
+
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
   set gfn=Consolas\ 10
@@ -64,7 +67,7 @@ endif
 
 "colorscheme zenburn
 colorscheme wombat
-set t_Co=256 " Explicitly tell vim that the terminal has 256 colors
+set t_Co=256                    " Explicitly tell vim that the terminal has 256 colors
 " highlight Pmenu guibg=RoyalBlue
 
 filetype on
@@ -115,9 +118,7 @@ let NERDTreeIgnore = ['\.pyc$', '\.class$']
 " autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
 autocmd FileType python setlocal omnifunc=pysmell#Complete
 
-nnoremap <leader>z :NERDTreeToggle<CR>
 map <F2> :NERDTreeToggle<CR>
-nnoremap <leader>t :TagbarToggle<CR>
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
@@ -129,7 +130,6 @@ function! s:Shell()
   execute 'ConqueTermSplit zsh'
 endfunction
 command! Shell call s:Shell()
-nnoremap <leader>s :Shell<CR>
 
 " let g:ConqueTerm_Color = 2
 let g:ConqueTerm_TERM = 'xterm-256color'
@@ -160,6 +160,13 @@ nnoremap <leader>gr :Gremove<CR>
 nnoremap <leader>gpl :Git pull origin master<CR>
 nnoremap <leader>gps :Git push origin master<CR>
 
+nnoremap <leader>x :ccl<CR>
+nnoremap <leader>z :NERDTreeToggle<CR>
+nnoremap <leader>t :TagbarToggle<CR>
+
+nnoremap <leader>s :Shell<CR>
+nnoremap <leader>w :w<CR>
+
 noremap <F9> :emenu Git.<TAB>
 menu Git.Status :Gstatus<CR>
 menu Git.Diff :Gdiff<CR>
@@ -170,11 +177,11 @@ menu Git.Move :Gmove<CR>
 menu Git.Log :Glog<CR>
 menu Git.Blame :Gblame<CR>
 
-inoremap  <Up>     <NOP>
-inoremap  <Down>   <NOP>
-inoremap  <Left>   <NOP>
-inoremap  <Right>  <NOP>
-noremap   <Up>     <NOP>
-noremap   <Down>   <NOP>
-noremap   <Left>   <NOP>
-noremap   <Right>  <NOP>
+" inoremap  <Up>     <NOP>
+" inoremap  <Down>   <NOP>
+" inoremap  <Left>   <NOP>
+" inoremap  <Right>  <NOP>
+" noremap   <Up>     <NOP>
+" noremap   <Down>   <NOP>
+" noremap   <Left>   <NOP>
+" noremap   <Right>  <NOP>
