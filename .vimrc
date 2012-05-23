@@ -36,7 +36,10 @@ Bundle 'tpope/vim-unimpaired'
 " Navigate quickfix list with ]q and ]Q
 Bundle 'majutsushi/tagbar'
 " Show tags in source file 
- 
+Bundle 'kien/tabman.vim' 
+" work with tabs from keyboard - <leader>mf <leader>mt
+Bundle 'altercation/vim-colors-solarized'
+" Solarized color scheme
 filetype plugin indent on
 
 :syntax on
@@ -54,6 +57,14 @@ set wildmode=list:longest,full
 set cursorline                  " hilight cursor line
 set cursorcolumn                " and column
 
+set t_Co=256                    " Explicitly tell vim that the terminal has 256 colors
+
+" let g:Powerline_colorscheme="default_mod.vim"
+let g:Powerline_symbols="unicode"
+let g:Powerline_stl_path_style="relative"
+
+"colorscheme zenburn
+
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
   set gfn=Consolas\ 10
@@ -63,11 +74,12 @@ if has('gui_running')
   set guioptions-=T " remove the toolbar
   map  <silent>  <S-Insert>  "+p
   imap <silent>  <S-Insert>  <Esc>"+pa
+  " let g:Powerline_symbols = 'fancy'
+  colorscheme solarized
+else
+  colorscheme wombat
 endif
 
-"colorscheme zenburn
-colorscheme wombat
-set t_Co=256                    " Explicitly tell vim that the terminal has 256 colors
 " highlight Pmenu guibg=RoyalBlue
 
 filetype on
@@ -122,9 +134,14 @@ map <F2> :NERDTreeToggle<CR>
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
-let g:ctrlp_by_filename = 0
+" search by filename only
+let g:ctrlp_by_filename = 1
+" reverse sort for match window
 let g:ctrlp_match_window_reversed = 1
+" search in dotfiles
 let g:ctrlp_dotfiles = 1
+" ask where to open file
+let g:ctrlp_arg_map = 1
 
 function! s:Shell()
   execute 'ConqueTermSplit zsh'
