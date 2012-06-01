@@ -67,11 +67,12 @@ let g:Powerline_stl_path_style="relative"
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
+  " set guioptions-=m " remove the menubar
+  set guioptions-=T " remove the toolbar
   set gfn=Consolas\ 10
   set lines=999
   set columns=999
   winpos 1 1
-  set guioptions-=T " remove the toolbar
   map  <silent>  <S-Insert>  "+p
   imap <silent>  <S-Insert>  <Esc>"+pa
   " let g:Powerline_symbols = 'fancy'
