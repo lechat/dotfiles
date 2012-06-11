@@ -65,3 +65,4 @@ function source_config() {
     fi
 }
 chpwd_functions=(${chpwd_functions[@]} "source_config")
+source ~/.autoenv/activate.sh
