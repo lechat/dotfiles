@@ -77,6 +77,7 @@ if has('gui_running')
   imap <silent>  <S-Insert>  <Esc>"+pa
   " let g:Powerline_symbols = 'fancy'
   colorscheme solarized
+  set listchars=tab:»·,trail:·
 else
   colorscheme wombat
 endif
@@ -194,6 +195,9 @@ menu Git.Remove :Gremove<CR>
 menu Git.Move :Gmove<CR>
 menu Git.Log :Glog<CR>
 menu Git.Blame :Gblame<CR>
+
+nnoremap <silent> <C-S> :if expand("%") == ""<CR>browse confirm w<CR>else<CR>confirm w<CR>endif<CR>
+imap <c-s> <c-o><c-s>
 
 " inoremap  <Up>     <NOP>
 " inoremap  <Down>   <NOP>
