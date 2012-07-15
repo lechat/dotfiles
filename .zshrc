@@ -66,3 +66,5 @@ function source_config() {
 }
 chpwd_functions=(${chpwd_functions[@]} "source_config")
 source ~/.autoenv/activate.sh
+
+unsetopt correct_all
