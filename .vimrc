@@ -40,6 +40,10 @@ Bundle 'kien/tabman.vim'
 " work with tabs from keyboard - <leader>mf <leader>mt
 Bundle 'altercation/vim-colors-solarized'
 " Solarized color scheme
+Bundle 'VOoM'
+" Outline plugin for asciidoc, etc.
+Bundle 'mileszs/ack.vim'
+
 filetype plugin indent on
 
 :syntax on
@@ -63,20 +67,22 @@ set t_Co=256                    " Explicitly tell vim that the terminal has 256 
 let g:Powerline_symbols="unicode"
 let g:Powerline_stl_path_style="relative"
 
-"colorscheme zenburn
+colorscheme zenburn
+" colorscheme wombat
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
   " set guioptions-=m " remove the menubar
   set guioptions-=T " remove the toolbar
-  set gfn=Consolas\ 10
+  " set gfn=Consolas\ 10
+  set gfn=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline\ 10
   set lines=999
   set columns=999
   winpos 1 1
   map  <silent>  <S-Insert>  "+p
   imap <silent>  <S-Insert>  <Esc>"+pa
   " let g:Powerline_symbols = 'fancy'
-  colorscheme solarized
+  " colorscheme solarized
   set listchars=tab:»·,trail:·
 else
   colorscheme wombat
@@ -146,7 +152,7 @@ let g:ctrlp_dotfiles = 1
 let g:ctrlp_arg_map = 1
 
 function! s:Shell()
-  execute 'ConqueTermSplit zsh'
+  execute 'ConqueTermTab zsh'
 endfunction
 command! Shell call s:Shell()
 
@@ -182,6 +188,10 @@ nnoremap <leader>gps :Git push origin master<CR>
 nnoremap <leader>x :ccl<CR>
 nnoremap <leader>z :NERDTreeToggle<CR>
 nnoremap <leader>t :TagbarToggle<CR>
+nnoremap <leader>h :tabprev<CR>
+nnoremap <leader>j :tabfirst<CR>
+nnoremap <leader>k :tablast<CR>
+nnoremap <leader>l :tabnext<CR>
 
 nnoremap <leader>s :Shell<CR>
 nnoremap <leader>w :w<CR>
