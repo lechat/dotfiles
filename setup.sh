@@ -20,9 +20,15 @@ then
     mv ~/.vimrc ~/.vimrc.old
 fi
 
+if [ -e ~/.autoenv ]
+then
+    mv ~/.autoenv ~/.autoenv.old
+fi
+
 ln -s ~/dotfiles/.vimrc ~/.vimrc
 ln -s ~/dotfiles/.vim ~/.vim
 ln -s ~/dotfiles/.zshrc ~/.zshrc
+ls -s ~/dotfiles/.autoenv ~/.autoenv
 
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
