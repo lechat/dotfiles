@@ -43,6 +43,7 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'VOoM'
 " Outline plugin for asciidoc, etc.
 Bundle 'mileszs/ack.vim'
+Bundle 'Raimondi/delimitMate'
 
 filetype plugin indent on
 
@@ -75,7 +76,7 @@ if has('gui_running')
   " set guioptions-=m " remove the menubar
   set guioptions-=T " remove the toolbar
   " set gfn=Consolas\ 10
-  set gfn=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline\ 10
+  set gfn=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline\ 9
   set lines=999
   set columns=999
   winpos 1 1
@@ -143,13 +144,13 @@ map <F2> :NERDTreeToggle<CR>
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
 " search by filename only
-let g:ctrlp_by_filename = 1
+" let g:ctrlp_by_filename = 1
 " reverse sort for match window
 let g:ctrlp_match_window_reversed = 1
 " search in dotfiles
-let g:ctrlp_dotfiles = 1
+" let g:ctrlp_dotfiles = 1
 " ask where to open file
-let g:ctrlp_arg_map = 1
+" let g:ctrlp_arg_map = 1
 
 function! s:Shell()
   execute 'ConqueTermTab zsh'
