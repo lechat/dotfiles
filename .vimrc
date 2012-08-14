@@ -173,7 +173,8 @@ let g:pymode_lint_message = 0
 let g:pymode_lint_onfly = 0
 let g:pymode_lint_checker = "pylint"
 let g:pymode_lint_hold = 1
-
+" Disable showing Python docs on K
+let g:pymode_doc = 0
 
 " Fugitive
 nnoremap <leader>gg :Gstatus<CR>
