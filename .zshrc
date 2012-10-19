@@ -39,7 +39,7 @@ export ZSH_THEME="gentoo"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git svn python)
+plugins=(git svn python pip bashcomplete)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -52,11 +52,13 @@ export PATH=/usr/local/bin:/usr/bin:/bin:/home/xleap/bin:/usr/local/sbin:/usr/sb
 
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
 
-export PYTHONPATH=~/src/adlt/deployment/framework/domain_build:~/src/adlt/deployment/framework/app_deploy:~/src/adlt/deployment/framework/domain_build/shared/scripts:~/src/adlt/deployment/framework/domain_build/shared:~/src/adlt/deployment/framework/shared
+export PYTHONPATH=~/src/adlt/deployment/framework/domain_build:~/src/adlt/deployment/framework/app_deploy:~/src/adlt/deployment/framework/domain_build/shared/scripts:~/src/adlt/deployment/framework/domain_build/shared:~/src/adlt/deployment/framework/shared:~/opt/graphite
 
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
 zstyle -e :urlglobber url-other-schema '[[ $words[1] == scp ]] && reply=("*") || reply=(http https ftp)'
+
+zle_highlight=(isearch:bold)
 
 function source_config() {
     if [ -r $PWD/.zsh_config ]; then
@@ -65,6 +67,10 @@ function source_config() {
     fi
 }
 chpwd_functions=(${chpwd_functions[@]} "source_config")
-source ~/.autoenv/activate.sh
+# source ~/.autoenv/activate.sh
 
 unsetopt correct_all
+autoload -U compinit; compinit
+[[ -s ~/.autojump/etc/profile.d/autojump.zsh ]] && source ~/.autojump/etc/profile.d/autojump.zsh
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting

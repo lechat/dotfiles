@@ -75,8 +75,9 @@ if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
   " set guioptions-=m " remove the menubar
   set guioptions-=T " remove the toolbar
+  set gfn=Source\ Code\ Pro\ Semi-Bold\ 10
   " set gfn=Consolas\ 10
-  set gfn=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline\ 9
+  " set gfn=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline\ 9
   set lines=999
   set columns=999
   winpos 1 1
@@ -92,7 +93,7 @@ endif
 " highlight Pmenu guibg=RoyalBlue
 
 filetype on
-set nu
+set rnu
 set nobackup
 
 set ruler " show the ruler
@@ -168,13 +169,16 @@ let g:EasyGrepRecursive = 1                         "'Recursive mode'for EasyGre
 autocmd QuickFixCmdPost *grep* cwindow
 
 let g:pymode_lint_config = "$HOME/.pylintrc"
-" This command is to avoid bug in pylint-mode 0.5.6
-let g:pymode_lint_message = 0
+let g:pymode_lint_onfly = 1
+let g:pymode_lint_message = 1
 let g:pymode_lint_onfly = 0
 let g:pymode_lint_checker = "pylint"
-let g:pymode_lint_hold = 1
+let g:pymode_lint_hold = 0
+let g:pymode_lint_jump = 0
 " Disable showing Python docs on K
 let g:pymode_doc = 0
+let g:pymode_folding = 0
+
 
 " Fugitive
 nnoremap <leader>gg :Gstatus<CR>
