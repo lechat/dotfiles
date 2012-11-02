@@ -29,6 +29,7 @@ ln -s ~/dotfiles/.vimrc ~/.vimrc
 ln -s ~/dotfiles/.vim ~/.vim
 ln -s ~/dotfiles/.zshrc ~/.zshrc
 ls -s ~/dotfiles/.autoenv ~/.autoenv
+ls -s ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
 
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
