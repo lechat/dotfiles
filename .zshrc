@@ -20,7 +20,8 @@ bindkey "^[OF" end-of-line
 #export ZSH_THEME="juanghurtado"
 #export ZSH_THEME="duellj"
 #export ZSH_THEME="xiong-chiamiov-plus"
-export ZSH_THEME="gentoo"
+# export ZSH_THEME="gentoo"
+export ZSH_THEME="blinks-easydev"
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
