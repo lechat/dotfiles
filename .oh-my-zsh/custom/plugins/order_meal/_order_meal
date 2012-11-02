@@ -1,0 +1,8 @@
+local -a _1st_arguments
+_1st_arguments=(`grep \"def \" kitchen.py | awk '{ print $2 }' | sed 's/(kit)://'`)
+
+if (( $CURRENT == 1 )); then
+  _describe -t commands "order_meal.sh subcommand" _1st_arguments
+  return
+fi
+
