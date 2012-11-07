@@ -1,6 +1,7 @@
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
+export TERM=xterm-256color
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_NO_STORE
@@ -75,3 +76,4 @@ autoload -U compinit; compinit
 [[ -s ~/.autojump/etc/profile.d/autojump.zsh ]] && source ~/.autojump/etc/profile.d/autojump.zsh
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+

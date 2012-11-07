@@ -87,7 +87,8 @@ if has('gui_running')
   " colorscheme solarized
   set listchars=tab:»·,trail:·
 else
-  colorscheme wombat
+  " colorscheme wombat
+  hi CursorLine cterm=NONE ctermbg=8
 endif
 
 " highlight Pmenu guibg=RoyalBlue

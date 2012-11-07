@@ -28,8 +28,11 @@ fi
 ln -s ~/dotfiles/.vimrc ~/.vimrc
 ln -s ~/dotfiles/.vim ~/.vim
 ln -s ~/dotfiles/.zshrc ~/.zshrc
-ls -s ~/dotfiles/.autoenv ~/.autoenv
-ls -s ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
+ln -s ~/dotfiles/.autoenv ~/.autoenv
+ln -s ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
+ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
+ln -s ~/dotfiles/.xinitrc ~/.xinitrc
+ln -s ~/dotfiles/.Xmodmap ~/.Xmodmap
 
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
