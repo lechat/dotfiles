@@ -44,6 +44,7 @@ Bundle 'VOoM'
 " Outline plugin for asciidoc, etc.
 Bundle 'mileszs/ack.vim'
 Bundle 'Raimondi/delimitMate'
+Bundle 'mbbill/undotree'
 
 filetype plugin indent on
 
@@ -75,7 +76,7 @@ if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
   " set guioptions-=m " remove the menubar
   set guioptions-=T " remove the toolbar
-  set gfn=Source\ Code\ Pro\ Semi-Bold\ 10
+  set gfn=Source\ Code\ Pro\ Semi-Bold\ 9
   " set gfn=Consolas\ 10
   " set gfn=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline\ 9
   set lines=999
@@ -149,6 +150,7 @@ set wildignore+=*.sw*,*.pyc,*.class
 " let g:ctrlp_by_filename = 1
 " reverse sort for match window
 let g:ctrlp_match_window_reversed = 1
+let g:ctrlp_nerdtree_keys = 1
 " search in dotfiles
 " let g:ctrlp_dotfiles = 1
 " ask where to open file
@@ -202,6 +204,7 @@ nnoremap <leader>l :tabnext<CR>
 
 nnoremap <leader>s :Shell<CR>
 nnoremap <leader>w :w<CR>
+nnoremap <leader>u :UndotreeToggle<CR>
 
 noremap <F9> :emenu Git.<TAB>
 menu Git.Status :Gstatus<CR>
@@ -215,6 +218,9 @@ menu Git.Blame :Gblame<CR>
 
 nnoremap <silent> <C-S> :if expand("%") == ""<CR>browse confirm w<CR>else<CR>confirm w<CR>endif<CR>
 imap <c-s> <c-o><c-s>
+
+" I often have a problem lifting Shift after : - this is to fix it
+command W w
 
 " inoremap  <Up>     <NOP>
 " inoremap  <Down>   <NOP>

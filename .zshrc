@@ -1,7 +1,7 @@
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
-export TERM=xterm-256color
+# export TERM=xterm-256color
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_NO_STORE
@@ -56,6 +56,8 @@ export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
 
 export PYTHONPATH=~/src/adlt/deployment/framework/domain_build:~/src/adlt/deployment/framework/app_deploy:~/src/adlt/deployment/framework/domain_build/shared/scripts:~/src/adlt/deployment/framework/domain_build/shared:~/src/adlt/deployment/framework/shared:~/opt/graphite
 
+export JAVA_HOME=/maerskwas/tools/jdk1.6.0_30
+
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
 zstyle -e :urlglobber url-other-schema '[[ $words[1] == scp ]] && reply=("*") || reply=(http https ftp)'
@@ -76,4 +78,19 @@ autoload -U compinit; compinit
 [[ -s ~/.autojump/etc/profile.d/autojump.zsh ]] && source ~/.autojump/etc/profile.d/autojump.zsh
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-export JAVA_HOME=/maerskwas/tools/jdk1.6.0_21
+source /maerskwas/tools/python2.7venv/bin/activate
+
+function jump {
+    project=$1
+    env=$2
+    domain_type=$3
+    host=${4:-$domain_type}
+    ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
+}
+
+function powerline_precmd()
+{
+   export PS1="$(~/powerline-bash/powerline-bash.py $? --shell zsh)"
+}
+
+precmd_functions+=(powerline_precmd)
