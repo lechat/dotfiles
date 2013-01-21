@@ -88,9 +88,3 @@ function jump {
     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 }
 
-function powerline_precmd()
-{
-   export PS1="$(~/powerline-bash/powerline-bash.py $? --shell zsh)"
-}
-
-precmd_functions+=(powerline_precmd)
