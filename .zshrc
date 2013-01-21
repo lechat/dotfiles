@@ -76,4 +76,4 @@ autoload -U compinit; compinit
 [[ -s ~/.autojump/etc/profile.d/autojump.zsh ]] && source ~/.autojump/etc/profile.d/autojump.zsh
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
+export JAVA_HOME=/maerskwas/tools/jdk1.6.0_21
