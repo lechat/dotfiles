@@ -48,6 +48,7 @@ source $ZSH/oh-my-zsh.sh
 alias ls-al='nocorrect ls -al'
 alias grep='grep -n -I'
 alias frg='ssh forge.xleap.apmoller.net'
+alias rsync='noglob rsync'
 
 # Customize to your needs...
 export PATH=/usr/local/bin:/usr/bin:/bin:/home/xleap/bin:/usr/local/sbin:/usr/sbin:/sbin
@@ -87,4 +88,3 @@ function jump {
     host=${4:-$domain_type}
     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 }
-

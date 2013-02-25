@@ -43,8 +43,13 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'VOoM'
 " Outline plugin for asciidoc, etc.
 Bundle 'mileszs/ack.vim'
+" Helper to use ack command from inside vim
 Bundle 'Raimondi/delimitMate'
 Bundle 'mbbill/undotree'
+Bundle 'goldfeld/vim-seek'
+" Adds s/S navigation
+" Bundle 'Valloric/YouCompleteMe'
+Bundle 'scrooloose/syntastic'
 
 filetype plugin indent on
 
@@ -157,7 +162,7 @@ let g:ctrlp_nerdtree_keys = 1
 " let g:ctrlp_arg_map = 1
 
 function! s:Shell()
-  execute 'ConqueTermTab zsh'
+  execute 'ConqueTermSplit zsh'
 endfunction
 command! Shell call s:Shell()
 
@@ -206,6 +211,11 @@ nnoremap <leader>s :Shell<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
 
+nnoremap <leader>u :wincmd j<CR>
+nnoremap <leader>i :wincmd k<CR>
+nnoremap <leader>y :wincmd h<CR>
+nnoremap <leader>o :wincmd l<CR>
+
 noremap <F9> :emenu Git.<TAB>
 menu Git.Status :Gstatus<CR>
 menu Git.Diff :Gdiff<CR>
@@ -219,8 +229,9 @@ menu Git.Blame :Gblame<CR>
 nnoremap <silent> <C-S> :if expand("%") == ""<CR>browse confirm w<CR>else<CR>confirm w<CR>endif<CR>
 imap <c-s> <c-o><c-s>
 
-" I often have a problem lifting Shift after : - this is to fix it
+command Q q
 command W w
+command Qa qa
 
 " inoremap  <Up>     <NOP>
 " inoremap  <Down>   <NOP>
