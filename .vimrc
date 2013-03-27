@@ -12,7 +12,7 @@ Bundle 'gmarik/vundle'
 " original repos on github
 Bundle 'tpope/vim-commentary'           
 " Comments lines on pressing \\\ (3 times \)
-Bundle 'klen/python-mode'               
+" Bundle 'klen/python-mode'               
 " Provides pylint, flake8, python key binding, etc.
 Bundle 'tpope/vim-fugitive'             
 " Git plugin
@@ -24,7 +24,7 @@ Bundle 'talek/obvious-resize'
 " Resize split windows with Ctrl+move keys
 Bundle 'ervandew/supertab'              
 " Dropdown suggestions on TAB key press
-Bundle 'vim-scripts/mru.vim'            
+" Bundle 'vim-scripts/mru.vim'            
 " Most recently used files
 Bundle 'rson/vim-conque'                
 " Shell within VIM buffer
@@ -50,6 +50,7 @@ Bundle 'goldfeld/vim-seek'
 " Adds s/S navigation
 " Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
+Bundle 'airblade/vim-gitgutter'
 
 filetype plugin indent on
 
