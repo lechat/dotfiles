@@ -26,7 +26,7 @@ Bundle 'ervandew/supertab'
 " Dropdown suggestions on TAB key press
 " Bundle 'vim-scripts/mru.vim'            
 " Most recently used files
-Bundle 'rson/vim-conque'                
+Bundle 'basepi/vim-conque'                
 " Shell within VIM buffer
 Bundle 'kien/ctrlp.vim'                 
 " Find files on Ctrl+P press
