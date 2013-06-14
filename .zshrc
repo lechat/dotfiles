@@ -22,7 +22,7 @@ bindkey "^[OF" end-of-line
 #export ZSH_THEME="duellj"
 #export ZSH_THEME="xiong-chiamiov-plus"
 # export ZSH_THEME="gentoo"
-export ZSH_THEME="blinks-easydev"
+export ZSH_THEME="blinks"
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -57,7 +57,10 @@ export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
 
 export PYTHONPATH=~/src/adlt/deployment/framework/domain_build:~/src/adlt/deployment/framework/app_deploy:~/src/adlt/deployment/framework/domain_build/shared/scripts:~/src/adlt/deployment/framework/domain_build/shared:~/src/adlt/deployment/framework/shared:~/opt/graphite
 
-export JAVA_HOME=/maerskwas/tools/jdk1.6.0_30
+#export JAVA_HOME=/maerskwas/tools/jdk1.6.0_30
+export http_proxy=10.65.128.43:8080
+export ftp_proxy=10.65.128.43:8080
+export https_proxy=10.65.128.43:8080
 
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
@@ -79,7 +82,7 @@ autoload -U compinit; compinit
 [[ -s ~/.autojump/etc/profile.d/autojump.zsh ]] && source ~/.autojump/etc/profile.d/autojump.zsh
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-source /maerskwas/tools/python2.7venv/bin/activate
+#source /maerskwas/tools/python2.7venv/bin/activate
 
 function jump {
     project=$1

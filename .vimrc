@@ -242,3 +242,6 @@ command Qa qa
 " noremap   <Down>   <NOP>
 " noremap   <Left>   <NOP>
 " noremap   <Right>  <NOP>
+
+set colorcolumn=79,120
+highlight ColorColumn ctermbg=17
