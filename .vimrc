@@ -51,6 +51,8 @@ Bundle 'goldfeld/vim-seek'
 " Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
 Bundle 'airblade/vim-gitgutter'
+Bundle 'jistr/vim-nerdtree-tabs'
+" same Nerdtree in all tabs
 
 filetype plugin indent on
 
@@ -101,6 +103,7 @@ endif
 " highlight Pmenu guibg=RoyalBlue
 
 filetype on
+set nu
 set rnu
 set nobackup
 
@@ -201,7 +204,7 @@ nnoremap <leader>gpl :Git pull origin master<CR>
 nnoremap <leader>gps :Git push origin master<CR>
 
 nnoremap <leader>x :ccl<CR>
-nnoremap <leader>z :NERDTreeToggle<CR>
+nnoremap <leader>z :NERDTreeMirrorToggle<CR>
 nnoremap <leader>t :TagbarToggle<CR>
 nnoremap <leader>h :tabprev<CR>
 nnoremap <leader>j :tabfirst<CR>
