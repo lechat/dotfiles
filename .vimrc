@@ -53,6 +53,12 @@ Bundle 'scrooloose/syntastic'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'jistr/vim-nerdtree-tabs'
 " same Nerdtree in all tabs
+Bundle 'Shougo/vimproc.vim'
+" async execution, required for Unite
+Bundle 'Shougo/unite.vim'
+" united search
+Bundle 'gregsexton/gitv'
+" Git log viewer
 
 filetype plugin indent on
 
@@ -248,3 +254,19 @@ command Qa qa
 
 set colorcolumn=79,120
 highlight ColorColumn ctermbg=17
+" Unite stuff
+let g:unite_data_directory='~/.vim/.cache/unite'
+let g:unite_enable_start_insert=1
+let g:unite_source_history_yank_enable=1
+let g:unite_source_rec_max_cache_files=5000
+let g:unite_prompt='» '
+
+nnoremap <silent> <leader><space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
+nnoremap <silent> <leader><space>f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async<cr><c-u>
+nnoremap <silent> <leader><space>y :<C-u>Unite -buffer-name=yanks history/yank<cr>
+nnoremap <silent> <leader><space>l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
+nnoremap <silent> <leader><space>b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
+nnoremap <silent> <leader><space>/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
+nnoremap <silent> <leader><space>m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
+nnoremap <silent> <leader><space>s :<C-u>Unite -quick-match buffer<cr>
+
