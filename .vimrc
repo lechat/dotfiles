@@ -4,39 +4,40 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 " let Vundle manage Vundle
-" required! 
+" required!
 Bundle 'gmarik/vundle'
 
 " My Bundles here:
 "
 " original repos on github
-Bundle 'tpope/vim-commentary'           
+Bundle 'tpope/vim-commentary'
 " Comments lines on pressing \\\ (3 times \)
-" Bundle 'klen/python-mode'               
+" Bundle 'klen/python-mode'
+Bundle 'nvie/vim-flake8'
 " Provides pylint, flake8, python key binding, etc.
-Bundle 'tpope/vim-fugitive'             
+Bundle 'tpope/vim-fugitive'
 " Git plugin
-Bundle 'vim-scripts/EasyGrep'           
+Bundle 'vim-scripts/EasyGrep'
 " Grep plugin
-Bundle 'scrooloose/nerdtree'            
+Bundle 'scrooloose/nerdtree'
 " Filesystem manipulation
-Bundle 'talek/obvious-resize'           
+Bundle 'talek/obvious-resize'
 " Resize split windows with Ctrl+move keys
-Bundle 'ervandew/supertab'              
+Bundle 'ervandew/supertab'
 " Dropdown suggestions on TAB key press
-" Bundle 'vim-scripts/mru.vim'            
+" Bundle 'vim-scripts/mru.vim'
 " Most recently used files
-Bundle 'basepi/vim-conque'                
+Bundle 'basepi/vim-conque'
 " Shell within VIM buffer
-Bundle 'kien/ctrlp.vim'                 
+Bundle 'kien/ctrlp.vim'
 " Find files on Ctrl+P press
-Bundle 'Lokaltog/vim-powerline.git'     
+Bundle 'Lokaltog/vim-powerline.git'
 " Better status line
-Bundle 'tpope/vim-unimpaired'           
+Bundle 'tpope/vim-unimpaired'
 " Navigate quickfix list with ]q and ]Q
 Bundle 'majutsushi/tagbar'
-" Show tags in source file 
-Bundle 'kien/tabman.vim' 
+" Show tags in source file
+Bundle 'kien/tabman.vim'
 " work with tabs from keyboard - <leader>mf <leader>mt
 Bundle 'altercation/vim-colors-solarized'
 " Solarized color scheme
@@ -59,6 +60,8 @@ Bundle 'Shougo/unite.vim'
 " united search
 Bundle 'gregsexton/gitv'
 " Git log viewer
+Bundle 'Yggdroot/indentLine'
+" Show vertical lines at indentation level
 
 filetype plugin indent on
 
@@ -83,8 +86,11 @@ set t_Co=256                    " Explicitly tell vim that the terminal has 256 
 let g:Powerline_symbols="unicode"
 let g:Powerline_stl_path_style="relative"
 
+set background=dark
+" let base16colorspace=256  " Access colors present in 256 colorspace"
 colorscheme zenburn
 " colorscheme wombat
+
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
@@ -152,9 +158,21 @@ noremap <silent> <C-Right> :ObviousResizeRight<CR>
 " let g:PyLintDissabledMessages = 'C0103,C0111,C0301,W0141,W0142,W0232,E1120,R0903,R0904,R0913,R0914,W0622'
 " let g:PyLintCWindow = 1
 " let g:PyLintSigns = 1
-"let g:PyLintOnWrite = 1
+" let g:PyLintOnWrite = 1
 let NERDTreeIgnore = ['\.pyc$', '\.class$']
-" autocmd BufWritePre *.py normal m`:%s/\s\+$//e`
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
+function! TrimWhiteSpace()
+        %s/\s\+$//e
+endfunction
+autocmd BufWritePre *.py call TrimWhiteSpace()
+autocmd BufWritePost *.py call Flake8()
 autocmd FileType python setlocal omnifunc=pysmell#Complete
 
 map <F2> :NERDTreeToggle<CR>
@@ -271,3 +289,4 @@ nnoremap <silent> <leader><space>/ :<C-u>Unite -no-quit -buffer-name=search grep
 nnoremap <silent> <leader><space>m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
 nnoremap <silent> <leader><space>s :<C-u>Unite -quick-match buffer<cr>
 
+let g:indentLine_char = '·'
