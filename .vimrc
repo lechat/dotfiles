@@ -62,6 +62,7 @@ Bundle 'gregsexton/gitv'
 " Git log viewer
 Bundle 'Yggdroot/indentLine'
 " Show vertical lines at indentation level
+Bundle 'vim-scripts/ZoomWin'
 
 filetype plugin indent on
 
