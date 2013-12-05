@@ -173,6 +173,7 @@ function! TrimWhiteSpace()
         %s/\s\+$//e
 endfunction
 autocmd BufWritePre *.py call TrimWhiteSpace()
+autocmd BufWritePre *.yaml call TrimWhiteSpace()
 autocmd BufWritePost *.py call Flake8()
 autocmd FileType python setlocal omnifunc=pysmell#Complete
 
