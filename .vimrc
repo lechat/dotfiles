@@ -41,7 +41,7 @@ Bundle 'kien/tabman.vim'
 " work with tabs from keyboard - <leader>mf <leader>mt
 Bundle 'altercation/vim-colors-solarized'
 " Solarized color scheme
-Bundle 'VOoM'
+" Bundle 'VOoM'
 " Outline plugin for asciidoc, etc.
 Bundle 'mileszs/ack.vim'
 " Helper to use ack command from inside vim
@@ -62,6 +62,7 @@ Bundle 'gregsexton/gitv'
 " Git log viewer
 Bundle 'Yggdroot/indentLine'
 " Show vertical lines at indentation level
+Bundle 'vim-scripts/ZoomWin'
 
 filetype plugin indent on
 
