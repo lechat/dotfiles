@@ -12,7 +12,7 @@ Bundle 'gmarik/vundle'
 " original repos on github
 Bundle 'tpope/vim-commentary'
 " Comments lines on pressing \\\ (3 times \)
-" Bundle 'klen/python-mode'
+Bundle 'klen/python-mode'
 Bundle 'nvie/vim-flake8'
 " Provides pylint, flake8, python key binding, etc.
 Bundle 'tpope/vim-fugitive'
@@ -31,7 +31,8 @@ Bundle 'ervandew/supertab'
 " Shell within VIM buffer
 Bundle 'kien/ctrlp.vim'
 " Find files on Ctrl+P press
-Bundle 'Lokaltog/vim-powerline.git'
+"Bundle 'Lokaltog/vim-powerline.git'
+Bundle 'itchyny/lightline.vim'
 " Better status line
 Bundle 'tpope/vim-unimpaired'
 " Navigate quickfix list with ]q and ]Q
@@ -47,8 +48,10 @@ Bundle 'mileszs/ack.vim'
 " Helper to use ack command from inside vim
 Bundle 'Raimondi/delimitMate'
 Bundle 'mbbill/undotree'
-Bundle 'goldfeld/vim-seek'
+" Bundle 'goldfeld/vim-seek'
 " Adds s/S navigation
+Bundle 'justinmk/vim-sneak'
+" Mutiline s/S navigation
 " Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
 Bundle 'airblade/vim-gitgutter'
@@ -62,7 +65,14 @@ Bundle 'gregsexton/gitv'
 " Git log viewer
 Bundle 'Yggdroot/indentLine'
 " Show vertical lines at indentation level
-Bundle 'vim-scripts/ZoomWin'
+" Bundle 'vim-scripts/ZoomWin'
+" Bundle 'thinca/vim-quickrun'
+" Bundle 'osyo-manga/shabadou.vim'
+" Bundle 'jceb/vim-hier'
+Bundle 'dannyob/quickfixstatus'
+Bundle 'idanarye/vim-merginal'
+" View git branches
+Bundle 'motemen/git-vim'
 
 filetype plugin indent on
 
@@ -84,8 +94,8 @@ set cursorcolumn                " and column
 set t_Co=256                    " Explicitly tell vim that the terminal has 256 colors
 
 " let g:Powerline_colorscheme="default_mod.vim"
-let g:Powerline_symbols="unicode"
-let g:Powerline_stl_path_style="relative"
+" let g:Powerline_symbols="unicode"
+" let g:Powerline_stl_path_style="relative"
 
 set background=dark
 " let base16colorspace=256  " Access colors present in 256 colorspace"
@@ -97,7 +107,7 @@ if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
   " set guioptions-=m " remove the menubar
   set guioptions-=T " remove the toolbar
-  set gfn=Source\ Code\ Pro\ Semi-Bold\ 9
+  set gfn=Source\ Code\ Pro\ for\ Powerline\ Semi-Bold\ 9
   " set gfn=Consolas\ 10
   " set gfn=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline\ 9
   set lines=999
@@ -206,6 +216,14 @@ let g:EasyGrepRecursive = 1                         "'Recursive mode'for EasyGre
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow
 
+let g:pymode = 1
+let g:pymode_motion = 1
+let g:pymode_virtualenv = 1
+let g:pymode_run = 0
+let g:pymode_breakpoint = 1
+let g:pymode_breakpoint_bind = '<leader>b'
+let g:pymode_lint = 0
+let g:pymode_lint_on_write = 0
 let g:pymode_lint_config = "$HOME/.pylintrc"
 let g:pymode_lint_onfly = 1
 let g:pymode_lint_message = 1
@@ -217,6 +235,13 @@ let g:pymode_lint_jump = 0
 let g:pymode_doc = 0
 let g:pymode_folding = 0
 
+let g:pymode_rope = 0
+let g:pymode_rope_completion = 0
+let g:pymode_rope_complete_on_dot = 0
+
+let g:pymode_syntax = 1
+let g:pymode_syntax_slow_sync = 1
+let g:pymode_syntax_all = 1
 
 " Fugitive
 nnoremap <leader>gg :Gstatus<CR>
@@ -226,25 +251,26 @@ nnoremap <leader>gd :Gdiff<CR>
 nnoremap <leader>gl :Glog<CR>
 nnoremap <leader>gb :Gblame<CR>
 nnoremap <leader>gr :Gremove<CR>
-nnoremap <leader>gpl :Git pull origin master<CR>
-nnoremap <leader>gps :Git push origin master<CR>
+nnoremap <leader>gpl :GitPullRebase<CR>
+nnoremap <leader>gps :GitPush<CR>
+nnoremap <leader>gb :Merginal<CR>
 
 nnoremap <leader>x :ccl<CR>
 nnoremap <leader>z :NERDTreeMirrorToggle<CR>
 nnoremap <leader>t :TagbarToggle<CR>
-nnoremap <leader>h :tabprev<CR>
-nnoremap <leader>j :tabfirst<CR>
-nnoremap <leader>k :tablast<CR>
-nnoremap <leader>l :tabnext<CR>
+nnoremap <leader>y :tabprev<CR>
+nnoremap <leader>u :tabfirst<CR>
+nnoremap <leader>i :tablast<CR>
+nnoremap <leader>o :tabnext<CR>
 
 nnoremap <leader>s :Shell<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
 
-nnoremap <leader>u :wincmd j<CR>
-nnoremap <leader>i :wincmd k<CR>
-nnoremap <leader>y :wincmd h<CR>
-nnoremap <leader>o :wincmd l<CR>
+nnoremap <leader>j :wincmd j<CR>
+nnoremap <leader>k :wincmd k<CR>
+nnoremap <leader>h :wincmd h<CR>
+nnoremap <leader>l :wincmd l<CR>
 
 noremap <F9> :emenu Git.<TAB>
 menu Git.Status :Gstatus<CR>
@@ -262,6 +288,7 @@ imap <c-s> <c-o><c-s>
 command Q q
 command W w
 command Qa qa
+cnoreabbrev X x
 
 " inoremap  <Up>     <NOP>
 " inoremap  <Down>   <NOP>
@@ -292,3 +319,21 @@ nnoremap <silent> <leader><space>m :<C-u>Unite -auto-resize -buffer-name=mapping
 nnoremap <silent> <leader><space>s :<C-u>Unite -quick-match buffer<cr>
 
 let g:indentLine_char = '·'
+let g:lightline = {
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
+    \ },
+    \ 'component': {
+    \   'readonly': '%{&filetype=="help"?"":&readonly?"⭤":""}',
+    \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
+    \   'fugitive': '%{exists("*fugitive#head")?"⭠ ".fugitive#head():""}'
+    \ },
+    \ 'component_visible_condition': {
+    \   'readonly': '(&filetype!="help"&& &readonly)',
+    \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
+    \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+    \ },
+    \ 'separator': { 'left': '⮀', 'right': '⮂' },
+    \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
+    \ }

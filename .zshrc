@@ -91,3 +91,5 @@ function jump {
     host=${4:-$domain_type}
     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 }
+
+export VIMRUNTIME=/usr/share/vim/vim74
