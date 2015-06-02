@@ -5,74 +5,76 @@ call vundle#rc()
 
 " let Vundle manage Vundle
 " required!
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/vundle'
 
-" My Bundles here:
+" My Plugins here:
 "
 " original repos on github
-Bundle 'tpope/vim-commentary'
+Plugin 'tpope/vim-commentary'
 " Comments lines on pressing \\\ (3 times \)
-Bundle 'klen/python-mode'
-Bundle 'nvie/vim-flake8'
+Plugin 'klen/python-mode'
+Plugin 'nvie/vim-flake8'
 " Provides pylint, flake8, python key binding, etc.
-Bundle 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 " Git plugin
-Bundle 'vim-scripts/EasyGrep'
+Plugin 'vim-scripts/EasyGrep'
 " Grep plugin
-Bundle 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdtree'
 " Filesystem manipulation
-Bundle 'talek/obvious-resize'
+Plugin 'talek/obvious-resize'
 " Resize split windows with Ctrl+move keys
-Bundle 'ervandew/supertab'
+Plugin 'ervandew/supertab'
 " Dropdown suggestions on TAB key press
-" Bundle 'vim-scripts/mru.vim'
+" Plugin 'vim-scripts/mru.vim'
 " Most recently used files
-" Bundle 'basepi/vim-conque'
+" Plugin 'basepi/vim-conque'
 " Shell within VIM buffer
-Bundle 'kien/ctrlp.vim'
+Plugin 'kien/ctrlp.vim'
 " Find files on Ctrl+P press
-"Bundle 'Lokaltog/vim-powerline.git'
-Bundle 'itchyny/lightline.vim'
+"Plugin 'Lokaltog/vim-powerline.git'
+Plugin 'itchyny/lightline.vim'
 " Better status line
-Bundle 'tpope/vim-unimpaired'
+Plugin 'tpope/vim-unimpaired'
 " Navigate quickfix list with ]q and ]Q
-Bundle 'majutsushi/tagbar'
+Plugin 'majutsushi/tagbar'
 " Show tags in source file
-Bundle 'kien/tabman.vim'
+Plugin 'kien/tabman.vim'
 " work with tabs from keyboard - <leader>mf <leader>mt
-Bundle 'altercation/vim-colors-solarized'
+Plugin 'altercation/vim-colors-solarized'
 " Solarized color scheme
-" Bundle 'VOoM'
+" Plugin 'VOoM'
 " Outline plugin for asciidoc, etc.
-Bundle 'mileszs/ack.vim'
+Plugin 'mileszs/ack.vim'
 " Helper to use ack command from inside vim
-Bundle 'Raimondi/delimitMate'
-Bundle 'mbbill/undotree'
-" Bundle 'goldfeld/vim-seek'
+Plugin 'Raimondi/delimitMate'
+Plugin 'mbbill/undotree'
+" Plugin 'goldfeld/vim-seek'
 " Adds s/S navigation
-Bundle 'justinmk/vim-sneak'
+Plugin 'justinmk/vim-sneak'
 " Mutiline s/S navigation
-" Bundle 'Valloric/YouCompleteMe'
-Bundle 'scrooloose/syntastic'
-Bundle 'airblade/vim-gitgutter'
-Bundle 'jistr/vim-nerdtree-tabs'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'scrooloose/syntastic'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'jistr/vim-nerdtree-tabs'
 " same Nerdtree in all tabs
-Bundle 'Shougo/vimproc.vim'
+Plugin 'Shougo/vimproc.vim'
 " async execution, required for Unite
-Bundle 'Shougo/unite.vim'
+Plugin 'Shougo/unite.vim'
 " united search
-Bundle 'gregsexton/gitv'
+Plugin 'gregsexton/gitv'
 " Git log viewer
-Bundle 'Yggdroot/indentLine'
+Plugin 'Yggdroot/indentLine'
 " Show vertical lines at indentation level
-" Bundle 'vim-scripts/ZoomWin'
-" Bundle 'thinca/vim-quickrun'
-" Bundle 'osyo-manga/shabadou.vim'
-" Bundle 'jceb/vim-hier'
-Bundle 'dannyob/quickfixstatus'
-Bundle 'idanarye/vim-merginal'
+" Plugin 'vim-scripts/ZoomWin'
+" Plugin 'thinca/vim-quickrun'
+" Plugin 'osyo-manga/shabadou.vim'
+" Plugin 'jceb/vim-hier'
+Plugin 'dannyob/quickfixstatus'
+Plugin 'idanarye/vim-merginal'
 " View git branches
-Bundle 'motemen/git-vim'
+Plugin 'motemen/git-vim'
+" Golang in vim
+Plugin 'fatih/vim-go'
 
 filetype plugin indent on
 
@@ -249,11 +251,10 @@ nnoremap <leader>ga :Gwrite<CR>
 nnoremap <leader>gc :Gcommit %<CR>
 nnoremap <leader>gd :Gdiff<CR>
 nnoremap <leader>gl :Glog<CR>
-nnoremap <leader>gb :Gblame<CR>
 nnoremap <leader>gr :Gremove<CR>
 nnoremap <leader>gpl :GitPullRebase<CR>
 nnoremap <leader>gps :GitPush<CR>
-nnoremap <leader>gb :Merginal<CR>
+nnoremap <leader>gbr :Merginal<CR>
 
 nnoremap <leader>x :ccl<CR>
 nnoremap <leader>z :NERDTreeMirrorToggle<CR>
@@ -263,7 +264,7 @@ nnoremap <leader>u :tabfirst<CR>
 nnoremap <leader>i :tablast<CR>
 nnoremap <leader>o :tabnext<CR>
 
-nnoremap <leader>s :Shell<CR>
+" nnoremap <leader>s :Shell<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
 
@@ -280,7 +281,7 @@ menu Git.Checkout :Gread<CR>
 menu Git.Remove :Gremove<CR>
 menu Git.Move :Gmove<CR>
 menu Git.Log :Glog<CR>
-menu Git.Blame :Gblame<CR>
+" menu Git.Blame :Gblame<CR>
 
 nnoremap <silent> <C-S> :if expand("%") == ""<CR>browse confirm w<CR>else<CR>confirm w<CR>endif<CR>
 imap <c-s> <c-o><c-s>
