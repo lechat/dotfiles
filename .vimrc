@@ -147,20 +147,20 @@ set scrolloff=3 " minimum lines to keep above and below cursor
 set nofoldenable
 set foldmethod=manual
 
-function! CleverTab()
-  if pumvisible()
-    return "\<C-N>"
-  endif
-  if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
-    return "\<Tab>"
-  elseif exists('&omnifunc') && &omnifunc != ''
-    return "\<C-X>\<C-O>"
-  else
-    return "\<C-N>"
-  endif
-endfunction
+" function! CleverTab()
+"   if pumvisible()
+"     return "\<C-N>"
+"   endif
+"   if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
+"     return "\<Tab>"
+"   elseif exists('&omnifunc') && &omnifunc != ''
+"     return "\<C-X>\<C-O>"
+"   else
+"     return "\<C-N>"
+"   endif
+" endfunction
 
-inoremap <Tab> <C-R>=CleverTab()<CR>
+" inoremap <Tab> <C-R>=CleverTab()<CR>
 
 noremap <silent> <C-Up> :ObviousResizeUp<CR> 
 noremap <silent> <C-Down> :ObviousResizeDown<CR> 
@@ -349,3 +349,8 @@ let g:lightline = {
     \ 'separator': { 'left': '⮀', 'right': '⮂' },
     \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
     \ }
+
+" Syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_wq = 0
