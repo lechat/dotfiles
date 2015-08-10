@@ -25,17 +25,20 @@ then
     mv ~/.autoenv ~/.autoenv.old
 fi
 
+git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 ln -s ~/dotfiles/.vimrc ~/.vimrc
 ln -s ~/dotfiles/.vim ~/.vim
 ln -s ~/dotfiles/.zshrc ~/.zshrc
 ln -s ~/dotfiles/.autoenv ~/.autoenv
-ln -s ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
 ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
 ln -s ~/dotfiles/.xinitrc ~/.xinitrc
 ln -s ~/dotfiles/.Xmodmap ~/.Xmodmap
 
-git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+mkdir ~/dotfiles/.oh-my-zsh/custom
+ln -s ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
 
-echo "Don't forget to run :BundleInstall! command in vim"
+echo "Don't forget to run :PluginInstall! command in vim"
 
