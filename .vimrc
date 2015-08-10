@@ -52,7 +52,7 @@ Plugin 'mbbill/undotree'
 " Adds s/S navigation
 Plugin 'justinmk/vim-sneak'
 " Mutiline s/S navigation
-" Plugin 'Valloric/YouCompleteMe'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/syntastic'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'jistr/vim-nerdtree-tabs'
@@ -74,6 +74,8 @@ Plugin 'idanarye/vim-merginal'
 " View git branches
 Plugin 'motemen/git-vim'
 Plugin 'tmux-plugins/vim-tmux-focus-events'
+" Golang in vim
+Plugin 'fatih/vim-go'
 
 filetype plugin indent on
 
@@ -146,20 +148,20 @@ set scrolloff=3 " minimum lines to keep above and below cursor
 set nofoldenable
 set foldmethod=manual
 
-function! CleverTab()
-  if pumvisible()
-    return "\<C-N>"
-  endif
-  if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
-    return "\<Tab>"
-  elseif exists('&omnifunc') && &omnifunc != ''
-    return "\<C-X>\<C-O>"
-  else
-    return "\<C-N>"
-  endif
-endfunction
+" function! CleverTab()
+"   if pumvisible()
+"     return "\<C-N>"
+"   endif
+"   if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
+"     return "\<Tab>"
+"   elseif exists('&omnifunc') && &omnifunc != ''
+"     return "\<C-X>\<C-O>"
+"   else
+"     return "\<C-N>"
+"   endif
+" endfunction
 
-inoremap <Tab> <C-R>=CleverTab()<CR>
+" inoremap <Tab> <C-R>=CleverTab()<CR>
 
 noremap <silent> <C-Up> :ObviousResizeUp<CR> 
 noremap <silent> <C-Down> :ObviousResizeDown<CR> 
@@ -250,11 +252,10 @@ nnoremap <leader>ga :Gwrite<CR>
 nnoremap <leader>gc :Gcommit %<CR>
 nnoremap <leader>gd :Gdiff<CR>
 nnoremap <leader>gl :Glog<CR>
-nnoremap <leader>gb :Gblame<CR>
 nnoremap <leader>gr :Gremove<CR>
 nnoremap <leader>gpl :GitPullRebase<CR>
 nnoremap <leader>gps :GitPush<CR>
-nnoremap <leader>gb :Merginal<CR>
+nnoremap <leader>gbr :Merginal<CR>
 
 nnoremap <leader>x :ccl<CR>
 nnoremap <leader>z :NERDTreeMirrorToggle<CR>
@@ -264,7 +265,7 @@ nnoremap <leader>u :tabfirst<CR>
 nnoremap <leader>i :tablast<CR>
 nnoremap <leader>o :tabnext<CR>
 
-nnoremap <leader>s :Shell<CR>
+" nnoremap <leader>s :Shell<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
 
@@ -281,7 +282,7 @@ menu Git.Checkout :Gread<CR>
 menu Git.Remove :Gremove<CR>
 menu Git.Move :Gmove<CR>
 menu Git.Log :Glog<CR>
-menu Git.Blame :Gblame<CR>
+" menu Git.Blame :Gblame<CR>
 
 nnoremap <silent> <C-S> :if expand("%") == ""<CR>browse confirm w<CR>else<CR>confirm w<CR>endif<CR>
 imap <c-s> <c-o><c-s>
@@ -308,6 +309,17 @@ let g:unite_enable_start_insert=1
 let g:unite_source_history_yank_enable=1
 let g:unite_source_rec_max_cache_files=5000
 let g:unite_prompt='» '
+
+" vp doesn't replace paste buffer
+function! RestoreRegister()
+  let @" = s:restore_reg
+  return ''
+endfunction
+function! s:Repl()
+  let s:restore_reg = @"
+  return "p@=RestoreRegister()\<cr>"
+endfunction
+vmap <silent> <expr> p <sid>Repl()
 
 call unite#custom#source('file,file/new,buffer,file_rec/async', 'matchers', 'matcher_fuzzy')
 nnoremap <silent> <leader><space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
@@ -338,3 +350,8 @@ let g:lightline = {
     \ 'separator': { 'left': '⮀', 'right': '⮂' },
     \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
     \ }
+
+" Syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_wq = 0
