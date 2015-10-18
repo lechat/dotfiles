@@ -76,6 +76,7 @@ Plugin 'motemen/git-vim'
 Plugin 'tmux-plugins/vim-tmux-focus-events'
 " Golang in vim
 Plugin 'fatih/vim-go'
+Plugin 'jnurmine/Zenburn'
 
 filetype plugin indent on
 
@@ -338,22 +339,22 @@ let g:lightline = {
     \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
     \ },
     \ 'component': {
-    \   'readonly': '%{&filetype=="help"?"":&readonly?"⭤":""}',
+    \   'readonly': '%{&filetype=="help"?"":&readonly?"":""}',
     \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
-    \   'fugitive': '%{exists("*fugitive#head")?"⭠ ".fugitive#head():""}'
+    \   'fugitive': '%{exists("*fugitive#head")?" ".fugitive#head():""}'
     \ },
     \ 'component_visible_condition': {
     \   'readonly': '(&filetype!="help"&& &readonly)',
     \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
     \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
     \ },
-    \ 'separator': { 'left': '⮀', 'right': '⮂' },
-    \ 'subseparator': { 'left': '⮁', 'right': '⮃' }
+    \ 'separator': { 'left': '', 'right': '' },
+    \ 'subseparator': { 'left': '|', 'right': '|' }
     \ }
 
 " Syntastic
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_wq = 0
 
 " Disable preview window on completion

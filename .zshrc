@@ -45,7 +45,7 @@ export ZSH_THEME="agnoster"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git svn python pip bashcomplete docker)
+plugins=(git svn python pip bashcomplete docker vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -72,6 +72,22 @@ zle -N self-insert url-quote-magic
 zstyle -e :urlglobber url-other-schema '[[ $words[1] == scp ]] && reply=("*") || reply=(http https ftp)'
 
 zle_highlight=(isearch:bold)
+
+# Use vim cli mode
+bindkey -v
+bindkey '^P' up-history
+bindkey '^N' down-history
+
+# backspace and ^h working even after
+# returning from command mode
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
+
+# ctrl-w removed word backwards
+bindkey '^w' backward-kill-word
+
+# ctrl-r starts searching history backward
+bindkey '^r' history-incremental-search-backward
 
 function source_config() {
     if [ -r $PWD/.zsh_config ]; then
