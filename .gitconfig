@@ -1,0 +1,7 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Aleksey Maksimov
+	email = ctpeko3a@gmail.com
+[alias]
+	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	lol = "log --graph --decorate --pretty=oneline --abbrev-commit "
