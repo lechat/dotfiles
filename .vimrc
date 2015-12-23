@@ -89,6 +89,8 @@ set expandtab
 set autoindent
 set showmatch
 
+let mapleader = "\<Space>"
+
 set wildmenu
 set wildmode=list:longest,full
 
