@@ -151,31 +151,16 @@ set scrolloff=3 " minimum lines to keep above and below cursor
 set nofoldenable
 set foldmethod=manual
 
-" function! CleverTab()
-"   if pumvisible()
-"     return "\<C-N>"
-"   endif
-"   if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
-"     return "\<Tab>"
-"   elseif exists('&omnifunc') && &omnifunc != ''
-"     return "\<C-X>\<C-O>"
-"   else
-"     return "\<C-N>"
-"   endif
-" endfunction
-
-" inoremap <Tab> <C-R>=CleverTab()<CR>
-
-noremap <silent> <C-Up> :ObviousResizeUp<CR> 
-noremap <silent> <C-Down> :ObviousResizeDown<CR> 
-noremap <silent> <C-Left> :ObviousResizeLeft<CR> 
-noremap <silent> <C-Right> :ObviousResizeRight<CR> 
+noremap <silent> <C-Up> :ObviousResizeUp<CR>
+noremap <silent> <C-Down> :ObviousResizeDown<CR>
+noremap <silent> <C-Left> :ObviousResizeLeft<CR>
+noremap <silent> <C-Right> :ObviousResizeRight<CR>
 
 " Options for Pylint-mode
 " let g:PyLintDissabledMessages = 'C0103,C0111,C0301,W0141,W0142,W0232,E1120,R0903,R0904,R0913,R0914,W0622'
-" let g:PyLintCWindow = 1
+let g:PyLintCWindow = 1
 " let g:PyLintSigns = 1
-" let g:PyLintOnWrite = 1
+let g:PyLintOnWrite = 1
 let NERDTreeIgnore = ['\.pyc$', '\.class$']
 
 highlight ExtraWhitespace ctermbg=red guibg=red
@@ -189,11 +174,9 @@ function! TrimWhiteSpace()
         %s/\s\+$//e
 endfunction
 autocmd BufWritePre *.py call TrimWhiteSpace()
+autocmd BufWritePre *.js call TrimWhiteSpace()
 autocmd BufWritePre *.yaml call TrimWhiteSpace()
 autocmd BufWritePost *.py call Flake8()
-autocmd FileType python setlocal omnifunc=pysmell#Complete
-
-map <F2> :NERDTreeToggle<CR>
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
@@ -207,17 +190,8 @@ let g:ctrlp_nerdtree_keys = 1
 " ask where to open file
 " let g:ctrlp_arg_map = 1
 
-function! s:Shell()
-  execute 'ConqueTermSplit zsh'
-endfunction
-command! Shell call s:Shell()
-
-" let g:ConqueTerm_Color = 2
-let g:ConqueTerm_TERM = 'xterm-256color'
-let g:ConqueTerm_ToggleKey = '<F12>'
-" let g:ConqueTerm_FastMode = 1
-"
-let g:EasyGrepRecursive = 1                         "'Recursive mode'for EasyGrep
+"'Recursive mode'for EasyGrep
+let g:EasyGrepRecursive = 1
 
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow
@@ -258,7 +232,7 @@ nnoremap <leader>gl :Glog<CR>
 nnoremap <leader>gr :Gremove<CR>
 nnoremap <leader>gpl :GitPullRebase<CR>
 nnoremap <leader>gps :GitPush<CR>
-nnoremap <leader>gbr :Merginal<CR>
+nnoremap <leader>gm :Merginal<CR>
 
 nnoremap <leader>x :ccl<CR>
 nnoremap <leader>z :NERDTreeMirrorToggle<CR>
@@ -276,16 +250,6 @@ nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>l :wincmd l<CR>
-
-noremap <F9> :emenu Git.<TAB>
-menu Git.Status :Gstatus<CR>
-menu Git.Diff :Gdiff<CR>
-menu Git.Commit :Gcommit %<CR>
-menu Git.Checkout :Gread<CR>
-menu Git.Remove :Gremove<CR>
-menu Git.Move :Gmove<CR>
-menu Git.Log :Glog<CR>
-" menu Git.Blame :Gblame<CR>
 
 nnoremap <silent> <C-S> :if expand("%") == ""<CR>browse confirm w<CR>else<CR>confirm w<CR>endif<CR>
 imap <c-s> <c-o><c-s>
@@ -308,10 +272,20 @@ set colorcolumn=79,120
 highlight ColorColumn ctermbg=17
 " Unite stuff
 let g:unite_data_directory='~/.vim/.cache/unite'
-let g:unite_enable_start_insert=1
+let g:unite_enable_start_insert=0
 let g:unite_source_history_yank_enable=1
 let g:unite_source_rec_max_cache_files=5000
 let g:unite_prompt='» '
+
+call unite#custom#source('file,file/new,buffer,file_rec/async', 'matchers', 'matcher_fuzzy')
+nnoremap <silent> <leader><space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
+nnoremap <silent> <leader><space>f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async<cr><c-u>
+nnoremap <silent> <leader><space>y :<C-u>Unite -buffer-name=yanks history/yank<cr>
+nnoremap <silent> <leader><space>l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
+nnoremap <silent> <leader><space>b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
+nnoremap <silent> <leader><space>/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
+nnoremap <silent> <leader><space>m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
+nnoremap <silent> <leader><space>s :<C-u>Unite -quick-match buffer<cr>
 
 " vp doesn't replace paste buffer
 function! RestoreRegister()
@@ -323,16 +297,6 @@ function! s:Repl()
   return "p@=RestoreRegister()\<cr>"
 endfunction
 vmap <silent> <expr> p <sid>Repl()
-
-call unite#custom#source('file,file/new,buffer,file_rec/async', 'matchers', 'matcher_fuzzy')
-nnoremap <silent> <leader><space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
-nnoremap <silent> <leader><space>f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async<cr><c-u>
-nnoremap <silent> <leader><space>y :<C-u>Unite -buffer-name=yanks history/yank<cr>
-nnoremap <silent> <leader><space>l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
-nnoremap <silent> <leader><space>b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
-nnoremap <silent> <leader><space>/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
-nnoremap <silent> <leader><space>m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
-nnoremap <silent> <leader><space>s :<C-u>Unite -quick-match buffer<cr>
 
 let g:indentLine_char = '·'
 let g:lightline = {
