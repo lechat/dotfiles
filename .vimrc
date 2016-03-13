@@ -19,6 +19,8 @@ Plugin 'nvie/vim-flake8'
 " Provides pylint, flake8, python key binding, etc.
 Plugin 'tpope/vim-fugitive'
 " Git plugin
+Plugin 'motemen/git-vim'
+" Git commands
 Plugin 'vim-scripts/EasyGrep'
 " Grep plugin
 Plugin 'scrooloose/nerdtree'
