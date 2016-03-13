@@ -10,8 +10,10 @@ Plugin 'gmarik/vundle'
 " My Plugins here:
 "
 " original repos on github
-Plugin 'tpope/vim-commentary'
+" Plugin 'tpope/vim-commentary'
 " Comments lines on pressing \\\ (3 times \)
+Plugin 'scrooloose/nerdcommenter'
+" Comments by <leader>cc
 Plugin 'klen/python-mode'
 Plugin 'nvie/vim-flake8'
 " Provides pylint, flake8, python key binding, etc.
@@ -21,15 +23,16 @@ Plugin 'vim-scripts/EasyGrep'
 " Grep plugin
 Plugin 'scrooloose/nerdtree'
 " Filesystem manipulation
-Plugin 'talek/obvious-resize'
-" Resize split windows with Ctrl+move keys
-Plugin 'ervandew/supertab'
+" Plugin 'talek/obvious-resize'
+" Resize split windows with Ctrl+move keys - doesn't work
+" Plugin 'ervandew/supertab'
 " Dropdown suggestions on TAB key press
 " Plugin 'vim-scripts/mru.vim'
 " Most recently used files
 " Plugin 'basepi/vim-conque'
 " Shell within VIM buffer
-Plugin 'kien/ctrlp.vim'
+" Plugin 'kien/ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 " Find files on Ctrl+P press
 "Plugin 'Lokaltog/vim-powerline.git'
 Plugin 'itchyny/lightline.vim'
@@ -44,17 +47,20 @@ Plugin 'altercation/vim-colors-solarized'
 " Solarized color scheme
 " Plugin 'VOoM'
 " Outline plugin for asciidoc, etc.
-Plugin 'mileszs/ack.vim'
+" Plugin 'mileszs/ack.vim'
 " Helper to use ack command from inside vim
 Plugin 'Raimondi/delimitMate'
+" Autoclose ",brackets
 Plugin 'mbbill/undotree'
 " Plugin 'goldfeld/vim-seek'
-" Adds s/S navigation
 Plugin 'justinmk/vim-sneak'
+" Adds s/S navigation
 " Mutiline s/S navigation
-Plugin 'Valloric/YouCompleteMe'
+" Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/syntastic'
+" Syntax checks
 Plugin 'airblade/vim-gitgutter'
+" Shows git changes in gutter column
 Plugin 'jistr/vim-nerdtree-tabs'
 " same Nerdtree in all tabs
 Plugin 'Shougo/vimproc.vim'
@@ -65,18 +71,20 @@ Plugin 'gregsexton/gitv'
 " Git log viewer
 Plugin 'Yggdroot/indentLine'
 " Show vertical lines at indentation level
-" Plugin 'vim-scripts/ZoomWin'
-" Plugin 'thinca/vim-quickrun'
-" Plugin 'osyo-manga/shabadou.vim'
-" Plugin 'jceb/vim-hier'
 Plugin 'dannyob/quickfixstatus'
+" Show errors in last line
 Plugin 'idanarye/vim-merginal'
 " View git branches
-Plugin 'motemen/git-vim'
 Plugin 'tmux-plugins/vim-tmux-focus-events'
-" Golang in vim
+" Allows pasting in terminal w/o set paste
 Plugin 'fatih/vim-go'
+" Golang in vim
 Plugin 'jnurmine/Zenburn'
+" Coloscheme
+Plugin 'Shougo/neocomplete.vim'
+" Code completion
+Plugin 'tacahiroy/ctrlp-funky'
+" CtrlP for functions
 
 filetype plugin indent on
 
@@ -88,16 +96,24 @@ set tabstop=4
 set expandtab
 set autoindent
 set showmatch
+set synmaxcol=150               " Show syntax colors only for 150 chars in line
 
 let mapleader = "\<Space>"
 
 set wildmenu
 set wildmode=list:longest,full
 
-set cursorline                  " hilight cursor line
-set cursorcolumn                " and column
+if !match(substitute(system('uname -a'), "\n", "", ""), "arm")
+    set cursorline                  " hilight cursor line
+    set cursorcolumn                " and column
+endif
 
 set t_Co=256                    " Explicitly tell vim that the terminal has 256 colors
+
+" Attempting to speedup raspberry
+set re=1
+set ttyfast
+set lazyredraw
 
 " let g:Powerline_colorscheme="default_mod.vim"
 " let g:Powerline_symbols="unicode"
@@ -133,7 +149,7 @@ endif
 
 filetype on
 set nu
-set rnu
+" set rnu
 set nobackup
 
 set ruler " show the ruler
@@ -151,10 +167,10 @@ set scrolloff=3 " minimum lines to keep above and below cursor
 set nofoldenable
 set foldmethod=manual
 
-noremap <silent> <C-Up> :ObviousResizeUp<CR>
-noremap <silent> <C-Down> :ObviousResizeDown<CR>
-noremap <silent> <C-Left> :ObviousResizeLeft<CR>
-noremap <silent> <C-Right> :ObviousResizeRight<CR>
+noremap <silent> <C-Up> :<C-U>ObviousResizeUp<CR>
+noremap <silent> <C-Down> :<C-U>ObviousResizeDown<CR>
+noremap <silent> <C-Left> :<C-U>ObviousResizeLeft<CR>
+noremap <silent> <C-Right> :<C-U>ObviousResizeRight<CR>
 
 " Options for Pylint-mode
 " let g:PyLintDissabledMessages = 'C0103,C0111,C0301,W0141,W0142,W0232,E1120,R0903,R0904,R0913,R0914,W0622'
@@ -278,7 +294,7 @@ let g:unite_source_rec_max_cache_files=5000
 let g:unite_prompt='» '
 
 call unite#custom#source('file,file/new,buffer,file_rec/async', 'matchers', 'matcher_fuzzy')
-nnoremap <silent> <leader><space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
+"nnoremap <silent> <leader><space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
 nnoremap <silent> <leader><space>f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async<cr><c-u>
 nnoremap <silent> <leader><space>y :<C-u>Unite -buffer-name=yanks history/yank<cr>
 nnoremap <silent> <leader><space>l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
@@ -330,3 +346,56 @@ set completeopt-=preview
 let g:ycm_complete_in_comments = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_add_preview_to_completeopt = 0
+
+" Neocomplete
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? "\<C-y>" : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+
+" AutoComplPop like behavior.
+"let g:neocomplete#enable_auto_select = 1
+let g:neocomplete#enable_refresh_always = 1
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+
+" CtrlP-funky
+nnoremap <Leader>fu :CtrlPFunky<Cr>
