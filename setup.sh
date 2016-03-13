@@ -14,7 +14,8 @@ function save_to_old() {
 function do_clone() {
     git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
     git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+#    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
 }
 
 function make_links() {
@@ -40,9 +41,9 @@ function main() {
 
     do_clone
     make_links
+
+    vim -c "PluginInstall" -c "qa"
 }
 
 main
-
-echo "Don't forget to run :PluginInstall! command in vim"
 
