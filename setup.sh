@@ -1,8 +1,8 @@
 #!/bin/bash
 
 set -o nounset
-set -0 pipefail
-set -0 errexit
+set -o pipefail
+set -o errexit
 
 function save_to_old() {
     local item=$1
@@ -12,26 +12,30 @@ function save_to_old() {
 }
 
 function do_clone() {
-    git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    if [ ! -d ~/.vim/bundle/vundle/.git ]; then
+        git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+    fi
+    if [ ! -d ~/.oh-my-zsh/.git ]; then
+    	git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    fi
 #    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+    if [ ! -d ~/dotfiles/.oh-my-zsh/custom ]; then
+        mkdir ~/dotfiles/.oh-my-zsh/custom
+    fi
+    git clone git://github.com/zsh-users/zsh-autosuggestions ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 }
 
 function make_links() {
-    ln -s ~/dotfiles/.vimrc ~/.vimrc
-    ln -s ~/dotfiles/.vim ~/.vim
-    ln -s ~/dotfiles/.zshrc ~/.zshrc
-    ln -s ~/dotfiles/.autoenv ~/.autoenv
-    ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
-    ln -s ~/dotfiles/.xinitrc ~/.xinitrc
-    ln -s ~/dotfiles/.Xmodmap ~/.Xmodmap
-    ln -s ~/dotfiles/.gitconfig ~/.gitconfig
+    ln -sf ~/dotfiles/.vimrc ~/.vimrc
+    ln -sf ~/dotfiles/.vim ~/.vim
+    ln -sf ~/dotfiles/.zshrc ~/.zshrc
+    ln -sf ~/dotfiles/.autoenv ~/.autoenv
+    ln -sf ~/dotfiles/.tmux.conf ~/.tmux.conf
+    ln -sf ~/dotfiles/.xinitrc ~/.xinitrc
+    ln -sf ~/dotfiles/.Xmodmap ~/.Xmodmap
+    ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
 
-    if [ ! -e ~/dotfiles/.oh-my-zsh/custom ]; then
-        mkdir ~/dotfiles/.oh-my-zsh/custom
-    fi
-    ln -s ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
+    ln -sf ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
 }
 
 function main() {

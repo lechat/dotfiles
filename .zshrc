@@ -45,7 +45,7 @@ export ZSH_THEME="agnoster"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git svn python pip bashcomplete docker vi-mode zsh-autosuggestions)
+plugins=(git svn python pip bashcomplete docker vi-mode zsh-autosuggestions virtualenvwrapper)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -120,3 +120,5 @@ fi
 export GOPATH=$HOME/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
+export PROJECT_HOME=$HOME/src
+source /usr/bin/virtualenvwrapper.sh

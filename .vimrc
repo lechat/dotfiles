@@ -10,9 +10,9 @@ Plugin 'gmarik/vundle'
 " My Plugins here:
 "
 " original repos on github
-" Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-commentary'
 " Comments lines on pressing \\\ (3 times \)
-Plugin 'scrooloose/nerdcommenter'
+" Plugin 'scrooloose/nerdcommenter'
 " Comments by <leader>cc
 Plugin 'klen/python-mode'
 Plugin 'nvie/vim-flake8'
@@ -40,10 +40,10 @@ Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'itchyny/lightline.vim'
 " Better status line
 Plugin 'tpope/vim-unimpaired'
-" Navigate quickfix list with ]q and ]Q
-Plugin 'majutsushi/tagbar'
+" --  Navigate quickfix list with ]q and ]Q
+" Plugin 'majutsushi/tagbar'
 " Show tags in source file
-Plugin 'kien/tabman.vim'
+" -- Plugin 'kien/tabman.vim'
 " work with tabs from keyboard - <leader>mf <leader>mt
 Plugin 'altercation/vim-colors-solarized'
 " Solarized color scheme
@@ -59,7 +59,7 @@ Plugin 'justinmk/vim-sneak'
 " Adds s/S navigation
 " Mutiline s/S navigation
 " Plugin 'Valloric/YouCompleteMe'
-Plugin 'scrooloose/syntastic'
+" -- Plugin 'scrooloose/syntastic'
 " Syntax checks
 Plugin 'airblade/vim-gitgutter'
 " Shows git changes in gutter column
@@ -85,8 +85,12 @@ Plugin 'jnurmine/Zenburn'
 " Coloscheme
 Plugin 'Shougo/neocomplete.vim'
 " Code completion
-Plugin 'tacahiroy/ctrlp-funky'
+" --Plugin 'tacahiroy/ctrlp-funky'
 " CtrlP for functions
+Plugin 'kshenoy/vim-signature'
+" Show marks in gutter
+Plugin 'mhinz/vim-startify'
+" Custom start page
 
 filetype plugin indent on
 
