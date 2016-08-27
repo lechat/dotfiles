@@ -122,3 +122,6 @@ export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
 source /usr/bin/virtualenvwrapper.sh
+
+# added by travis gem
+[ -f /home/aleksey/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
