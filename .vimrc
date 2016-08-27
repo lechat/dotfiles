@@ -91,6 +91,7 @@ Plugin 'kshenoy/vim-signature'
 " Show marks in gutter
 Plugin 'mhinz/vim-startify'
 " Custom start page
+Plugin 'rust-lang/rust.vim'
 
 filetype plugin indent on
 
@@ -404,4 +405,7 @@ if !exists('g:neocomplete#sources#omni#input_patterns')
 endif
 
 " CtrlP-funky
-nnoremap <Leader>fu :CtrlPFunky<Cr>
+" nnoremap <Leader>fu :CtrlPFunky<Cr>
+
+" Format Rust code on save
+let g:rustfmt_autosave = 1
