@@ -20,7 +20,7 @@ function do_clone() {
     fi
 #    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
     if [ ! -d ~/dotfiles/.oh-my-zsh/custom ]; then
-        mkdir ~/dotfiles/.oh-my-zsh/custom
+        mkdir -p ~/dotfiles/.oh-my-zsh/custom/plugins
     fi
     git clone git://github.com/zsh-users/zsh-autosuggestions ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 }
