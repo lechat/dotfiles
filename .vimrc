@@ -10,9 +10,9 @@ Plugin 'gmarik/vundle'
 " My Plugins here:
 "
 " original repos on github
-Plugin 'tpope/vim-commentary'
+" Plugin 'tpope/vim-commentary'
 " Comments lines on pressing \\\ (3 times \)
-" Plugin 'scrooloose/nerdcommenter'
+Plugin 'scrooloose/nerdcommenter'
 " Comments by <leader>cc
 Plugin 'klen/python-mode'
 Plugin 'nvie/vim-flake8'
@@ -404,8 +404,15 @@ if !exists('g:neocomplete#sources#omni#input_patterns')
   let g:neocomplete#sources#omni#input_patterns = {}
 endif
 
-" CtrlP-funky
-" nnoremap <Leader>fu :CtrlPFunky<Cr>
-
 " Format Rust code on save
 let g:rustfmt_autosave = 1
+nnoremap <Leader>fu :CtrlPFunky<Cr>
+
+" NERDCommenter
+" Align line-wise comment delimiters flush left instead of following code
+" indentation
+let g:NERDDefaultAlign = 'left'
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
