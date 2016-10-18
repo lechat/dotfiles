@@ -104,6 +104,8 @@ set expandtab
 set autoindent
 set showmatch
 set synmaxcol=150               " Show syntax colors only for 150 chars in line
+set autoread
+let g:is_posix=1
 
 let mapleader = "\<Space>"
 
@@ -416,3 +418,7 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
+" Load matchit.vim, but only if the user hasn't installed a newer version.
+if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
