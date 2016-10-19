@@ -15,7 +15,7 @@ Plugin 'gmarik/vundle'
 Plugin 'scrooloose/nerdcommenter'
 " Comments by <leader>cc
 Plugin 'klen/python-mode'
-Plugin 'nvie/vim-flake8'
+"Plugin 'nvie/vim-flake8'
 " Provides pylint, flake8, python key binding, etc.
 Plugin 'tpope/vim-fugitive'
 " Git plugin
@@ -59,7 +59,7 @@ Plugin 'justinmk/vim-sneak'
 " Adds s/S navigation
 " Mutiline s/S navigation
 " Plugin 'Valloric/YouCompleteMe'
-" -- Plugin 'scrooloose/syntastic'
+Plugin 'scrooloose/syntastic'
 " Syntax checks
 Plugin 'airblade/vim-gitgutter'
 " Shows git changes in gutter column
@@ -69,7 +69,8 @@ Plugin 'Shougo/vimproc.vim'
 " async execution, required for Unite
 Plugin 'Shougo/unite.vim'
 " united search
-Plugin 'gregsexton/gitv'
+"Plugin 'gregsexton/gitv'
+Plugin 'junegunn/gv.vim'
 " Git log viewer
 Plugin 'Yggdroot/indentLine'
 " Show vertical lines at indentation level
@@ -201,7 +202,7 @@ endfunction
 autocmd BufWritePre *.py call TrimWhiteSpace()
 autocmd BufWritePre *.js call TrimWhiteSpace()
 autocmd BufWritePre *.yaml call TrimWhiteSpace()
-autocmd BufWritePost *.py call Flake8()
+" autocmd BufWritePost *.py call Flake8()
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
@@ -222,6 +223,8 @@ let g:EasyGrepRecursive = 1
 autocmd QuickFixCmdPost *grep* cwindow
 
 let g:pymode = 1
+let g:pymode_options_max_line_length = 79
+let g:pymode_indent = 1
 let g:pymode_motion = 1
 let g:pymode_virtualenv = 1
 let g:pymode_run = 0
@@ -230,10 +233,9 @@ let g:pymode_breakpoint_bind = '<leader>b'
 let g:pymode_lint = 0
 let g:pymode_lint_on_write = 0
 let g:pymode_lint_config = "$HOME/.pylintrc"
-let g:pymode_lint_onfly = 1
-let g:pymode_lint_message = 1
 let g:pymode_lint_onfly = 0
-let g:pymode_lint_checker = "pylint"
+let g:pymode_lint_message = 0
+let g:pymode_lint_checkers = ['pyflakes', 'pylint']
 let g:pymode_lint_hold = 0
 let g:pymode_lint_jump = 0
 " Disable showing Python docs on K
@@ -325,28 +327,145 @@ vmap <silent> <expr> p <sid>Repl()
 
 let g:indentLine_char = '·'
 let g:lightline = {
-    \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
-    \ },
-    \ 'component': {
-    \   'readonly': '%{&filetype=="help"?"":&readonly?"":""}',
-    \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
-    \   'fugitive': '%{exists("*fugitive#head")?" ".fugitive#head():""}'
-    \ },
-    \ 'component_visible_condition': {
-    \   'readonly': '(&filetype!="help"&& &readonly)',
-    \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
-    \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
-    \ },
-    \ 'separator': { 'left': '', 'right': '' },
-    \ 'subseparator': { 'left': '|', 'right': '|' }
-    \ }
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
+      \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \ },
+      \ 'component_function': {
+      \   'fugitive': 'LightLineFugitive',
+      \   'filename': 'LightLineFilename',
+      \   'fileformat': 'LightLineFileformat',
+      \   'filetype': 'LightLineFiletype',
+      \   'fileencoding': 'LightLineFileencoding',
+      \   'mode': 'LightLineMode',
+      \   'ctrlpmark': 'CtrlPMark',
+      \ },
+      \ 'component_expand': {
+      \   'syntastic': 'SyntasticStatuslineFlag',
+      \ },
+      \ 'component_type': {
+      \   'syntastic': 'error',
+      \ },
+      \ 'subseparator': { 'left': '|', 'right': '|' }
+      \ }
+
+function! LightLineModified()
+  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! LightLineReadonly()
+  return &ft !~? 'help' && &readonly ? 'RO' : ''
+endfunction
+
+function! LightLineFilename()
+  let fname = expand('%:t')
+  return fname == 'ControlP' && has_key(g:lightline, 'ctrlp_item') ? g:lightline.ctrlp_item :
+        \ fname == '__Tagbar__' ? g:lightline.fname :
+        \ fname =~ '__Gundo\|NERD_tree' ? '' :
+        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \ &ft == 'unite' ? unite#get_status_string() :
+        \ &ft == 'vimshell' ? vimshell#get_status_string() :
+        \ ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
+        \ ('' != fname ? fname : '[No Name]') .
+        \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
+endfunction
+
+function! LightLineFugitive()
+  try
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+      let mark = ''  " edit here for cool mark
+      let branch = fugitive#head()
+      return branch !=# '' ? mark.branch : ''
+    endif
+  catch
+  endtry
+  return ''
+endfunction
+
+function! LightLineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightLineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
+function! LightLineFileencoding()
+  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
+
+function! LightLineMode()
+  let fname = expand('%:t')
+  return fname == '__Tagbar__' ? 'Tagbar' :
+        \ fname == 'ControlP' ? 'CtrlP' :
+        \ fname == '__Gundo__' ? 'Gundo' :
+        \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
+        \ fname =~ 'NERD_tree' ? 'NERDTree' :
+        \ &ft == 'unite' ? 'Unite' :
+        \ &ft == 'vimfiler' ? 'VimFiler' :
+        \ &ft == 'vimshell' ? 'VimShell' :
+        \ winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+function! CtrlPMark()
+  if expand('%:t') =~ 'ControlP' && has_key(g:lightline, 'ctrlp_item')
+    call lightline#link('iR'[g:lightline.ctrlp_regex])
+    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
+          \ , g:lightline.ctrlp_next], 0)
+  else
+    return ''
+  endif
+endfunction
+
+let g:ctrlp_status_func = {
+  \ 'main': 'CtrlPStatusFunc_1',
+  \ 'prog': 'CtrlPStatusFunc_2',
+  \ }
+
+function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
+  let g:lightline.ctrlp_regex = a:regex
+  let g:lightline.ctrlp_prev = a:prev
+  let g:lightline.ctrlp_item = a:item
+  let g:lightline.ctrlp_next = a:next
+  return lightline#statusline(0)
+endfunction
+
+function! CtrlPStatusFunc_2(str)
+  return lightline#statusline(0)
+endfunction
+
+let g:tagbar_status_func = 'TagbarStatusFunc'
+
+function! TagbarStatusFunc(current, sort, fname, ...) abort
+    let g:lightline.fname = a:fname
+  return lightline#statusline(0)
+endfunction
+
+augroup AutoSyntastic
+  autocmd!
+  autocmd BufWritePost *.c,*.cpp call s:syntastic()
+  autocmd BufWritePost *.py call s:syntastic()
+augroup END
+function! s:syntastic()
+  SyntasticCheck
+  call lightline#update()
+endfunction
+
+let g:unite_force_overwrite_statusline = 0
+let g:vimfiler_force_overwrite_statusline = 0
+let g:vimshell_force_overwrite_statusline = 0
 
 " Syntastic
-let g:syntastic_always_populate_loc_list = 0
-let g:syntastic_auto_loc_list = 0
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+let g:syntastic_python_checkers = ['flake8', 'pylint']
 
 " Disable preview window on completion
 set completeopt-=preview
@@ -405,6 +524,14 @@ autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 if !exists('g:neocomplete#sources#omni#input_patterns')
   let g:neocomplete#sources#omni#input_patterns = {}
 endif
+
+" pytest conversion macros
+let @e = '^cf(assert f,xi ==A�kbj'
+let @t = '^cf(assert A�kb is Truej'
+let @i = '^ct(assert isinstanceA is Truej'
+let @r = '^ssect(pytest.raises'
+" CtrlP-funky
+" nnoremap <Leader>fu :CtrlPFunky<Cr>
 
 " Format Rust code on save
 let g:rustfmt_autosave = 1
