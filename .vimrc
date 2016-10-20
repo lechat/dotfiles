@@ -129,7 +129,6 @@ set lazyredraw
 " let g:Powerline_symbols="unicode"
 " let g:Powerline_stl_path_style="relative"
 
-let g:solarized_termcolors=256
 set background=dark
 " let base16colorspace=256  " Access colors present in 256 colorspace"
 " colorscheme zenburn
