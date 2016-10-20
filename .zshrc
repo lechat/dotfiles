@@ -123,5 +123,6 @@ export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
 source /usr/bin/virtualenvwrapper.sh
 
+eval `dircolors /home/aleksey/.dir_colors/solarized`
 # added by travis gem
 [ -f /home/aleksey/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
