@@ -122,6 +122,7 @@ export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
 source /usr/bin/virtualenvwrapper.sh
+export XDG_CONFIG_HOME=$HOME/.config
 
 eval `dircolors /home/aleksey/.dir_colors/solarized`
 # added by travis gem
