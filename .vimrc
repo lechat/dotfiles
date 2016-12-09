@@ -59,7 +59,7 @@ Plugin 'justinmk/vim-sneak'
 " Adds s/S navigation
 " Mutiline s/S navigation
 " Plugin 'Valloric/YouCompleteMe'
-Plugin 'scrooloose/syntastic'
+" Plugin 'scrooloose/syntastic'
 " Syntax checks
 Plugin 'airblade/vim-gitgutter'
 " Shows git changes in gutter column
@@ -154,6 +154,7 @@ if has('gui_running')
 else
   " colorscheme wombat
   hi CursorLine cterm=NONE ctermbg=8
+  set listchars=tab:»·,trail:·
 endif
 
 " highlight Pmenu guibg=RoyalBlue
@@ -231,14 +232,12 @@ let g:pymode_virtualenv = 1
 let g:pymode_run = 0
 let g:pymode_breakpoint = 1
 let g:pymode_breakpoint_bind = '<leader>b'
-let g:pymode_lint = 0
-let g:pymode_lint_on_write = 0
+let g:pymode_lint = 1
+let g:pymode_lint_on_write = 1
 let g:pymode_lint_config = "$HOME/.pylintrc"
 let g:pymode_lint_onfly = 0
-let g:pymode_lint_message = 0
+let g:pymode_lint_message = 1
 let g:pymode_lint_checkers = ['pyflakes', 'pylint']
-let g:pymode_lint_hold = 0
-let g:pymode_lint_jump = 0
 " Disable showing Python docs on K
 let g:pymode_doc = 0
 let g:pymode_folding = 0
@@ -331,7 +330,7 @@ let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-      \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
       \ },
       \ 'component_function': {
       \   'fugitive': 'LightLineFugitive',
@@ -341,12 +340,6 @@ let g:lightline = {
       \   'fileencoding': 'LightLineFileencoding',
       \   'mode': 'LightLineMode',
       \   'ctrlpmark': 'CtrlPMark',
-      \ },
-      \ 'component_expand': {
-      \   'syntastic': 'SyntasticStatuslineFlag',
-      \ },
-      \ 'component_type': {
-      \   'syntastic': 'error',
       \ },
       \ 'subseparator': { 'left': '|', 'right': '|' }
       \ }
@@ -443,30 +436,10 @@ function! TagbarStatusFunc(current, sort, fname, ...) abort
   return lightline#statusline(0)
 endfunction
 
-augroup AutoSyntastic
-  autocmd!
-  autocmd BufWritePost *.c,*.cpp call s:syntastic()
-  autocmd BufWritePost *.py call s:syntastic()
-augroup END
-function! s:syntastic()
-  SyntasticCheck
-  call lightline#update()
-endfunction
 
 let g:unite_force_overwrite_statusline = 0
 let g:vimfiler_force_overwrite_statusline = 0
 let g:vimshell_force_overwrite_statusline = 0
-
-" Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_python_checkers = ['flake8', 'pylint']
 
 " Disable preview window on completion
 set completeopt-=preview
@@ -550,3 +523,8 @@ let g:NERDTrimTrailingWhitespace = 1
 if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
   runtime! macros/matchit.vim
 endif
+
+augroup ProjectSetup
+    au BufRead,BufEnter /home/aleksey/src/AlexaPi/* set noet ci pi sts=0 sw=4 ts=4
+augroup END
+
