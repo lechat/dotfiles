@@ -41,7 +41,7 @@ Plugin 'itchyny/lightline.vim'
 " Better status line
 Plugin 'tpope/vim-unimpaired'
 " --  Navigate quickfix list with ]q and ]Q
-" Plugin 'majutsushi/tagbar'
+Plugin 'majutsushi/tagbar'
 " Show tags in source file
 " -- Plugin 'kien/tabman.vim'
 " work with tabs from keyboard - <leader>mf <leader>mt
@@ -92,7 +92,12 @@ Plugin 'kshenoy/vim-signature'
 " Show marks in gutter
 Plugin 'mhinz/vim-startify'
 " Custom start page
-Plugin 'rust-lang/rust.vim'
+"Plugin 'rust-lang/rust.vim'
+" Rust support
+Plugin 'SirVer/ultisnips'
+" Snippets
+Plugin 'ervandew/supertab'
+" expand everything by tab
 
 filetype plugin indent on
 
@@ -249,6 +254,15 @@ let g:pymode_rope_complete_on_dot = 0
 let g:pymode_syntax = 1
 let g:pymode_syntax_slow_sync = 1
 let g:pymode_syntax_all = 1
+
+"" vim-go
+set autowrite
+let g:go_fmt_command = "goimports"
+let g:go_highlight_types = 1
+let g:go_list_type = "quickfix"
+let g:go_auto_type_info = 1
+autocmd FileType go nmap <leader>gi <Plug>(go-install)
+
 
 " Fugitive
 nnoremap <leader>gg :Gstatus<CR>
@@ -528,3 +542,8 @@ augroup ProjectSetup
     au BufRead,BufEnter /home/aleksey/src/AlexaPi/* set noet ci pi sts=0 sw=4 ts=4
 augroup END
 
+" DelimitMate
+let delimitMate_backspace = 1
+let delimitMate_backspace = 1
+" fix for neocomplete and delimitmate handling of <BS>
+inoremap <expr> <BS>  pumvisible() ? neocomplete#smart_close_popup()."\<BS>" : delimitMate#BS()
