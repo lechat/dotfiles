@@ -91,14 +91,15 @@ Plugin 'Shougo/neocomplete.vim'
 Plugin 'kshenoy/vim-signature'
 " Show marks in gutter
 Plugin 'mhinz/vim-startify'
-" Custom start page
-"Plugin 'rust-lang/rust.vim'
-" Rust support
 Plugin 'SirVer/ultisnips'
 " Snippets
 Plugin 'ervandew/supertab'
 " expand everything by tab
-
+" Plugin 'rust-lang/rust.vim'
+" Rust language support
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-easytags'
+" Autogenerate tags
 filetype plugin indent on
 
 :syntax on
@@ -189,6 +190,9 @@ noremap <silent> <C-Down> :<C-U>ObviousResizeDown<CR>
 noremap <silent> <C-Left> :<C-U>ObviousResizeLeft<CR>
 noremap <silent> <C-Right> :<C-U>ObviousResizeRight<CR>
 
+let g:easytags_autorecurse = 1
+let g:easytags_python_enabled = 1
+
 " Options for Pylint-mode
 " let g:PyLintDissabledMessages = 'C0103,C0111,C0301,W0141,W0142,W0232,E1120,R0903,R0904,R0913,R0914,W0622'
 let g:PyLintCWindow = 1
@@ -230,6 +234,7 @@ let g:EasyGrepRecursive = 1
 autocmd QuickFixCmdPost *grep* cwindow
 
 let g:pymode = 1
+let g:pymode_python_version = '2.7.3'
 let g:pymode_options_max_line_length = 79
 let g:pymode_indent = 1
 let g:pymode_motion = 1
