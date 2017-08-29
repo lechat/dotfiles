@@ -22,7 +22,7 @@ function do_clone() {
     if [ ! -d ~/dotfiles/.oh-my-zsh/custom ]; then
         mkdir -p ~/dotfiles/.oh-my-zsh/custom/plugins
     fi
-    git clone git://github.com/zsh-users/zsh-autosuggestions ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+    git clone https://github.com/zsh-users/zsh-autosuggestions ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 }
 
 function make_links() {
