@@ -53,13 +53,14 @@ alias ls-al='nocorrect ls -al'
 alias grep='grep -n -I'
 alias rsync='noglob rsync'
 alias docker='sudo docker $@'
+alias proxy='export http_proxy=http://10.65.128.43:8080;export https_proxy=http://10.65.128.43:8080'
+alias nvim='VIMRUNTIME=/usr/local/share/nvim/runtime nvim'
 
 # Customize to your needs...
-export PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH=/usr/local/scbpkg/bin:$HOME/src/go/sabre-cloud/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
 
-# export PYTHONPATH=~/src/adlt/deployment/framework/domain_build:~/src/adlt/deployment/framework/app_deploy:~/src/adlt/deployment/framework/domain_build/shared/scripts:~/src/adlt/deployment/framework/domain_build/shared:~/src/adlt/deployment/framework/shared:~/opt/graphite
 export PYTHONPATH=.
 
 #export JAVA_HOME=/maerskwas/tools/jdk1.6.0_30
@@ -113,17 +114,27 @@ autoload -U compinit; compinit
 #     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 # }
 
-if [ -e "/usr/share/vim/vim74" ]; then
-    export VIMRUNTIME=/usr/share/vim/vim74
-fi
+export VIMRUNTIME=/usr/local/share/vim/vim80
 
-export GOPATH=$HOME/go
+export GOPATH=$HOME/src/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
-source /usr/bin/virtualenvwrapper.sh
+source /usr/local/scbpkg/bin/virtualenvwrapper.sh
 export XDG_CONFIG_HOME=$HOME/.config
 
-eval `dircolors /home/aleksey/.dir_colors/solarized`
+eval `dircolors $HOME/.dir_colors/solarized`
 # added by travis gem
-[ -f /home/aleksey/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
+
+[ -e $HOME/src ] && cd $HOME/src
+
+# Autostart tmux
+if command -v tmux>/dev/null; then
+    if [ -z $TMUX ]; then
+        if ! tmux a -t 0; then
+          tmux -2 -f ~/.tmux.conf
+        fi
+    fi
+fi
+
