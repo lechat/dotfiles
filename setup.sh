@@ -36,6 +36,8 @@ function make_links() {
     ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
     ln -sf ~/dotfiles/.dir_colors ~/.dir_colors
 
+    ln -sf ~/dotfiles/.git_template ~/.git_template
+
     ln -sf ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
 }
 
