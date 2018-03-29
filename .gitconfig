@@ -13,8 +13,10 @@
 [pull]
 	rebase = true
 [diff]
-    tool = konsole
+    tool = vimdiff
 [merge]
     tool = vimdiff
 [push]
 	followTags = true
+[init]
+	templatedir = ~/.git_template

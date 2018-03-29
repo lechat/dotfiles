@@ -29,7 +29,9 @@ bindkey "^[OF" end-of-line
 #export ZSH_THEME="xiong-chiamiov-plus"
 # export ZSH_THEME="gentoo"
 # export ZSH_THEME="blinks"
-export ZSH_THEME="agnoster"
+#export ZSH_THEME="agnoster"
+export ZSH_THEME="agnoster-simple"
+#export ZSH_THEME="af-magic"
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -57,7 +59,9 @@ alias grep='grep -n -I'
 alias rsync='noglob rsync'
 alias docker='sudo docker $@'
 alias proxy='export http_proxy=http://10.65.128.43:8080;export https_proxy=http://10.65.128.43:8080'
+alias unproxy='unset http_proxy;unset https_proxy'
 alias nvim='VIMRUNTIME=/usr/local/share/nvim/runtime nvim'
+alias pygrep='grep -r --include="*.py"'
 
 # Customize to your needs...
 export PATH=$HOME/.local/bin:$HOME/src/go/sabre-cloud/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin

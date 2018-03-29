@@ -18,6 +18,8 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'python-mode/python-mode'
 "Plugin 'nvie/vim-flake8'
 " Provides pylint, flake8, python key binding, etc.
+Plugin 'vim-syntastic/syntastic'
+" Syntax checks
 Plugin 'tpope/vim-fugitive'
 " Git plugin
 Plugin 'motemen/git-vim'
@@ -60,8 +62,6 @@ Plugin 'justinmk/vim-sneak'
 " Adds s/S navigation
 " Mutiline s/S navigation
 " Plugin 'Valloric/YouCompleteMe'
-" Plugin 'scrooloose/syntastic'
-" Syntax checks
 Plugin 'airblade/vim-gitgutter'
 " Shows git changes in gutter column
 Plugin 'jistr/vim-nerdtree-tabs'
@@ -87,6 +87,8 @@ Plugin 'jnurmine/Zenburn'
 " Coloscheme
 Plugin 'Shougo/neocomplete.vim'
 " Code completion
+Plugin 'Shougo/neosnippet'
+Plugin 'Shougo/neosnippet-snippets'
 " --Plugin 'tacahiroy/ctrlp-funky'
 " CtrlP for functions
 Plugin 'kshenoy/vim-signature'
@@ -94,12 +96,12 @@ Plugin 'kshenoy/vim-signature'
 Plugin 'mhinz/vim-startify'
 "Plugin 'SirVer/ultisnips'
 " Snippets
-Plugin 'ervandew/supertab'
+"Plugin 'ervandew/supertab'
 " expand everything by tab
 " Plugin 'rust-lang/rust.vim'
 " Rust language support
-Plugin 'xolox/vim-misc'
-Plugin 'xolox/vim-easytags'
+"Plugin 'xolox/vim-misc'
+"Plugin 'xolox/vim-easytags'
 " Autogenerate tags
 Plugin 'pangloss/vim-javascript'
 Plugin 'dracula/vim'
@@ -219,7 +221,8 @@ endfunction
 autocmd BufWritePre *.py call TrimWhiteSpace()
 autocmd BufWritePre *.js call TrimWhiteSpace()
 autocmd BufWritePre *.yaml call TrimWhiteSpace()
-" autocmd BufWritePost *.py call Flake8()
+
+"autocmd BufWritePost *.py call Flake8()
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
@@ -242,6 +245,8 @@ let g:EasyGrepFilesToExclude = ".git"
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow
 
+"let g:pymode_debug = 1
+
 let g:pymode = 1
 let g:pymode_python_version = '2.7.3'
 let g:pymode_options_max_line_length = 79
@@ -251,12 +256,14 @@ let g:pymode_virtualenv = 1
 let g:pymode_run = 0
 let g:pymode_breakpoint = 1
 let g:pymode_breakpoint_bind = '<leader>b'
-let g:pymode_lint = 1
-let g:pymode_lint_on_write = 1
-let g:pymode_lint_config = "$HOME/.pylintrc"
+let g:pymode_lint = 0
+let g:pymode_lint_on_write = 0
+let g:pymode_lint_options_pylint = "$HOME/.pylintrc"
 let g:pymode_lint_onfly = 0
 let g:pymode_lint_message = 1
-let g:pymode_lint_checkers = ['pyflakes', 'pylint']
+let g:pymode_lint_checkers = ['pyflakes']
+let g:pymode_lint_ignore = ["C901"]
+let g:pymode_lint_options_mccabe = { 'complexity': 12 }
 " Disable showing Python docs on K
 let g:pymode_doc = 0
 let g:pymode_folding = 0
@@ -499,14 +506,19 @@ inoremap <expr><C-l>     neocomplete#complete_common_string()
 
 " Recommended key-mappings.
 " <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+inoremap <silent><CR> <C-r>=<SID>my_cr_function()<CR>
 function! s:my_cr_function()
-  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+  "return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
   " For no inserting <CR> key.
-  "return pumvisible() ? "\<C-y>" : "\<CR>"
+  return pumvisible() ? "\<C-y>" : "\<CR>"
 endfunction
 " <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" use tab to forward cycle
+"inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" use tab to backward cycle
+"inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>""
+"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+imap <expr><TAB> pumvisible() ? "\<C-n>" : neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 " <C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
@@ -561,8 +573,6 @@ let delimitMate_backspace = 1
 let delimitMate_backspace = 1
 " fix for neocomplete and delimitmate handling of <BS>
 inoremap <expr> <BS>  pumvisible() ? neocomplete#smart_close_popup()."\<BS>" : delimitMate#BS()
-
-
 
 let g:go_version_warning = 0
 let g:startify_change_to_dir = 0
