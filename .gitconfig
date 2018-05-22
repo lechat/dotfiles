@@ -1,15 +1,16 @@
 # This is Git's per-user configuration file.
 [user]
 	name = Aleksey Maksimov
-	email = ctpeko3a@gmail.com
+	email = aleksey.maksimov@sc.com
 [alias]
 	lola = 'log --graph --decorate --pretty=oneline --abbrev-commit --all'
     lol = 'log --graph --decorate --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit'
 	lol = log --graph --decorate --pretty=oneline --abbrev-commit
-	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	lola = log --graph --decorate --pretty=oneline --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit --all
 [core]
 	editor = vim
+[pull]
+	rebase = true
+[diff]
+    tool = konsole
 [merge]
-	tool = vimdiff
-[merge "tool"]
-	path = /usr/bin/bcompare
