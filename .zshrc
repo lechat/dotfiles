@@ -45,7 +45,7 @@ export ZSH_THEME="agnoster"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git svn python pip bashcomplete docker vi-mode zsh-autosuggestions virtualenvwrapper)
+plugins=(git svn python pip bashcomplete docker vi-mode zsh-autosuggestions virtualenvwrapper kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -113,17 +113,25 @@ autoload -U compinit; compinit
 #     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 # }
 
-if [ -e "/usr/share/vim/vim74" ]; then
-    export VIMRUNTIME=/usr/share/vim/vim74
+if [ -e "/usr/share/vim/vim80" ]; then
+    export VIMRUNTIME=/usr/share/vim/vim80
 fi
 
-export GOPATH=$HOME/go
+export GOPATH=$HOME/go/sabre-cloud
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
 source /usr/bin/virtualenvwrapper.sh
 export XDG_CONFIG_HOME=$HOME/.config
 
-eval `dircolors /home/aleksey/.dir_colors/solarized`
+eval `dircolors /home/aleksey/.dir_colors`
 # added by travis gem
-[ -f /home/aleksey/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
+[ -f $HOME/lib/azure-cli/az.completion ] && source $HOME/lib/azure-cli/az.completion
+[ -f /usr/bin/virtualenvwrapper.sh ] && source /usr/bin/virtualenvwrapper.sh
+
+tmux attach &> /dev/null
+
+if [[ ! $TERM =~ screen ]]; then
+  exec tmux -2
+fi

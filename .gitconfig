@@ -3,7 +3,13 @@
 	name = Aleksey Maksimov
 	email = ctpeko3a@gmail.com
 [alias]
+	lola = 'log --graph --decorate --pretty=oneline --abbrev-commit --all'
+    lol = 'log --graph --decorate --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit'
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit
 	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
-    lol = log --graph --decorate --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit
 [core]
 	editor = vim
+[merge]
+	tool = vimdiff
+[merge "tool"]
+	path = /usr/bin/bcompare
