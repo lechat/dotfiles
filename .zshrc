@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 # Disable Ctrl-S
 stty -ixon
 
@@ -114,16 +116,16 @@ autoload -U compinit; compinit
 #     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 # }
 
-export VIMRUNTIME=/usr/local/share/vim/vim80
+export VIMRUNTIME=/usr/share/vim/vim80
 
 export GOPATH=$HOME/src/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
-source /usr/local/scbpkg/bin/virtualenvwrapper.sh
+source $(which virtualenvwrapper.sh)
 export XDG_CONFIG_HOME=$HOME/.config
 
-eval `dircolors $HOME/.dir_colors/solarized`
+eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
 # added by travis gem
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
