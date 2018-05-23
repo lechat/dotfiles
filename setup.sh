@@ -34,7 +34,7 @@ function make_links() {
     ln -sf ~/dotfiles/.xinitrc ~/.xinitrc
     ln -sf ~/dotfiles/.Xmodmap ~/.Xmodmap
     ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
-    ln -sf ~/dotfiles/.dir_colors ~/.dir_colors
+    ln -sf ~/dotfiles/.dir_colors/solarized ~/.dir_colors
 
     ln -sf ~/dotfiles/.git_template ~/.git_template
 
