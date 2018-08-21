@@ -1,5 +1,6 @@
 #!/bin/zsh
 
+#zmodload zsh/zprof
 # Disable Ctrl-S
 stty -ixon
 
@@ -47,7 +48,7 @@ export ZSH_THEME="agnoster"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git svn python pip bashcomplete docker vi-mode zsh-autosuggestions virtualenvwrapper kubectl)
+plugins=(git python pip bashcomplete docker vi-mode zsh-autosuggestions kubectl tmux)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -59,7 +60,7 @@ alias proxy='export http_proxy=http://10.65.128.43:8080;export https_proxy=http:
 alias nvim='VIMRUNTIME=/usr/local/share/nvim/runtime nvim'
 
 # Customize to your needs...
-export PATH=/usr/local/scbpkg/bin:$HOME/src/go/sabre-cloud/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH=$HOME/src/go/sabre-cloud/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
 
@@ -116,13 +117,13 @@ autoload -U compinit; compinit
 #     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 # }
 
-export VIMRUNTIME=/usr/share/vim/vim80
+#export VIMRUNTIME=/usr/local/share/vim/vim80
 
 export GOPATH=$HOME/src/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
-source $(which virtualenvwrapper.sh)
+#source /usr/local/scbpkg/bin/virtualenvwrapper.sh
 export XDG_CONFIG_HOME=$HOME/.config
 
 eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
@@ -132,11 +133,26 @@ eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
 [ -e $HOME/src ] && cd $HOME/src
 
 # Autostart tmux
-if command -v tmux>/dev/null; then
-    if [ -z $TMUX ]; then
-        if ! tmux a -t 0; then
-          tmux -2 -f ~/.tmux.conf
-        fi
-    fi
-fi
+#if command -v tmux>/dev/null; then
+#    if [ -z $TMUX ]; then
+#        if ! tmux a -t 0; then
+#          tmux -2 -f ~/.tmux.conf
+#        fi
+#    fi
+#fi
 
+ZSH_TMUX_AUTOSTART=true
+eval "$(direnv hook zsh)"
+#zprof
+# Invoke GnuPG-Agent the first time we login.
+# Does `~/.gpg-agent-info' exist and points to gpg-agent process accepting signals?
+if test -f $HOME/.gpg-agent-info && \
+    kill -0 `cut -d: -f 2 $HOME/.gpg-agent-info` 2>/dev/null; then
+    GPG_AGENT_INFO=`cat $HOME/.gpg-agent-info | cut -c 16-`
+else
+    # No, gpg-agent not available; start gpg-agent
+    eval `gpg-agent --daemon --no-grab --write-env-file $HOME/.gpg-agent-info`
+fi
+export GPG_TTY=`tty`
+export GPG_AGENT_INFO
+#zprof

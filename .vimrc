@@ -97,9 +97,10 @@ Plugin 'ervandew/supertab'
 " expand everything by tab
 " Plugin 'rust-lang/rust.vim'
 " Rust language support
-Plugin 'xolox/vim-misc'
-Plugin 'xolox/vim-easytags'
+"Plugin 'xolox/vim-misc'
+"Plugin 'xolox/vim-easytags'
 " Autogenerate tags
+Plugin 'pangloss/vim-javascript'
 filetype plugin indent on
 
 :syntax on
