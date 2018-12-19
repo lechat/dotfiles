@@ -1,7 +1,8 @@
 # This is Git's per-user configuration file.
 [user]
 	name = Aleksey Maksimov
-	email = aleksey.maksimov@sc.com
+	email = ctpeko3a@gmail.com
+	signingkey = 73B247E7C736117E
 [alias]
 	lola = 'log --graph --decorate --pretty=oneline --abbrev-commit --all'
     lol = 'log --graph --decorate --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit'
@@ -14,3 +15,5 @@
 [diff]
     tool = konsole
 [merge]
+[push]
+	followTags = true
