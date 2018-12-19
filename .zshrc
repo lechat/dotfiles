@@ -123,7 +123,7 @@ export GOPATH=$HOME/src/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
-#source /usr/local/scbpkg/bin/virtualenvwrapper.sh
+source /usr/local/bin/virtualenvwrapper.sh
 export XDG_CONFIG_HOME=$HOME/.config
 
 eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
@@ -151,8 +151,11 @@ if test -f $HOME/.gpg-agent-info && \
     GPG_AGENT_INFO=`cat $HOME/.gpg-agent-info | cut -c 16-`
 else
     # No, gpg-agent not available; start gpg-agent
-    eval `gpg-agent --daemon --no-grab --write-env-file $HOME/.gpg-agent-info`
+    eval `gpg-agent --daemon --no-grab $HOME/.gpg-agent-info`
 fi
 export GPG_TTY=`tty`
 export GPG_AGENT_INFO
 #zprof
+
+# added by travis gem
+[ -f /home/aleksey/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
