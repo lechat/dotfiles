@@ -101,6 +101,7 @@ Plugin 'ervandew/supertab'
 "Plugin 'xolox/vim-easytags'
 " Autogenerate tags
 Plugin 'pangloss/vim-javascript'
+Plugin 'dracula/vim'
 filetype plugin indent on
 
 :syntax on
@@ -120,11 +121,6 @@ let mapleader = "\<Space>"
 set wildmenu
 set wildmode=list:longest,full
 
-if !match(substitute(system('uname -a'), "\n", "", ""), "arm")
-    set cursorline                  " hilight cursor line
-    set cursorcolumn                " and column
-endif
-
 set t_Co=256                    " Explicitly tell vim that the terminal has 256 colors
 
 " Attempting to speedup raspberry
@@ -140,8 +136,8 @@ set background=dark
 " let base16colorspace=256  " Access colors present in 256 colorspace"
 " colorscheme zenburn
 " colorscheme wombat
-colorscheme solarized
-
+"colorscheme solarized
+colorscheme dracula
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
