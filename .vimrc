@@ -42,7 +42,7 @@ Plugin 'ctrlpvim/ctrlp.vim'
 "Plugin 'Lokaltog/vim-powerline.git'
 Plugin 'itchyny/lightline.vim'
 " Better status line
-Plugin 'tpope/vim-unimpaired'
+"Plugin 'tpope/vim-unimpaired'
 " --  Navigate quickfix list with ]q and ]Q
 Plugin 'majutsushi/tagbar'
 " Show tags in source file
@@ -50,6 +50,10 @@ Plugin 'majutsushi/tagbar'
 " work with tabs from keyboard - <leader>mf <leader>mt
 Plugin 'altercation/vim-colors-solarized'
 " Solarized color scheme
+"Plugin 'dracula/vim'
+" Dracula color scheme
+Plugin 'tomasr/molokai'
+" Molokai colorscheme
 " Plugin 'VOoM'
 " Outline plugin for asciidoc, etc.
 " Plugin 'mileszs/ack.vim'
@@ -75,7 +79,7 @@ Plugin 'junegunn/gv.vim'
 " Git log viewer
 Plugin 'Yggdroot/indentLine'
 " Show vertical lines at indentation level
-Plugin 'dannyob/quickfixstatus'
+"Plugin 'dannyob/quickfixstatus'
 " Show errors in last line
 Plugin 'idanarye/vim-merginal'
 " View git branches
@@ -87,8 +91,8 @@ Plugin 'jnurmine/Zenburn'
 " Coloscheme
 Plugin 'Shougo/neocomplete.vim'
 " Code completion
-Plugin 'Shougo/neosnippet'
-Plugin 'Shougo/neosnippet-snippets'
+"Plugin 'Shougo/neosnippet'
+"Plugin 'Shougo/neosnippet-snippets'
 " --Plugin 'tacahiroy/ctrlp-funky'
 " CtrlP for functions
 Plugin 'kshenoy/vim-signature'
@@ -122,6 +126,7 @@ set autoindent
 set showmatch
 set synmaxcol=150               " Show syntax colors only for 150 chars in line
 set autoread
+set fillchars+=vert:\|
 let g:is_posix=1
 
 let mapleader = "\<Space>"
@@ -141,13 +146,20 @@ set lazyredraw
 " let g:Powerline_stl_path_style="relative"
 
 set background=dark
-" let base16colorspace=256  " Access colors present in 256 colorspace"
-" colorscheme zenburn
+let base16colorspace=256  " Access colors present in 256 colorspace"
+"colorscheme zenburn
+colorscheme skeletor
 " colorscheme wombat
 "colorscheme solarized
+<<<<<<< HEAD
 "colorscheme dracula
 "colorscheme blue-mood
 colorscheme wal
+=======
+" colorscheme dracula
+" colorscheme molokai
+" let g:rehash256 = 1     " Molokai specific setting"
+>>>>>>> upgrade vundle and plugins
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
@@ -206,6 +218,7 @@ let g:easytags_python_enabled = 1
 let g:PyLintCWindow = 1
 " let g:PyLintSigns = 1
 let g:PyLintOnWrite = 1
+let g:PyLintOnOpen = 0
 let NERDTreeIgnore = ['\.pyc$', '\.class$']
 
 highlight ExtraWhitespace ctermbg=red guibg=red
@@ -218,9 +231,12 @@ autocmd BufWinLeave * call clearmatches()
 function! TrimWhiteSpace()
         %s/\s\+$//e
 endfunction
+autocmd BufWritePre *.sh call TrimWhiteSpace()
 autocmd BufWritePre *.py call TrimWhiteSpace()
 autocmd BufWritePre *.js call TrimWhiteSpace()
 autocmd BufWritePre *.yaml call TrimWhiteSpace()
+autocmd BufWritePre *.html call TrimWhiteSpace()
+autocmd BufWritePre *.groovy call TrimWhiteSpace()
 
 "autocmd BufWritePost *.py call Flake8()
 
@@ -239,8 +255,13 @@ let g:ctrlp_nerdtree_keys = 1
 "'Recursive mode'for EasyGrep
 set grepprg=grep
 let g:EasyGrepRecursive = 1
+<<<<<<< HEAD
 let g:EasyGrepCommand = 1
 let g:EasyGrepFilesToExclude = ".git"
+=======
+let g:EasyGrepFilesToExclude=".git,*.tar*,*.zip,tags"
+let g:EasyGrepCommand = 1
+>>>>>>> upgrade vundle and plugins
 
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow
@@ -248,6 +269,7 @@ autocmd QuickFixCmdPost *grep* cwindow
 "let g:pymode_debug = 1
 
 let g:pymode = 1
+let g:pymode_python = 'python'
 let g:pymode_python_version = '2.7.3'
 let g:pymode_options_max_line_length = 79
 let g:pymode_indent = 1
@@ -261,7 +283,7 @@ let g:pymode_lint_on_write = 0
 let g:pymode_lint_options_pylint = "$HOME/.pylintrc"
 let g:pymode_lint_onfly = 0
 let g:pymode_lint_message = 1
-let g:pymode_lint_checkers = ['pyflakes']
+let g:pymode_lint_checkers = ['pyflakes', 'pycodestyle', 'pep8']
 let g:pymode_lint_ignore = ["C901"]
 let g:pymode_lint_options_mccabe = { 'complexity': 12 }
 " Disable showing Python docs on K
@@ -330,7 +352,7 @@ cnoreabbrev X x
 " noremap   <Left>   <NOP>
 " noremap   <Right>  <NOP>
 
-set colorcolumn=79,120
+set colorcolumn=79,90,120
 highlight ColorColumn ctermbg=17
 " Unite stuff
 let g:unite_data_directory='~/.vim/.cache/unite'
@@ -514,11 +536,11 @@ function! s:my_cr_function()
 endfunction
 " <TAB>: completion.
 " use tab to forward cycle
-"inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 " use tab to backward cycle
-"inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>""
-"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-imap <expr><TAB> pumvisible() ? "\<C-n>" : neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>""
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+"imap <expr><TAB> pumvisible() ? "\<C-n>" : neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 " <C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
@@ -574,6 +596,15 @@ let delimitMate_backspace = 1
 " fix for neocomplete and delimitmate handling of <BS>
 inoremap <expr> <BS>  pumvisible() ? neocomplete#smart_close_popup()."\<BS>" : delimitMate#BS()
 
+<<<<<<< HEAD
 let g:go_version_warning = 0
 let g:startify_change_to_dir = 0
 let g:startify_change_to_vcs_root = 1
+=======
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_python_checkers = ['pep8','pyflakes']
+let g:syntastic_aggregate_errors = 1
+>>>>>>> upgrade vundle and plugins
