@@ -29,8 +29,8 @@ bindkey "^[OF" end-of-line
 #export ZSH_THEME="xiong-chiamiov-plus"
 # export ZSH_THEME="gentoo"
 # export ZSH_THEME="blinks"
-#export ZSH_THEME="agnoster"
-export ZSH_THEME="agnoster-simple"
+export ZSH_THEME="agnoster"
+#export ZSH_THEME="agnoster-simple"
 #export ZSH_THEME="af-magic"
 
 # Set to this to use case-sensitive completion
@@ -59,6 +59,7 @@ alias grep='grep -n -I'
 alias rsync='noglob rsync'
 alias docker='sudo docker $@'
 alias proxy='export http_proxy=http://10.65.128.43:8080;export https_proxy=http://10.65.128.43:8080'
+alias ukproxy='export http_proxy=http://10.192.116.73:8080;export https_proxy=http://10.192.116.73:8080'
 alias unproxy='unset http_proxy;unset https_proxy'
 alias nvim='VIMRUNTIME=/usr/local/share/nvim/runtime nvim'
 alias pygrep='grep -r --include="*.py"'
@@ -121,9 +122,10 @@ autoload -U compinit; compinit
 #     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 # }
 
-export VIMRUNTIME=/usr/share/vim/vim82
+export VIMRUNTIME=/usr/local/share/vim/vim81
 
 export GOPATH=$HOME/src/go
+export GOPROXY=https://proxy.golang.org
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
