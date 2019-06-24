@@ -20,3 +20,17 @@
 	followTags = true
 [init]
 	templatedir = ~/.git_template
+[gpg]
+	program = gpg
+[url "https://gitlab.com/cznic/mathutil.git"]
+    insteadOf = https://gitlab.com/cznic/mathutil
+[url "https://gitlab.com/cznic/xc.git"]
+    insteadOf = https://gitlab.com/cznic/xc
+[url "https://gitlab.com/cznic/golex.git"]
+    insteadOf = https://gitlab.com/cznic/golex
+[url "https://gitlab.com/cznic/cc.git"]
+    insteadOf = https://gitlab.com/cznic/cc
+[url "https://gitlab.com/cznic/strutil.git"]
+    insteadOf = https://gitlab.com/cznic/strutil
+[url "https://github.com/googleapis/google-cloud-go.git"]
+    insteadOf = https://cloud.google.com/go?go-get=1
