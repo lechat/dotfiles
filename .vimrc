@@ -14,14 +14,14 @@ Plugin 'gmarik/vundle'
 " Comments lines on pressing \\\ (3 times \)
 Plugin 'scrooloose/nerdcommenter'
 " Comments by <leader>cc
-Plugin 'klen/python-mode'
+Plugin 'python-mode/python-mode'
 "Plugin 'nvie/vim-flake8'
 " Provides pylint, flake8, python key binding, etc.
 Plugin 'tpope/vim-fugitive'
 " Git plugin
 Plugin 'motemen/git-vim'
 " Git commands
-Plugin 'vim-scripts/EasyGrep'
+Plugin 'dkprice/vim-easygrep'
 " Grep plugin
 Plugin 'scrooloose/nerdtree'
 " Filesystem manipulation
@@ -91,14 +91,14 @@ Plugin 'Shougo/neocomplete.vim'
 Plugin 'kshenoy/vim-signature'
 " Show marks in gutter
 Plugin 'mhinz/vim-startify'
-Plugin 'SirVer/ultisnips'
+"Plugin 'SirVer/ultisnips'
 " Snippets
 Plugin 'ervandew/supertab'
 " expand everything by tab
 " Plugin 'rust-lang/rust.vim'
 " Rust language support
-"Plugin 'xolox/vim-misc'
-"Plugin 'xolox/vim-easytags'
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-easytags'
 " Autogenerate tags
 Plugin 'pangloss/vim-javascript'
 Plugin 'dracula/vim'
@@ -136,8 +136,8 @@ set background=dark
 " let base16colorspace=256  " Access colors present in 256 colorspace"
 " colorscheme zenburn
 " colorscheme wombat
-"colorscheme solarized
-colorscheme dracula
+colorscheme solarized
+"colorscheme dracula
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
@@ -187,7 +187,8 @@ noremap <silent> <C-Down> :<C-U>ObviousResizeDown<CR>
 noremap <silent> <C-Left> :<C-U>ObviousResizeLeft<CR>
 noremap <silent> <C-Right> :<C-U>ObviousResizeRight<CR>
 
-let g:easytags_autorecurse = 1
+let g:easytags_async = 1
+let g:easytags_autorecurse = 0
 let g:easytags_python_enabled = 1
 
 " Options for Pylint-mode
@@ -225,7 +226,10 @@ let g:ctrlp_nerdtree_keys = 1
 " let g:ctrlp_arg_map = 1
 
 "'Recursive mode'for EasyGrep
+set grepprg=grep
 let g:EasyGrepRecursive = 1
+let g:EasyGrepCommand = 1
+let g:EasyGrepFilesToExclude = ".git"
 
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow
@@ -549,3 +553,7 @@ let delimitMate_backspace = 1
 let delimitMate_backspace = 1
 " fix for neocomplete and delimitmate handling of <BS>
 inoremap <expr> <BS>  pumvisible() ? neocomplete#smart_close_popup()."\<BS>" : delimitMate#BS()
+
+
+
+let g:go_version_warning = 0
