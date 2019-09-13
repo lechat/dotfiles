@@ -39,6 +39,11 @@ function make_links() {
     ln -sf ~/dotfiles/.git_template ~/.git_template
 
     ln -sf ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
+
+    ln -sf ~/dotfiles/local/bin/kubectx ~/.local/bin/kubectx
+    ln -sf ~/dotfiles/completions/_kubectx.zsh ~/.oh-my-zsh/completions/_kubectx.zsh
+    ln -sf ~/dotfiles/local/bin/kubens ~/.local/bin/kubens
+    ln -sf ~/dotfiles/completions/_kubens.zsh ~/.oh-my-zsh/completions/_kubens.zsh
 }
 
 function main() {
