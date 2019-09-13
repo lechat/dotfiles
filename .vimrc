@@ -28,15 +28,6 @@ Plugin 'dkprice/vim-easygrep'
 " Grep plugin
 Plugin 'scrooloose/nerdtree'
 " Filesystem manipulation
-" Plugin 'talek/obvious-resize'
-" Resize split windows with Ctrl+move keys - doesn't work
-" Plugin 'ervandew/supertab'
-" Dropdown suggestions on TAB key press
-" Plugin 'vim-scripts/mru.vim'
-" Most recently used files
-" Plugin 'basepi/vim-conque'
-" Shell within VIM buffer
-" Plugin 'kien/ctrlp.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
 " Find files on Ctrl+P press
 "Plugin 'Lokaltog/vim-powerline.git'
@@ -239,6 +230,9 @@ autocmd BufWritePre *.html call TrimWhiteSpace()
 autocmd BufWritePre *.groovy call TrimWhiteSpace()
 
 "autocmd BufWritePost *.py call Flake8()
+autocmd FileType groovy let b:dispatch = '/home/sabuser/src/scom-pipeline-library/cd/lint.sh'
+au BufRead *.groovy try | execute "compiler groovy" | catch /./| endtry
+
 
 " CtrlP settings
 set wildignore+=*.sw*,*.pyc,*.class
@@ -308,7 +302,7 @@ autocmd FileType go nmap <leader>gi <Plug>(go-install)
 
 
 " Fugitive
-nnoremap <leader>gg :Gstatus<CR>
+nnoremap <leader>gg :15Gstatus<CR>
 nnoremap <leader>ga :Gwrite<CR>
 nnoremap <leader>gc :Gcommit %<CR>
 nnoremap <leader>gd :Gdiff<CR>
@@ -426,7 +420,7 @@ function! LightLineFugitive()
   try
     if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
       let mark = ''  " edit here for cool mark
-      let branch = fugitive#head()
+      let branch = fugitive#head(8)
       return branch !=# '' ? mark.branch : ''
     endif
   catch
@@ -607,4 +601,10 @@ let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 let g:syntastic_python_checkers = ['pep8','pyflakes']
 let g:syntastic_aggregate_errors = 1
+<<<<<<< HEAD
 >>>>>>> upgrade vundle and plugins
+=======
+
+let g:startify_change_to_vcs_root = 1
+let g:startify_change_to_dir = 0
+>>>>>>> added kubens/kubectx and various small changes

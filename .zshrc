@@ -55,7 +55,6 @@ plugins=(git python pip docker vi-mode kubectl tmux)
 source $ZSH/oh-my-zsh.sh
 
 alias ls-al='nocorrect ls -al'
-alias grep='grep -n -I'
 alias rsync='noglob rsync'
 alias docker='sudo docker $@'
 alias proxy='export http_proxy=http://10.65.128.43:8080;export https_proxy=http://10.65.128.43:8080'
@@ -98,6 +97,7 @@ bindkey '^w' backward-kill-word
 # ctrl-r starts searching history backward
 bindkey '^r' history-incremental-search-backward
 
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="bg=bold,underline"
 function source_config() {
     if [ -r $PWD/.zsh_config ]; then
         print "Sourcing $PWD/.zsh_config"
@@ -168,3 +168,6 @@ export GPG_AGENT_INFO
 # added by travis gem
 [ -f /home/aleksey/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
 (cat ~/.cache/wal/sequences &)
+eval "$(direnv hook zsh)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
