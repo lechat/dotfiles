@@ -41,7 +41,7 @@ Plugin 'majutsushi/tagbar'
 " work with tabs from keyboard - <leader>mf <leader>mt
 Plugin 'altercation/vim-colors-solarized'
 " Solarized color scheme
-"Plugin 'dracula/vim'
+Plugin 'dracula/vim'
 " Dracula color scheme
 Plugin 'tomasr/molokai'
 " Molokai colorscheme
@@ -142,15 +142,18 @@ let base16colorspace=256  " Access colors present in 256 colorspace"
 colorscheme skeletor
 " colorscheme wombat
 "colorscheme solarized
-<<<<<<< HEAD
 "colorscheme dracula
 "colorscheme blue-mood
 colorscheme wal
-=======
+" colorscheme zenburn
+" colorscheme skeletor
+colorscheme wombat256mod
+" colorscheme solarized
 " colorscheme dracula
 " colorscheme molokai
+" colorscheme dracula
+"
 " let g:rehash256 = 1     " Molokai specific setting"
->>>>>>> upgrade vundle and plugins
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
@@ -249,13 +252,9 @@ let g:ctrlp_nerdtree_keys = 1
 "'Recursive mode'for EasyGrep
 set grepprg=grep
 let g:EasyGrepRecursive = 1
-<<<<<<< HEAD
 let g:EasyGrepCommand = 1
 let g:EasyGrepFilesToExclude = ".git"
-=======
 let g:EasyGrepFilesToExclude=".git,*.tar*,*.zip,tags"
-let g:EasyGrepCommand = 1
->>>>>>> upgrade vundle and plugins
 
 " This command will open all grep results in quickfix window
 autocmd QuickFixCmdPost *grep* cwindow
@@ -590,21 +589,9 @@ let delimitMate_backspace = 1
 " fix for neocomplete and delimitmate handling of <BS>
 inoremap <expr> <BS>  pumvisible() ? neocomplete#smart_close_popup()."\<BS>" : delimitMate#BS()
 
-<<<<<<< HEAD
 let g:go_version_warning = 0
 let g:startify_change_to_dir = 0
 let g:startify_change_to_vcs_root = 1
-=======
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-let g:syntastic_python_checkers = ['pep8','pyflakes']
-let g:syntastic_aggregate_errors = 1
-<<<<<<< HEAD
->>>>>>> upgrade vundle and plugins
-=======
 
 let g:startify_change_to_vcs_root = 1
 let g:startify_change_to_dir = 0
->>>>>>> added kubens/kubectx and various small changes
