@@ -29,9 +29,12 @@ bindkey "^[OF" end-of-line
 #export ZSH_THEME="xiong-chiamiov-plus"
 # export ZSH_THEME="gentoo"
 # export ZSH_THEME="blinks"
-export ZSH_THEME="agnoster"
+#
+export ZSH_THEME="agnoster-aleksey"
+#
 #export ZSH_THEME="agnoster-simple"
 #export ZSH_THEME="af-magic"
+#export ZSH_THEME="dracula"
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
