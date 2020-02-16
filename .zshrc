@@ -30,7 +30,8 @@ bindkey "^[OF" end-of-line
 # export ZSH_THEME="gentoo"
 # export ZSH_THEME="blinks"
 #
-export ZSH_THEME="agnoster-aleksey"
+export ZSH_THEME="agnoster"
+#export ZSH_THEME="agnoster-aleksey"
 #
 #export ZSH_THEME="agnoster-simple"
 #export ZSH_THEME="af-magic"
@@ -125,7 +126,7 @@ autoload -U compinit; compinit
 #     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 # }
 
-export VIMRUNTIME=/usr/local/share/vim/vim81
+export VIMRUNTIME=/usr/local/share/vim/vim82
 
 export GOPATH=$HOME/src/go
 export GOPROXY=https://proxy.golang.org
