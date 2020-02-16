@@ -301,7 +301,7 @@ autocmd FileType go nmap <leader>gi <Plug>(go-install)
 
 
 " Fugitive
-nnoremap <leader>gg :15Gstatus<CR>
+nnoremap <leader>gg :Gstatus<CR>
 nnoremap <leader>ga :Gwrite<CR>
 nnoremap <leader>gc :Gcommit %<CR>
 nnoremap <leader>gd :Gdiff<CR>
