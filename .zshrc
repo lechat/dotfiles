@@ -48,7 +48,7 @@ export ZSH_THEME="agnoster"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git python pip bashcomplete docker vi-mode zsh-autosuggestions kubectl tmux)
+plugins=(git python pip docker vi-mode kubectl tmux)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -60,7 +60,7 @@ alias proxy='export http_proxy=http://10.65.128.43:8080;export https_proxy=http:
 alias nvim='VIMRUNTIME=/usr/local/share/nvim/runtime nvim'
 
 # Customize to your needs...
-export PATH=$HOME/src/go/sabre-cloud/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH=$HOME/.local/bin:$HOME/src/go/sabre-cloud/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
 
@@ -117,16 +117,18 @@ autoload -U compinit; compinit
 #     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
 # }
 
-#export VIMRUNTIME=/usr/local/share/vim/vim80
+export VIMRUNTIME=/usr/share/vim/vim82
 
 export GOPATH=$HOME/src/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
-source /usr/local/bin/virtualenvwrapper.sh
+source ~/.local/bin/virtualenvwrapper.sh
 export XDG_CONFIG_HOME=$HOME/.config
+export EDITOR=$(which vim)
 
 eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
+eval "$(direnv hook zsh)"
 # added by travis gem
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
@@ -151,7 +153,7 @@ if test -f $HOME/.gpg-agent-info && \
     GPG_AGENT_INFO=`cat $HOME/.gpg-agent-info | cut -c 16-`
 else
     # No, gpg-agent not available; start gpg-agent
-    eval `gpg-agent --daemon --no-grab $HOME/.gpg-agent-info`
+    #eval `gpg-agent --daemon --no-grab $HOME/.gpg-agent-info`
 fi
 export GPG_TTY=`tty`
 export GPG_AGENT_INFO
@@ -159,3 +161,4 @@ export GPG_AGENT_INFO
 
 # added by travis gem
 [ -f /home/aleksey/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
+(cat ~/.cache/wal/sequences &)

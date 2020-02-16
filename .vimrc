@@ -1,11 +1,12 @@
+set nocompatible
 filetype off
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.Vim/
+call vundle#begin()
 
 " let Vundle manage Vundle
 " required!
-Plugin 'gmarik/vundle'
+Plugin 'VundleVim/Vundle.Vim'
 
 " My Plugins here:
 "
@@ -102,6 +103,11 @@ Plugin 'xolox/vim-easytags'
 " Autogenerate tags
 Plugin 'pangloss/vim-javascript'
 Plugin 'dracula/vim'
+Plugin 'tpope/vim-dispatch'
+Plugin 'lmintmate/blue-mood-vim'
+Plugin 'dylanaraps/wal.vim'
+
+call vundle#end()
 filetype plugin indent on
 
 :syntax on
@@ -136,8 +142,10 @@ set background=dark
 " let base16colorspace=256  " Access colors present in 256 colorspace"
 " colorscheme zenburn
 " colorscheme wombat
-colorscheme solarized
+"colorscheme solarized
 "colorscheme dracula
+"colorscheme blue-mood
+colorscheme wal
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
@@ -557,3 +565,5 @@ inoremap <expr> <BS>  pumvisible() ? neocomplete#smart_close_popup()."\<BS>" : d
 
 
 let g:go_version_warning = 0
+let g:startify_change_to_dir = 0
+let g:startify_change_to_vcs_root = 1

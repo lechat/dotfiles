@@ -15,5 +15,6 @@
 [diff]
     tool = konsole
 [merge]
+    tool = vimdiff
 [push]
 	followTags = true
