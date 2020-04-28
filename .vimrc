@@ -103,6 +103,8 @@ Plugin 'dracula/vim'
 Plugin 'tpope/vim-dispatch'
 Plugin 'lmintmate/blue-mood-vim'
 Plugin 'dylanaraps/wal.vim'
+Plugin 'liuchengxu/space-vim-dark'
+Plugin 'liuchengxu/vim-clap', { 'do': function('clap#helper#build_all') }
 
 call vundle#end()
 filetype plugin indent on
@@ -143,6 +145,7 @@ colorscheme skeletor
 " colorscheme wombat
 "colorscheme solarized
 "colorscheme dracula
+<<<<<<< HEAD
 "colorscheme blue-mood
 colorscheme wal
 " colorscheme zenburn
@@ -154,6 +157,9 @@ colorscheme wombat256mod
 " colorscheme dracula
 "
 " let g:rehash256 = 1     " Molokai specific setting"
+=======
+colorscheme space-vim-dark
+>>>>>>> use space-vim-dark colorscheme
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
@@ -564,7 +570,10 @@ let @r = '^ssect(pytest.raises'
 
 " Format Rust code on save
 let g:rustfmt_autosave = 1
-nnoremap <Leader>fu :CtrlPFunky<Cr>
+"nnoremap <Leader>fu :CtrlPFunky<Cr>
+
+" Clap-vim
+nnoremap <Leader>n :Clap<CR>
 
 " NERDCommenter
 " Align line-wise comment delimiters flush left instead of following code
