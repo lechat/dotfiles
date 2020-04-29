@@ -41,9 +41,9 @@ Plugin 'majutsushi/tagbar'
 " work with tabs from keyboard - <leader>mf <leader>mt
 Plugin 'altercation/vim-colors-solarized'
 " Solarized color scheme
-Plugin 'dracula/vim'
+" Plugin 'dracula/vim'
 " Dracula color scheme
-Plugin 'tomasr/molokai'
+" Plugin 'tomasr/molokai'
 " Molokai colorscheme
 " Plugin 'VOoM'
 " Outline plugin for asciidoc, etc.
@@ -141,25 +141,19 @@ set lazyredraw
 set background=dark
 let base16colorspace=256  " Access colors present in 256 colorspace"
 "colorscheme zenburn
-colorscheme skeletor
 " colorscheme wombat
 "colorscheme solarized
 "colorscheme dracula
-<<<<<<< HEAD
 "colorscheme blue-mood
-colorscheme wal
 " colorscheme zenburn
 " colorscheme skeletor
-colorscheme wombat256mod
 " colorscheme solarized
 " colorscheme dracula
 " colorscheme molokai
 " colorscheme dracula
 "
 " let g:rehash256 = 1     " Molokai specific setting"
-=======
 colorscheme space-vim-dark
->>>>>>> use space-vim-dark colorscheme
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10

@@ -68,11 +68,7 @@ alias nvim='VIMRUNTIME=/usr/local/share/nvim/runtime nvim'
 alias pygrep='grep -r --include="*.py"'
 
 # Customize to your needs...
-<<<<<<< HEAD
-export PATH=$HOME/.local/bin:$HOME/src/go/sabre-cloud/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
-=======
-export PATH=$HOME/src/go/sabre-cloud/bin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin::/usr/local/kubebuilder/bin
->>>>>>> add google cloud sdk and export VIMRUNTIME
+export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
 
@@ -174,17 +170,14 @@ export GPG_AGENT_INFO
 #zprof
 
 # added by travis gem
-[ -f /home/aleksey/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
-<<<<<<< HEAD
-(cat ~/.cache/wal/sequences &)
+[ -f $HOME/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
+[ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
 eval "$(direnv hook zsh)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-=======
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc' ]; then . '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '$HOME/src/gcloud/google-cloud-sdk/path.zsh.inc' ]; then . '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'; fi
->>>>>>> add google cloud sdk and export VIMRUNTIME
+if [ -f '$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'; fi
