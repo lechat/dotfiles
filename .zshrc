@@ -54,6 +54,7 @@ export ZSH_THEME="agnoster"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
+ZSH_TMUX_AUTOSTART=true
 plugins=(git python pip docker vi-mode kubectl tmux)
 
 source $ZSH/oh-my-zsh.sh
@@ -133,7 +134,6 @@ export GOPROXY=https://proxy.golang.org
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
-source ~/.local/bin/virtualenvwrapper.sh
 export XDG_CONFIG_HOME=$HOME/.config
 export EDITOR=$(which vim)
 
@@ -144,16 +144,6 @@ eval "$(direnv hook zsh)"
 
 [ -e $HOME/src ] && cd $HOME/src
 
-# Autostart tmux
-#if command -v tmux>/dev/null; then
-#    if [ -z $TMUX ]; then
-#        if ! tmux a -t 0; then
-#          tmux -2 -f ~/.tmux.conf
-#        fi
-#    fi
-#fi
-
-ZSH_TMUX_AUTOSTART=true
 eval "$(direnv hook zsh)"
 #zprof
 # Invoke GnuPG-Agent the first time we login.
@@ -167,17 +157,14 @@ else
 fi
 export GPG_TTY=`tty`
 export GPG_AGENT_INFO
+eval "$(direnv hook zsh)"
 #zprof
 
-# added by travis gem
+[ -f ~/.local/bin/virtualenvwrapper.sh ] && source ~/.local/bin/virtualenvwrapper.sh
 [ -f $HOME/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
-eval "$(direnv hook zsh)"
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '$HOME/src/gcloud/google-cloud-sdk/path.zsh.inc' ]; then . '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'; fi
-
+[ -f '$HOME/src/gcloud/google-cloud-sdk/path.zsh.inc' ] && . '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'
 # The next line enables shell command completion for gcloud.
-if [ -f '$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'; fi
+[ -f '$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc' ] && . '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'
