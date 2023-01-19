@@ -26,8 +26,8 @@ function do_clone() {
     curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
     if [ ! -d ~/.oh-my-zsh/.git ]; then
     	git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
@@ -38,7 +38,7 @@ function do_clone() {
     fi
     git clone https://github.com/zsh-users/zsh-autosuggestions ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
-    install_fonts()
+    install_fonts
 }
 
 function make_links() {
