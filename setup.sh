@@ -11,6 +11,17 @@ function save_to_old() {
     fi
 }
 
+function install_fonts() {
+    # clone
+    git clone https://github.com/powerline/fonts.git --depth=1
+    # install
+    cd fonts
+    ./install.sh
+    # clean-up a bit
+    cd ..
+    rm -rf fonts
+}
+
 function do_clone() {
     curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -26,6 +37,8 @@ function do_clone() {
         mkdir -p ~/dotfiles/.oh-my-zsh/custom/plugins
     fi
     git clone https://github.com/zsh-users/zsh-autosuggestions ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
+    install_fonts()
 }
 
 function make_links() {
