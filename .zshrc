@@ -55,7 +55,7 @@ export ZSH_THEME="agnoster"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
 ZSH_TMUX_AUTOSTART=true
-plugins=(git python pip docker vi-mode kubectl tmux)
+plugins=(git python pip docker vi-mode kubectl tmux bazel aws)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -168,3 +168,7 @@ eval "$(direnv hook zsh)"
 [ -f '$HOME/src/gcloud/google-cloud-sdk/path.zsh.inc' ] && . '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'
 # The next line enables shell command completion for gcloud.
 [ -f '$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc' ] && . '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/bin/terraform terraform
+complete -C '/usr/local/bin/aws_completer' aws
