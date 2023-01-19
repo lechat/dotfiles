@@ -42,6 +42,10 @@ function do_clone() {
 }
 
 function make_links() {
+    for dir in "~/.oh-my-zsh/completions ~/.local/bin ~/.local/share/nvim"; do
+        mkdir -p $dir
+    done
+
     ln -sf ~/dotfiles/.vimrc ~/.vimrc
     ln -sf ~/dotfiles/.vim ~/.vim
     ln -sf ~/dotfiles/.zshrc ~/.zshrc
@@ -60,10 +64,7 @@ function make_links() {
     ln -sf ~/dotfiles/completions/_kubectx.zsh ~/.oh-my-zsh/completions/_kubectx.zsh
     ln -sf ~/dotfiles/local/bin/kubens ~/.local/bin/kubens
     ln -sf ~/dotfiles/completions/_kubens.zsh ~/.oh-my-zsh/completions/_kubens.zsh
-    if [ ! -d ~/.local/share/nvim ]; then
-        mkdir -p ~/.local/share/nvim
-        ln -sf ~/dotfiles/nvim/init.vim ~/.local/share/nvim/init.vim
-    fi
+    ln -sf ~/dotfiles/nvim/init.vim ~/.local/share/nvim/init.vim
 }
 
 function main() {
