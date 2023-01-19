@@ -44,6 +44,7 @@ function do_clone() {
 
 function make_links() {
     for dir in "~/.oh-my-zsh/completions ~/.local/bin ~/.local/share/nvim"; do
+        echo "Creating directory: $dir"
         mkdir -p $dir
     done
 
