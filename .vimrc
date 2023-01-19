@@ -80,7 +80,11 @@ Plugin 'fatih/vim-go'
 " Golang in vim
 Plugin 'jnurmine/Zenburn'
 " Coloscheme
-Plugin 'Shougo/neocomplete.vim'
+if has('nvim')
+  Plugin 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plugin 'Shougo/deoplete.nvim'
+endif
 " Code completion
 "Plugin 'Shougo/neosnippet'
 "Plugin 'Shougo/neosnippet-snippets'
@@ -105,6 +109,9 @@ Plugin 'lmintmate/blue-mood-vim'
 Plugin 'dylanaraps/wal.vim'
 Plugin 'liuchengxu/space-vim-dark'
 Plugin 'liuchengxu/vim-clap', { 'do': function('clap#helper#build_all') }
+" Bazel support
+Plugin 'google/vim-maktaba'
+Plugin 'bazelbuild/vim-bazel'
 
 call vundle#end()
 filetype plugin indent on
@@ -117,7 +124,7 @@ set tabstop=4
 set expandtab
 set autoindent
 set showmatch
-set synmaxcol=150               " Show syntax colors only for 150 chars in line
+"set synmaxcol=150               " Show syntax colors only for 150 chars in line
 set autoread
 set fillchars+=vert:\|
 let g:is_posix=1
@@ -144,6 +151,7 @@ let base16colorspace=256  " Access colors present in 256 colorspace"
 " colorscheme wombat
 "colorscheme solarized
 "colorscheme dracula
+colorscheme lunaperche
 "colorscheme blue-mood
 " colorscheme zenburn
 " colorscheme skeletor
@@ -153,13 +161,13 @@ let base16colorspace=256  " Access colors present in 256 colorspace"
 " colorscheme dracula
 "
 " let g:rehash256 = 1     " Molokai specific setting"
-colorscheme space-vim-dark
+"colorscheme space-vim-dark
 
 if has('gui_running')
   " set gfn=Liberation\ Mono\ Bold\ 10
   " set guioptions-=m " remove the menubar
   set guioptions-=T " remove the toolbar
-  set gfn=Source\ Code\ Pro\ for\ Powerline\ Semi-Bold\ 9
+  set gfn=Source\ Code\ Pro\ for\ Powerline\ Semi-Bold\ 11
   " set gfn=Consolas\ 10
   " set gfn=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline\ 9
   set lines=999
@@ -345,8 +353,8 @@ cnoreabbrev X x
 " noremap   <Left>   <NOP>
 " noremap   <Right>  <NOP>
 
-set colorcolumn=79,90,120
-highlight ColorColumn ctermbg=17
+" set colorcolumn=79,90,120
+" highlight ColorColumn ctermbg=17
 " Unite stuff
 let g:unite_data_directory='~/.vim/.cache/unite'
 let g:unite_enable_start_insert=0
@@ -598,3 +606,5 @@ let g:startify_change_to_vcs_root = 1
 
 let g:startify_change_to_vcs_root = 1
 let g:startify_change_to_dir = 0
+
+let g:deoplete#enable_at_startup = 1
