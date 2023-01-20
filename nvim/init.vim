@@ -314,14 +314,14 @@ autocmd FileType go nmap <leader>gi <Plug>(go-install)
 
 
 " Fugitive
-nnoremap <leader>gg :GitStatus<CR>
+nnoremap <leader>gg :Git<CR>
 nnoremap <leader>ga :Gwrite<CR>
 nnoremap <leader>gc :Gcommit %<CR>
 nnoremap <leader>gd :Gdiff<CR>
 nnoremap <leader>gl :Glog<CR>
 nnoremap <leader>gr :Gremove<CR>
 nnoremap <leader>gpl :GitPullRebase<CR>
-nnoremap <leader>gps :GitPush<CR>
+nnoremap <leader>gps :Git push<CR>
 nnoremap <leader>gm :Merginal<CR>
 
 nnoremap <leader>x :ccl<CR>
