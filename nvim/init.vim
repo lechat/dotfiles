@@ -182,11 +182,11 @@ if has('gui_running')
   imap <silent>  <S-Insert>  <Esc>"+pa
   " let g:Powerline_symbols = 'fancy'
   " colorscheme solarized
-  "set listchars=tab:Â»Â·,trail:Â·
+  set listchars=tab:»·,trail:·
 else
   " colorscheme wombat
   hi CursorLine cterm=NONE ctermbg=8
-  " set listchars=tab:Â»Â·,trail:Â·
+  set listchars=tab:»·,trail:·
 endif
 
 " highlight Pmenu guibg=RoyalBlue
@@ -613,3 +613,5 @@ let g:startify_change_to_vcs_root = 1
 let g:startify_change_to_dir = 0
 
 let g:deoplete#enable_at_startup = 1
+
+let g:indentLine_char = '▏'
