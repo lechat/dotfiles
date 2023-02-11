@@ -117,6 +117,7 @@ Plug 'Rigellute/shades-of-purple.vim'
 call plug#end()
 
 " Turn off features that I don't use
+let g:loaded_ruby_provider = 0
 let g:loaded_node_provider = 0
 let g:loaded_perl_provider = 0
 
