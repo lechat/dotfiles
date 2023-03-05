@@ -62,9 +62,9 @@ Plug 'airblade/vim-gitgutter'
 " Shows git changes in gutter column
 Plug 'jistr/vim-nerdtree-tabs'
 " same Nerdtree in all tabs
-Plug 'Shougo/vimproc.vim'
+" Plug 'Shougo/vimproc.vim'
 " async execution, required for Unite
-Plug 'Shougo/unite.vim'
+" Plug 'Shougo/unite.vim'
 " united search
 "Plug 'gregsexton/gitv'
 Plug 'junegunn/gv.vim'
@@ -120,7 +120,10 @@ call plug#end()
 let g:loaded_ruby_provider = 0
 let g:loaded_node_provider = 0
 let g:loaded_perl_provider = 0
+" Disable LUA filetype processing
+let g:do_legacy_filetype = 1
 
+let g:python3_host_prog = '/bin/python3'
 filetype plugin indent on
 
 :syntax on
@@ -170,10 +173,14 @@ set mouse=
 " colorscheme dracula
 " colorscheme molokai
 " colorscheme dracula
-" colorscheme space-vim-dark
-colorscheme shades_of_purple
+colorscheme space-vim-dark
+" colorscheme shades_of_purple
 "
 " let g:rehash256 = 1     " Molokai specific setting"
+
+" Tabstops for different filetype
+autocmd FileType javascript,html setlocal tabstop=2 shiftwidth=2
+autocmd FileType python setlocal tabstop=4 shiftwidth=4
 
 if has('gui_running')
   set guioptions-=T " remove the toolbar
@@ -276,8 +283,8 @@ autocmd QuickFixCmdPost *grep* cwindow
 
 "let g:pymode_debug = 1
 let g:pymode = 1
-let g:pymode_python = 'python'
-let g:pymode_python_version = '3.8.13'
+let g:pymode_python = 'python3'
+let g:pymode_python_version = '3.10.6'
 let g:pymode_options_max_line_length = 79
 let g:pymode_indent = 1
 let g:pymode_motion = 1
@@ -304,6 +311,7 @@ let g:pymode_rope_complete_on_dot = 0
 let g:pymode_syntax = 1
 let g:pymode_syntax_slow_sync = 1
 let g:pymode_syntax_all = 1
+let g:pymode_breakpoint_cmd = 'import pudb; pu.db'
 
 " vim-go
 set autowrite
@@ -363,21 +371,21 @@ cnoreabbrev X x
 " highlight ColorColumn ctermbg=17
 
 " Unite stuff
-let g:unite_data_directory='~/.vim/.cache/unite'
-let g:unite_enable_start_insert=0
-let g:unite_source_history_yank_enable=1
-let g:unite_source_rec_max_cache_files=5000
-let g:unite_prompt='Â» '
+"let g:unite_data_directory='~/.vim/.cache/unite'
+"let g:unite_enable_start_insert=0
+"let g:unite_source_history_yank_enable=1
+"let g:unite_source_rec_max_cache_files=5000
+"let g:unite_prompt='Â» '
 
-call unite#custom#source('file,file/new,buffer,file_rec/async', 'matchers', 'matcher_fuzzy')
+"call unite#custom#source('file,file/new,buffer,file_rec/async', 'matchers', 'matcher_fuzzy')
 "nnoremap <silent> <leader><space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
-nnoremap <silent> <leader><space>f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async<cr><c-u>
-nnoremap <silent> <leader><space>y :<C-u>Unite -buffer-name=yanks history/yank<cr>
-nnoremap <silent> <leader><space>l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
-nnoremap <silent> <leader><space>b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
-nnoremap <silent> <leader><space>/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
-nnoremap <silent> <leader><space>m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
-nnoremap <silent> <leader><space>s :<C-u>Unite -quick-match buffer<cr>
+"nnoremap <silent> <leader><space>f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async<cr><c-u>
+"nnoremap <silent> <leader><space>y :<C-u>Unite -buffer-name=yanks history/yank<cr>
+"nnoremap <silent> <leader><space>l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
+"nnoremap <silent> <leader><space>b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
+"nnoremap <silent> <leader><space>/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
+"nnoremap <silent> <leader><space>m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
+"nnoremap <silent> <leader><space>s :<C-u>Unite -quick-match buffer<cr>
 
 " vp doesn't replace paste buffer
 function! RestoreRegister()
