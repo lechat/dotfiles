@@ -169,11 +169,11 @@ set mouse=
 " colorscheme blue-mood
 " colorscheme zenburn
 " colorscheme skeletor
-" colorscheme solarized
+colorscheme solarized_dark_light
 " colorscheme dracula
 " colorscheme molokai
 " colorscheme dracula
-colorscheme space-vim-dark
+" colorscheme space-vim-dark
 " colorscheme shades_of_purple
 "
 " let g:rehash256 = 1     " Molokai specific setting"
