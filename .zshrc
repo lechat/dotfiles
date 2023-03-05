@@ -54,17 +54,16 @@ export ZSH_THEME="agnoster"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
+ENABLE_CORRECTION=true
 ZSH_TMUX_AUTOSTART=true
 plugins=(git python pip docker vi-mode kubectl tmux bazel aws)
 
 source $ZSH/oh-my-zsh.sh
 
+alias sudp='nocorrect sudo'
 alias ls-al='nocorrect ls -al'
 alias rsync='noglob rsync'
 alias docker='sudo docker $@'
-alias proxy='export http_proxy=http://10.65.128.43:8080;export https_proxy=http://10.65.128.43:8080'
-alias ukproxy='export http_proxy=http://10.192.116.73:8080;export https_proxy=http://10.192.116.73:8080'
-alias unproxy='unset http_proxy;unset https_proxy'
 alias nvim='VIMRUNTIME=/usr/local/share/nvim/runtime nvim'
 alias pygrep='grep -r --include="*.py"'
 
@@ -74,11 +73,6 @@ export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/s
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
 
 export PYTHONPATH=.
-
-#export JAVA_HOME=/maerskwas/tools/jdk1.6.0_30
-# export http_proxy=10.65.128.43:8080
-# export ftp_proxy=10.65.128.43:8080
-# export https_proxy=10.65.128.43:8080
 
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
@@ -116,18 +110,7 @@ unsetopt correct_all
 autoload -U compinit; compinit
 [[ -s ~/.autojump/etc/profile.d/autojump.zsh ]] && source ~/.autojump/etc/profile.d/autojump.zsh
 
-# PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-#source /maerskwas/tools/python2.7venv/bin/activate
-
-# function jump {
-#     project=$1
-#     env=$2
-#     domain_type=$3
-#     host=${4:-$domain_type}
-#     ssh -t forge "sudo ssh -i /data/keys/${project}_${env}_key ${domain_type}-${project}@${host}.${env}.${project}.apmoller.net"
-# }
-
-export VIMRUNTIME=/usr/local/share/vim/vim82
+#export VIMRUNTIME=/usr/local/share/vim/vim82
 
 export GOPATH=$HOME/src/go
 export GOPROXY=https://proxy.golang.org
@@ -139,12 +122,9 @@ export EDITOR=$(which vim)
 
 eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
 eval "$(direnv hook zsh)"
-# added by travis gem
-[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
 [ -e $HOME/src ] && cd $HOME/src
 
-eval "$(direnv hook zsh)"
 #zprof
 # Invoke GnuPG-Agent the first time we login.
 # Does `~/.gpg-agent-info' exist and points to gpg-agent process accepting signals?
@@ -161,7 +141,6 @@ eval "$(direnv hook zsh)"
 #zprof
 
 [ -f ~/.local/bin/virtualenvwrapper.sh ] && source ~/.local/bin/virtualenvwrapper.sh
-[ -f $HOME/.travis/travis.sh ] && source /home/aleksey/.travis/travis.sh
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # The next line updates PATH for the Google Cloud SDK.
