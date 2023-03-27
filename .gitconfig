@@ -9,13 +9,19 @@
 	lol = log --graph --decorate --pretty=oneline --abbrev-commit
 	lola = log --graph --decorate --pretty=oneline --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit --all
 [core]
-	editor = vim
+	editor = nvim
 [pull]
 	rebase = true
 [diff]
     tool = vimdiff
 [merge]
     tool = vimdiff
+[mergetool]
+    prompt = false
+    keepBackup = false
+    trustExitCode = true
+    # Set nvim as the editor
+    cmd = nvim -d \"$LOCAL\" \"$BASE\" \"$REMOTE\" \"$MERGED\"
 [push]
 	followTags = true
 [init]
