@@ -143,7 +143,7 @@ export GPG_AGENT_INFO
 eval "$(direnv hook zsh)"
 #zprof
 
-[ -f ~/.local/bin/virtualenvwrapper.sh ] && source ~/.local/bin/virtualenvwrapper.sh
+# [ -f ~/.local/bin/virtualenvwrapper.sh ] && source ~/.local/bin/virtualenvwrapper.sh
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # The next line updates PATH for the Google Cloud SDK.
@@ -152,6 +152,12 @@ eval "$(direnv hook zsh)"
 [ -f '$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc' ] && . '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'
 
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/bin/terraform terraform
-complete -C '/usr/local/bin/aws_completer' aws
-source /usr/share/fzf/shell/key-bindings.zsh
+[ -f /usr/bin/terraform ] && complete -o nospace -C /usr/bin/terraform terraform
+[ -f /etc/zsh_completion.d/fzf-key-bindings ] && complete -C '/usr/local/bin/aws_completer' aws
+# fzf shell keybindings
+# Fedora
+[ -f /usr/share/fzf/shell/key-bindings.zsh ] && source /usr/share/fzf/shell/key-bindings.zsh
+# SUSE
+[ -f /etc/zsh_completion.d/fzf-key-bindings ] && source /etc/zsh_completion.d/fzf-key-bindings
+# Ubuntu
+[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
