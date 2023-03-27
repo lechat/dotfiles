@@ -56,7 +56,9 @@ export ZSH_THEME="agnoster"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 ENABLE_CORRECTION=true
 ZSH_TMUX_AUTOSTART=true
-plugins=(git python pip docker vi-mode kubectl tmux bazel aws)
+FZF_BASE=usr/share/fzf
+
+plugins=(git python pip docker vi-mode kubectl tmux fzf bazel aws)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -66,6 +68,7 @@ alias rsync='noglob rsync'
 alias docker='sudo docker $@'
 alias nvim='VIMRUNTIME=/usr/local/share/nvim/runtime nvim'
 alias pygrep='grep -r --include="*.py"'
+alias grep='grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv} --exclude=tags'
 
 # Customize to your needs...
 export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
@@ -151,3 +154,4 @@ eval "$(direnv hook zsh)"
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/bin/terraform terraform
 complete -C '/usr/local/bin/aws_completer' aws
+source /usr/share/fzf/shell/key-bindings.zsh
