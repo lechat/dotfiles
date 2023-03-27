@@ -81,8 +81,6 @@ Plug 'fatih/vim-go'
 " Golang in vim
 Plug 'jnurmine/Zenburn'
 " Coloscheme
-"Plug 'Shougo/neosnippet'
-"Plug 'Shougo/neosnippet-snippets'
 " --Plug 'tacahiroy/ctrlp-funky'
 " CtrlP for functions
 Plug 'kshenoy/vim-signature'
@@ -108,12 +106,15 @@ Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
 " Colorcheme
 Plug 'Rigellute/shades-of-purple.vim'
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-endif
-" Code completion
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Completion plugin
+Plug 'sainnhe/gruvbox-material'
+" Colorscheme
+Plug 'github/copilot.vim'
+" Copilot plugin
+Plug 'prabirshrestha/async.vim'
+Plug 'stackline/vim-asynctags'
+" Asynctags
 call plug#end()
 " Turn off features that I don't use
 let g:loaded_ruby_provider = 0
@@ -142,10 +143,6 @@ let mapleader = "\<Space>"
 set wildmenu
 set wildmode=list:longest,full
 
-set t_Co=256                    " Explicitly tell vim that the terminal has 256 colors
-set background=dark
-let base16colorspace=256  " Access colors present in 256 colorspace"
-
 " Attempting to speedup raspberry
 set re=1
 set ttyfast
@@ -160,6 +157,16 @@ set lazyredraw
 " behave
 set mouse=
 
+" Colors
+set t_Co=256                    " Explicitly tell vim that the terminal has 256 colors
+set background=light
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+"let base16colorspace=256  " Access colors present in 256 colorspace"
+
 " colorscheme zenburn
 " colorscheme wombat
 " colorscheme solarized
@@ -173,6 +180,12 @@ colorscheme molokai
 " colorscheme dracula
 " colorscheme space-vim-dark
 " colorscheme shades_of_purple
+let g:gruvbox_material_foreground = 'original'
+let g:gruvbox_material_background = 'hard'
+let g:gruvbox_material_better_performance = 1
+let g:gruvbox_material_ui_contrast = 'high'
+let g:lightline = {'colorscheme' : 'gruvbox_material'}
+colorscheme gruvbox-material
 "
 " let g:rehash256 = 1     " Molokai specific setting"
 
@@ -211,6 +224,13 @@ endif
 filetype on
 set nu
 " set rnu
+" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
+" delays and poor user experience
+set updatetime=300
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved
+set signcolumn=yes
 set nobackup
 
 set ruler " show the ruler
@@ -228,6 +248,23 @@ set scrolloff=3 " minimum lines to keep above and below cursor
 " I hate folding!
 set nofoldenable
 set foldmethod=manual
+
+" coc.vim - enable completion choice on CR
+inoremap <silent><expr> <TAB>
+\ coc#pum#visible() ? coc#_select_confirm() :
+\ coc#expandableOrJumpable() ?
+\ "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+\ CheckBackspace() ? "\<TAB>" :
+\ coc#refresh()
+
+function! CheckBackspace() abort
+let col = col('.') - 1
+return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+
+"inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 noremap <silent> <C-Up> :<C-U>ObviousResizeUp<CR>
 noremap <silent> <C-Down> :<C-U>ObviousResizeDown<CR>
