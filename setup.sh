@@ -39,11 +39,10 @@ function do_clone() {
     if [ ! -d ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions/.git ]; then
         git clone https://github.com/zsh-users/zsh-autosuggestions ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions
     fi
-    install_fonts
 }
 
 function make_links() {
-    for dir in ~/.oh-my-zsh/completions ~/.local/bin ~/.local/share/nvim; do
+    for dir in ~/.oh-my-zsh/completions ~/.local/bin ~/.local/share/nvim ~/.config/nvim; do
         echo "Creating directory: $dir"
         mkdir -p $dir
     done
@@ -67,6 +66,7 @@ function make_links() {
     ln -sf ~/dotfiles/local/bin/kubens ~/.local/bin/kubens
     ln -sf ~/dotfiles/completions/_kubens.zsh ~/.oh-my-zsh/completions/_kubens.zsh
     ln -sf ~/dotfiles/nvim/init.vim ~/.local/share/nvim/init.vim
+    ln -sf ~/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
 }
 
 function main() {
@@ -75,6 +75,7 @@ function main() {
     done
 
     do_clone
+    install_fonts
     make_links
 
     vim -c "PluginInstall" -c "qa"
