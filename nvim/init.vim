@@ -176,7 +176,7 @@ endif
 " colorscheme zenburn
 " colorscheme skeletor
 " colorscheme dracula
-colorscheme molokai
+" colorscheme molokai
 " colorscheme dracula
 " colorscheme space-vim-dark
 " colorscheme shades_of_purple
