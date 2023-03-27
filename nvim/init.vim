@@ -81,12 +81,6 @@ Plug 'fatih/vim-go'
 " Golang in vim
 Plug 'jnurmine/Zenburn'
 " Coloscheme
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugs' }
-else
-  Plug 'Shougo/deoplete.nvim'
-endif
-" Code completion
 "Plug 'Shougo/neosnippet'
 "Plug 'Shougo/neosnippet-snippets'
 " --Plug 'tacahiroy/ctrlp-funky'
@@ -114,8 +108,13 @@ Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
 " Colorcheme
 Plug 'Rigellute/shades-of-purple.vim'
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+endif
+" Code completion
 call plug#end()
-
 " Turn off features that I don't use
 let g:loaded_ruby_provider = 0
 let g:loaded_node_provider = 0
@@ -169,9 +168,8 @@ set mouse=
 " colorscheme blue-mood
 " colorscheme zenburn
 " colorscheme skeletor
-colorscheme solarized_dark_light
 " colorscheme dracula
-" colorscheme molokai
+colorscheme molokai
 " colorscheme dracula
 " colorscheme space-vim-dark
 " colorscheme shades_of_purple
@@ -181,6 +179,15 @@ colorscheme solarized_dark_light
 " Tabstops for different filetype
 autocmd FileType javascript,html setlocal tabstop=2 shiftwidth=2
 autocmd FileType python setlocal tabstop=4 shiftwidth=4
+
+"
+" Use deoplete.
+"let g:deoplete#enable_logging("DEBUG", "/tmp/deoplete.log")
+let g:deoplete#enable_at_startup = 1
+
+" indentLine plugin hides quotes in json, below line will disable identLine in
+" JSON, but quotes will be visible
+let g:vim_json_conceal=0
 
 if has('gui_running')
   set guioptions-=T " remove the toolbar
@@ -292,8 +299,8 @@ let g:pymode_virtualenv = 1
 let g:pymode_run = 0
 let g:pymode_breakpoint = 1
 let g:pymode_breakpoint_bind = '<leader>b'
-let g:pymode_lint = 0
-let g:pymode_lint_on_write = 0
+let g:pymode_lint = 1
+let g:pymode_lint_on_write = 1
 let g:pymode_lint_options_pylint = "$HOME/.pylintrc"
 let g:pymode_lint_onfly = 0
 let g:pymode_lint_message = 1
@@ -521,9 +528,6 @@ set completeopt-=preview
 " let g:ycm_complete_in_comments = 1
 " let g:ycm_collect_identifiers_from_comments_and_strings = 1
 " let g:ycm_add_preview_to_completeopt = 0
-
-" Use deoplete.
-let g:deoplete#enable_at_startup = 1
 
 " Recommended key-mappings.
 " <CR>: close popup and save indent.
