@@ -19,6 +19,9 @@ setopt INC_APPEND_HISTORY
 bindkey "^[OH" beginning-of-line
 bindkey "^[OF" end-of-line
 
+# Customize to your needs...
+export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
@@ -56,10 +59,13 @@ export ZSH_THEME="agnoster"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 ENABLE_CORRECTION=true
 ZSH_TMUX_AUTOSTART=true
-FZF_BASE=/usr/share/doc/fzf
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
 
 plugins=(git python pip docker vi-mode kubectl tmux fzf bazel aws zsh-autosuggestions)
+FZF_BASE=/usr/share/fzf
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=4,bg=16"
+
+plugins=(git python pip docker vi-mode kubectl tmux fzf aws)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -73,11 +79,12 @@ alias grep='grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.to
 
 # Customize to your needs...
 export PATH=$HOME/.local/bin:$HOME/.krew/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+source $HOME/.aliases.sh
 
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
-
 export PYTHONPATH=.
 
+# Automatically quote URLs pasted in command line
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
 zstyle -e :urlglobber url-other-schema '[[ $words[1] == scp ]] && reply=("*") || reply=(http https ftp)'
@@ -100,6 +107,7 @@ bindkey '^w' backward-kill-word
 # ctrl-r starts searching history backward
 bindkey '^r' history-incremental-search-backward
 
+#export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="bg=bold,underline"
 function source_config() {
     if [ -r $PWD/.zsh_config ]; then
         print "Sourcing $PWD/.zsh_config"
@@ -116,7 +124,7 @@ autoload -U compinit; compinit
 #export VIMRUNTIME=/usr/local/share/vim/vim82
 
 export GOPATH=$HOME/src/go
-export GOPROXY=https://proxy.golang.org
+export GOPROXY=https://artifactory.global.standardchartered.com/artifactory/api/go/go-release
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
@@ -129,6 +137,7 @@ eval "$(direnv hook zsh)"
 
 #[ -e $HOME/src ] && cd $HOME/src
 
+#eval "$(direnv hook zsh)"
 #zprof
 # Invoke GnuPG-Agent the first time we login.
 # Does `~/.gpg-agent-info' exist and points to gpg-agent process accepting signals?
@@ -141,11 +150,17 @@ else
 fi
 export GPG_TTY=`tty`
 export GPG_AGENT_INFO
-eval "$(direnv hook zsh)"
+export NO_PROXY=$NO_PROXY,.internal.sc.com,.eks.amazonaws.com,.awscloud.dev.net
+export no_proxy=$no_proxy,.internal.sc.com,.eks.amazonaws.com,.awscloud.dev.net
+export NO_PROXY=$NO_PROXY,.eks.amazonaws.com
+export no_proxy=$no_proxy,.EKS.AMAZONAWS.COM
+export NO_PROXY=$NO_PROXY,.internal.sc.com,.eks.amazonaws.com
+export no_proxy=$no_proxy,.internal.sc.com,.eks.amazonaws.com
 #zprof
 
 [ -f ~/.local/bin/virtualenvwrapper.sh ] && source ~/.local/bin/virtualenvwrapper.sh
 [ -f /usr/share/virtualenvwrapper/virtualenvwrapper.sh ] && source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
+unalias kl
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # The next line updates PATH for the Google Cloud SDK.
@@ -167,3 +182,5 @@ autoload -U +X bashcompinit && bashcompinit
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+[ -e $HOME/src ] && cd $HOME/src

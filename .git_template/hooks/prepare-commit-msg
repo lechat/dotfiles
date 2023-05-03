@@ -1,0 +1,8 @@
+#!/bin/bash
+
+BRANCH=$(git symbolic-ref --short HEAD || exit 1)
+JIRA=${BRANCH#"feature/"}
+
+if [ "$JIRA" != "master" && "$JIRA" != "" ]; then
+   sed -i -e "1s/^/$JIRA: /" $1
+fi
