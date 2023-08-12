@@ -24,13 +24,8 @@ function install_fonts() {
 
 function install_coc() {
     # Install latest nodejs
-    if [ ! -x "$(command -v node)" ]; then
-        curl --fail -LSs https://install-node.now.sh/latest | sh
-        export PATH="/usr/local/bin/:$PATH"
-        # Or use package manager, e.g.
-        # sudo apt-get install nodejs
-    fi
-
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+    nvm install node
     # Use package feature to install coc.nvim
 
     # for vim8
@@ -73,7 +68,7 @@ function do_clone() {
 }
 
 function make_links() {
-    for dir in ~/.oh-my-zsh/completions ~/.local/bin ~/.local/share/nvim ~/.config/nvim; do
+    for dir in ~/.oh-my-zsh/completions ~/.local/bin ~/.local/share/nvim ~/.config/nvim/lua; do
         echo "Creating directory: $dir"
         mkdir -p $dir
     done
@@ -96,8 +91,9 @@ function make_links() {
     ln -sf ~/dotfiles/completions/_kubectx.zsh ~/.oh-my-zsh/completions/_kubectx.zsh
     ln -sf ~/dotfiles/local/bin/kubens ~/.local/bin/kubens
     ln -sf ~/dotfiles/completions/_kubens.zsh ~/.oh-my-zsh/completions/_kubens.zsh
-    ln -sf ~/dotfiles/nvim/init.vim ~/.local/share/nvim/init.vim
-    ln -sf ~/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
+    ln -sf ~/dotfiles/nvim/init.lua ~/.local/share/nvim/init.lua
+    ln -sf ~/dotfiles/nvim/init.lua ~/.config/nvim/init.lua
+    ln -sf ~/dotfiles/nvim/lua/coc.lua ~/.config/nvim/lua/coc.lua
 }
 
 function main() {
@@ -108,8 +104,6 @@ function main() {
     do_clone
     install_fonts
     make_links
-
-    vim -c "PluginInstall" -c "qa"
 }
 
 main
