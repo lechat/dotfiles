@@ -22,6 +22,11 @@ Plug 'python-mode/python-mode'
 Plug 'vim-syntastic/syntastic'
 " Syntax checks
 Plug 'tpope/vim-fugitive'
+" Git plugin, I still use some commands
+Plug 'nvim-lua/plenary.nvim'
+Plug 'sindrets/diffview.nvim'
+" Two above required for NeoGit
+Plug 'NeogitOrg/neogit'
 " Git plugin
 " Plug 'motemen/git-vim'
 " Git commands
@@ -179,13 +184,13 @@ endif
 " colorscheme molokai
 " colorscheme dracula
 " colorscheme space-vim-dark
-" colorscheme shades_of_purple
+colorscheme shades_of_purple
 let g:gruvbox_material_foreground = 'original'
 let g:gruvbox_material_background = 'hard'
 let g:gruvbox_material_better_performance = 1
 let g:gruvbox_material_ui_contrast = 'high'
 let g:lightline = {'colorscheme' : 'gruvbox_material'}
-colorscheme gruvbox-material
+" colorscheme gruvbox-material
 "
 " let g:rehash256 = 1     " Molokai specific setting"
 
@@ -367,7 +372,7 @@ autocmd FileType go nmap <leader>gi <Plug>(go-install)
 
 
 " Fugitive
-nnoremap <leader>gg :Git<CR>
+nnoremap <leader>gg :Neogit<CR>
 nnoremap <leader>ga :Gwrite<CR>
 nnoremap <leader>gc :Gcommit %<CR>
 nnoremap <leader>gd :Gdiff<CR>
@@ -635,3 +640,5 @@ let g:startify_change_to_vcs_root = 1
 let g:startify_change_to_dir = 0
 
 let g:deoplete#enable_at_startup = 1
+
+lua require('neogit').setup {}
