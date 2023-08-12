@@ -379,7 +379,7 @@ nnoremap <leader>gd :Gdiff<CR>
 nnoremap <leader>gl :Glog<CR>
 nnoremap <leader>gr :Gremove<CR>
 nnoremap <leader>gpl :GitPullRebase<CR>
-nnoremap <leader>gps :Git push<CR>
+nnoremap <leader>gps :Neogit push<CR>
 nnoremap <leader>gm :Merginal<CR>
 
 nnoremap <leader>x :ccl<CR>
