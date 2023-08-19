@@ -28,7 +28,6 @@ require("lazy").setup({
         config = true
     },
     "dkprice/vim-easygrep",
-    "scrooloose/nerdtree",
     "itchyny/lightline.vim",
     "majutsushi/tagbar",
     "Raimondi/delimitMate",
@@ -49,13 +48,13 @@ require("lazy").setup({
     "Rigellute/shades-of-purple.vim",
     "liuchengxu/space-vim-dark",
     "sainnhe/gruvbox-material",
+    "dylanaraps/wal.vim",
     -- 
     "kshenoy/vim-signature",
     "mhinz/vim-startify",
     "pangloss/vim-javascript",
-    "tpope/vim-dispatch",
-    "dylanaraps/wal.vim",
-    "google/vim-maktaba",
+    -- "tpope/vim-dispatch",
+    --"google/vim-maktaba",
     {"neoclide/coc.nvim", branch = "release"},
     "github/copilot.vim",
     "prabirshrestha/async.vim",
@@ -74,7 +73,9 @@ require("lazy").setup({
       lazy = false,
       priority = 1000,
       opts = {},
-    }
+    },
+    "pedrohdz/vim-yaml-folds",
+    "nvim-treesitter/nvim-treesitter"
 })
 local set = vim.opt
 local cmd = vim.cmd
