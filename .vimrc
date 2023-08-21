@@ -61,9 +61,9 @@ Plugin 'airblade/vim-gitgutter'
 " Shows git changes in gutter column
 Plugin 'jistr/vim-nerdtree-tabs'
 " same Nerdtree in all tabs
-Plugin 'Shougo/vimproc.vim'
+" Plugin 'Shougo/vimproc.vim'
 " async execution, required for Unite
-Plugin 'Shougo/unite.vim'
+" Plugin 'Shougo/unite.vim'
 " united search
 "Plugin 'gregsexton/gitv'
 Plugin 'junegunn/gv.vim'
@@ -72,7 +72,7 @@ Plugin 'Yggdroot/indentLine'
 " Show vertical lines at indentation level
 "Plugin 'dannyob/quickfixstatus'
 " Show errors in last line
-Plugin 'idanarye/vim-merginal'
+" Plugin 'idanarye/vim-merginal'
 " View git branches
 Plugin 'tmux-plugins/vim-tmux-focus-events'
 " Allows pasting in terminal w/o set paste
@@ -108,10 +108,10 @@ Plugin 'tpope/vim-dispatch'
 Plugin 'lmintmate/blue-mood-vim'
 Plugin 'dylanaraps/wal.vim'
 Plugin 'liuchengxu/space-vim-dark'
-Plugin 'liuchengxu/vim-clap', { 'do': function('clap#helper#build_all') }
+"Plugin 'liuchengxu/vim-clap', { 'do': function('clap#helper#build_all') }
 " Bazel support
-Plugin 'google/vim-maktaba'
-Plugin 'bazelbuild/vim-bazel'
+"Plugin 'google/vim-maktaba'
+"Plugin 'bazelbuild/vim-bazel'
 
 call vundle#end()
 filetype plugin indent on
@@ -150,8 +150,8 @@ let base16colorspace=256  " Access colors present in 256 colorspace"
 "colorscheme zenburn
 " colorscheme wombat
 "colorscheme solarized
-"colorscheme dracula
-colorscheme lunaperche
+colorscheme dracula
+" colorscheme lunaperche
 "colorscheme blue-mood
 " colorscheme zenburn
 " colorscheme skeletor
@@ -362,7 +362,7 @@ let g:unite_source_history_yank_enable=1
 let g:unite_source_rec_max_cache_files=5000
 let g:unite_prompt='» '
 
-call unite#custom#source('file,file/new,buffer,file_rec/async', 'matchers', 'matcher_fuzzy')
+" call unite#custom#source('file,file/new,buffer,file_rec/async', 'matchers', 'matcher_fuzzy')
 "nnoremap <silent> <leader><space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
 nnoremap <silent> <leader><space>f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async<cr><c-u>
 nnoremap <silent> <leader><space>y :<C-u>Unite -buffer-name=yanks history/yank<cr>
