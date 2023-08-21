@@ -99,13 +99,21 @@ function make_links() {
     ln -sf $HOME/dotfiles/.vimrc $HOME/.vimrc
     ln -sf $HOME/dotfiles/.vim $HOME/.vim
     ln -sf $HOME/dotfiles/.zshrc $HOME/.zshrc
-    ln -sf $HOME/dotfiles/.autoenv $HOME/.autoenv
+
     ln -sf $HOME/dotfiles/.tmux.conf $HOME/.tmux.conf
     ln -sf $HOME/dotfiles/.xinitrc $HOME/.xinitrc
     ln -sf $HOME/dotfiles/.Xmodmap $HOME/.Xmodmap
     ln -sf $HOME/dotfiles/.gitconfig $HOME/.gitconfig
     ln -sf $HOME/dotfiles/.dir_colors/solarized $HOME/.dir_colors
 
+    if [ -e $HOME/.autoenv ] && [ -L $HOME/.autoenv ]; then
+        unlink $HOME/.autoenv
+    fi
+    ln -sf $HOME/dotfiles/.autoenv $HOME/.autoenv
+
+    if [ -e $HOME/.git_template ] && [ -L $HOME/.git_template ]; then
+        unlink $HOME/.git_template
+    fi
     ln -sf $HOME/dotfiles/.git_template $HOME/.git_template
 
     ln -sf $HOME/dotfiles/local/bin/kubectx $HOME/.local/bin/kubectx
