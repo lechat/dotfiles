@@ -49,11 +49,7 @@ function install_coc() {
 }
 
 function do_clone() {
-    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-    curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.Vim
 
     if [ ! -d ~/.oh-my-zsh/.git ]; then
     	git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
@@ -104,6 +100,8 @@ function main() {
     do_clone
     install_fonts
     make_links
+    install_coc
+    vim +PluginInstall +qall
 }
 
 main
