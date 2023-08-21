@@ -6,8 +6,9 @@ set -o errexit
 
 function save_to_old() {
     local item=$1
+    local ts=$2
     if [ -e ~/$item ]; then
-        mv ~/$item ~/$item.old
+        mv ~/$item ~/$item.$ts
     fi
 }
 
@@ -25,7 +26,11 @@ function install_fonts() {
 function install_coc() {
     # Install latest nodejs
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-    nvm install node
+    export NVM_DIR="$HOME/.config/nvm"
+    if [ -s "$NVM_DIR/nvm.sh" ]; then
+        source "$NVM_DIR/nvm.sh"
+        nvm install node
+    fi
     # Use package feature to install coc.nvim
 
     # for vim8
@@ -38,28 +43,34 @@ function install_coc() {
     # curl --fail -L https://github.com/neoclide/coc.nvim/archive/release.tar.gz | tar xzfv -
 
     # Install extensions
-    mkdir -p ~/.config/coc/extensions
-    cd ~/.config/coc/extensions
-    if [ ! -f package.json ]
-    then
-      echo '{"dependencies":{}}'> package.json
+    if [ ! -d ~/.config/coc/extensions ]; then
+        mkdir -p ~/.config/coc/extensions
+        cd ~/.config/coc/extensions
+        if [ ! -f package.json ]
+        then
+          echo '{"dependencies":{}}'> package.json
+        fi
+        # Change extension names to the extensions you need
+        npm install coc-css coc-docker coc-go coc-html coc-html-css-support coc-pyright coc-json coc-copilot coc-snippets --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
     fi
-    # Change extension names to the extensions you need
-    npm install coc-css coc-docker coc-go coc-html coc-html-css-support coc-pyright coc-json coc-copilot coc-snippets --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
 }
 
 function do_clone() {
-    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.Vim
+    if [ ! -d ~/.vim/bundle/Vundle.Vim ]; then
+        git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.Vim
+    fi
 
     if [ ! -d ~/.oh-my-zsh/.git ]; then
     	git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
     fi
 #    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    if [ ! -d ~/dotfiles/.oh-my-zsh/custom ]; then
+    local CUSTOM_PATH=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}
+    if [ ! -d $CUSTOM_PATH ]; then
         mkdir -p ~/dotfiles/.oh-my-zsh/custom/plugins
     fi
-    if [ ! -d ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions/.git ]; then
-        git clone https://github.com/zsh-users/zsh-autosuggestions ~/dotfiles/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
+    if [ ! -d $CUSTOM_PATH/plugins/zsh-autosuggestions ]; then
+        git clone https://github.com/zsh-users/zsh-autosuggestions $CUSTOM_PATH/plugins/zsh-autosuggestions
     fi
 }
 
@@ -93,8 +104,9 @@ function make_links() {
 }
 
 function main() {
+    local TS=$(date +'%Y-%m-%d_%H%M')
     for item in ".oh-my-zsh .vim .zshrc .vimrc .autoenv"; do
-        save_to_old $item
+        save_to_old $item %TS
     done
 
     do_clone
