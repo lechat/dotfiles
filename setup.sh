@@ -5,14 +5,23 @@ set -o pipefail
 set -o errexit
 
 function save_to_old() {
-    local item=$1
-    local ts=$2
-    if [ -e ~/$item ]; then
-        mv ~/$item ~/$item.$ts
-    fi
+    local TS=$(date +'%Y-%m-%d_%H%M')
+    for item in .zshrc .vimrc .autoenv .tmux.conf .xinitrc .gitconfig .Xmodmap .dir_colors .git_template; do
+        if [ -e $HOME/$item ] && [ -L $HOME/$item ]; then
+            echo "Skipping saving a link of $item"
+        else
+            echo "Moving $item to $HOME/.old_dotfiles.$TS/"
+            mkdir -p $HOME/.old_dotfiles.$TS
+            mv $HOME/$item $HOME/.old_dotfiles.$TS/
+        fi
+    done
 }
 
 function install_fonts() {
+    # The marker file is left once fonts are installed
+    if [ -f $HOME/.fonts_installed ]; then
+        return
+    fi
     # clone
     git clone https://github.com/powerline/fonts.git --depth=1
     # install
@@ -21,6 +30,7 @@ function install_fonts() {
     # clean-up a bit
     cd ..
     rm -rf fonts
+    touch $HOME/.fonts_installed
 }
 
 function install_coc() {
@@ -34,18 +44,18 @@ function install_coc() {
     # Use package feature to install coc.nvim
 
     # for vim8
-    # mkdir -p ~/.vim/pack/coc/start
-    # cd ~/.vim/pack/coc/start
+    # mkdir -p $HOME/.vim/pack/coc/start
+    # cd $HOME/.vim/pack/coc/start
     # curl --fail -L https://github.com/neoclide/coc.nvim/archive/release.tar.gz | tar xzfv -
     # for neovim
-    # mkdir -p ~/.local/share/nvim/site/pack/coc/start
-    # cd ~/.local/share/nvim/site/pack/coc/start
+    # mkdir -p $HOME/.local/share/nvim/site/pack/coc/start
+    # cd $HOME/.local/share/nvim/site/pack/coc/start
     # curl --fail -L https://github.com/neoclide/coc.nvim/archive/release.tar.gz | tar xzfv -
 
     # Install extensions
-    if [ ! -d ~/.config/coc/extensions ]; then
-        mkdir -p ~/.config/coc/extensions
-        cd ~/.config/coc/extensions
+    if [ ! -d $HOME/.config/coc/extensions ]; then
+        mkdir -p $HOME/.config/coc/extensions
+        cd $HOME/.config/coc/extensions
         if [ ! -f package.json ]
         then
           echo '{"dependencies":{}}'> package.json
@@ -56,59 +66,59 @@ function install_coc() {
 }
 
 function do_clone() {
-    if [ ! -d ~/.vim/bundle/Vundle.Vim ]; then
-        git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.Vim
+    if [ ! -d $HOME/.vim/bundle/Vundle.Vim ]; then
+        git clone https://github.com/VundleVim/Vundle.vim.git $HOME/.vim/bundle/Vundle.Vim
+    else
+        echo "Vundle already installed"
     fi
 
-    if [ ! -d ~/.oh-my-zsh/.git ]; then
-    	git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    if [ ! -d $HOME/.oh-my-zsh/.git ]; then
+    	git clone https://github.com/robbyrussell/oh-my-zsh.git $HOME/.oh-my-zsh
+    else
+        echo "oh-my-zsh already installed"
     fi
-#    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    local CUSTOM_PATH=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}
+
+    local CUSTOM_PATH=${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}
     if [ ! -d $CUSTOM_PATH ]; then
-        mkdir -p ~/dotfiles/.oh-my-zsh/custom/plugins
+        mkdir -p $HOME/dotfiles/.oh-my-zsh/custom/plugins
     fi
 
     if [ ! -d $CUSTOM_PATH/plugins/zsh-autosuggestions ]; then
         git clone https://github.com/zsh-users/zsh-autosuggestions $CUSTOM_PATH/plugins/zsh-autosuggestions
+    else
+        echo "zsh-autosuggestions already installed"
     fi
 }
 
 function make_links() {
-    for dir in ~/.oh-my-zsh/completions ~/.local/bin ~/.local/share/nvim ~/.config/nvim/lua; do
+    for dir in $HOME/.oh-my-zsh/completions $HOME/.local/bin $HOME/.local/share/nvim $HOME/.config/nvim/lua; do
         echo "Creating directory: $dir"
         mkdir -p $dir
     done
 
-    ln -sf ~/dotfiles/.vimrc ~/.vimrc
-    ln -sf ~/dotfiles/.vim ~/.vim
-    ln -sf ~/dotfiles/.zshrc ~/.zshrc
-    ln -sf ~/dotfiles/.autoenv ~/.autoenv
-    ln -sf ~/dotfiles/.tmux.conf ~/.tmux.conf
-    ln -sf ~/dotfiles/.xinitrc ~/.xinitrc
-    ln -sf ~/dotfiles/.Xmodmap ~/.Xmodmap
-    ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
-    ln -sf ~/dotfiles/.dir_colors/solarized ~/.dir_colors
+    ln -sf $HOME/dotfiles/.vimrc $HOME/.vimrc
+    ln -sf $HOME/dotfiles/.vim $HOME/.vim
+    ln -sf $HOME/dotfiles/.zshrc $HOME/.zshrc
+    ln -sf $HOME/dotfiles/.autoenv $HOME/.autoenv
+    ln -sf $HOME/dotfiles/.tmux.conf $HOME/.tmux.conf
+    ln -sf $HOME/dotfiles/.xinitrc $HOME/.xinitrc
+    ln -sf $HOME/dotfiles/.Xmodmap $HOME/.Xmodmap
+    ln -sf $HOME/dotfiles/.gitconfig $HOME/.gitconfig
+    ln -sf $HOME/dotfiles/.dir_colors/solarized $HOME/.dir_colors
 
-    ln -sf ~/dotfiles/.git_template ~/.git_template
+    ln -sf $HOME/dotfiles/.git_template $HOME/.git_template
 
-    ln -sf ~/dotfiles/.oh-my-zsh/custom ~/.oh-my-zsh/custom
-
-    ln -sf ~/dotfiles/local/bin/kubectx ~/.local/bin/kubectx
-    ln -sf ~/dotfiles/completions/_kubectx.zsh ~/.oh-my-zsh/completions/_kubectx.zsh
-    ln -sf ~/dotfiles/local/bin/kubens ~/.local/bin/kubens
-    ln -sf ~/dotfiles/completions/_kubens.zsh ~/.oh-my-zsh/completions/_kubens.zsh
-    ln -sf ~/dotfiles/nvim/init.lua ~/.local/share/nvim/init.lua
-    ln -sf ~/dotfiles/nvim/init.lua ~/.config/nvim/init.lua
-    ln -sf ~/dotfiles/nvim/lua/coc.lua ~/.config/nvim/lua/coc.lua
+    ln -sf $HOME/dotfiles/local/bin/kubectx $HOME/.local/bin/kubectx
+    ln -sf $HOME/dotfiles/completions/_kubectx.zsh $HOME/.oh-my-zsh/completions/_kubectx.zsh
+    ln -sf $HOME/dotfiles/local/bin/kubens $HOME/.local/bin/kubens
+    ln -sf $HOME/dotfiles/completions/_kubens.zsh $HOME/.oh-my-zsh/completions/_kubens.zsh
+    ln -sf $HOME/dotfiles/nvim/init.lua $HOME/.local/share/nvim/init.lua
+    ln -sf $HOME/dotfiles/nvim/init.lua $HOME/.config/nvim/init.lua
+    ln -sf $HOME/dotfiles/nvim/lua/coc.lua $HOME/.config/nvim/lua/coc.lua
 }
 
 function main() {
-    local TS=$(date +'%Y-%m-%d_%H%M')
-    for item in ".oh-my-zsh .vim .zshrc .vimrc .autoenv"; do
-        save_to_old $item %TS
-    done
-
+    save_to_old
     do_clone
     install_fonts
     make_links
