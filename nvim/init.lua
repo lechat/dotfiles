@@ -67,7 +67,7 @@ require("lazy").setup({
           "MunifTanjim/nui.nvim",
         }
     },
-    "stackline/vim-asynctags",
+    --"stackline/vim-asynctags",
     {
       "folke/tokyonight.nvim",
       lazy = false,
