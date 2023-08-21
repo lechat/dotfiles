@@ -57,8 +57,9 @@ export ZSH_THEME="agnoster"
 ENABLE_CORRECTION=true
 ZSH_TMUX_AUTOSTART=true
 FZF_BASE=/usr/share/doc/fzf
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
 
-plugins=(git python pip docker vi-mode kubectl tmux fzf bazel aws)
+plugins=(git python pip docker vi-mode kubectl tmux fzf bazel aws zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -99,7 +100,6 @@ bindkey '^w' backward-kill-word
 # ctrl-r starts searching history backward
 bindkey '^r' history-incremental-search-backward
 
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="bg=bold,underline"
 function source_config() {
     if [ -r $PWD/.zsh_config ]; then
         print "Sourcing $PWD/.zsh_config"
