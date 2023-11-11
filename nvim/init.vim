@@ -197,6 +197,7 @@ let mapleader = "\<Space>"
 " Tabstops for different filetype
 " autocmd FileType javascript,html setlocal tabstop=2 shiftwidth=2
 " autocmd FileType python setlocal tabstop=4 shiftwidth=4
+autocmd FileType python let b:coc_root_patterns = ['.git', '.env']
 
 "
 " Use deoplete.
