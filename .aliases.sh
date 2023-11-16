@@ -9,6 +9,7 @@ alias ktx='kubectx'
 alias kns='kubens'
 alias kgn='kubectl get ns'
 alias vimdiff='nvim -d'
+alias sts=~/.local/bin/sts_eks.sh
 
 #CA_BUNDLE=$HOME/SCB-bundle.crt
 CA_BUNDLE=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
@@ -34,37 +35,6 @@ function clusters() {
     echo aws --ca-bundle $CA_BUNDLE eks list-clusters --region $REGION $@
     aws --ca-bundle $CA_BUNDLE eks list-clusters --region $REGION
 }
-
-function sts() {
-    if [ -z $1 ]; then
-        echo "Usage:"
-        echo
-        echo "sts REGION [--role ROLE] [--skip-prompt]"
-        echo
-        echo "Region names: hk,sg default: sg"
-    else
-        local region=${1-"sg"}
-
-        if [ $region = "sg" ]; then
-            ACCOUNT=$ACC_SG
-        fi
-        if [ $region = "hk" ]; then
-            ACCOUNT=$ACC_HK
-        fi
-
-        [ -z $SSO_PASSWORD ] && export SSO_PASSWORD=$(cat $HOME/.login)
-
-        echo gettoken --awsAccount $ACCOUNT --roleName $role
-        gettoken --awsAccount $ACCOUNT --roleName $role
-        # aws-sts login --hostname sts01.internal.sc.com -u "zone1-scbnet\o.$BANKID" -a $ACCOUNT $@
-        clusters $REGION
-    if [ $REGION = "lon" ]; then
-        REGION="eu-west-2"
-    fi
-    echo aws --ca-bundle $CA_BUNDLE eks list-clusters --region $REGION
-    aws --ca-bundle $CA_BUNDLE eks list-clusters --region $REGION | tee
-}
-
 
 function ekslogin() {
     local AREGION
@@ -151,15 +121,4 @@ function eks() {
         aws --ca-bundle $CA_BUNDLE eks update-kubeconfig --name "$CLUSTER" --region $AREGION --alias $CLUSTER
         kubens kube-system
     fi
-}
-
-function tonysg() {
-    gettoken --awsAccount 574229855744 --roleName PubCloud_All_AWSOpr
-    clusters
-    ekslogin "internalapiga-nonprod-ap-southeast-1-eks-01" --nosts
-}
-
-function sebastian() {
-    gettoken --awsAccount 539572264133  --roleName PubCloud_All_AWSOpr
-    ekslogin "foundationserv-nonprod-ap-southeast-1-eks-eks-01" --nosts
 }
