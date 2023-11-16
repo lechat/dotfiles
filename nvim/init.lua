@@ -22,7 +22,19 @@ require("lazy").setup({
     "nvim-lua/plenary.nvim",
     "nvim-neotest/nvim-nio",
     "sindrets/diffview.nvim",
-    "folke/which-key.nvim",
+    {
+      "folke/which-key.nvim",
+      event = "VeryLazy",
+      init = function()
+        vim.o.timeout = true
+        vim.o.timeoutlen = 300
+        require("which-key").setup {
+          plugins = {
+            registers = false
+          }
+        }
+      end,
+    },
       -- Fuzzy Finder (files, lsp, etc)
     {
       'nvim-telescope/telescope.nvim',
@@ -430,9 +442,10 @@ require('nvim-treesitter.configs').setup {
         enable = true,
     },
     indent = {
-        enable = true
+        char = "▏"
     }
 }
+
 require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
 require("nvim-dap-virtual-text").setup()
 
@@ -627,7 +640,25 @@ vim.defer_fn(function()
         },
         incremental_selection = {
             enable = true
-        }
+        },
+        triggers_nowait = {
+            -- marks
+            "`",
+            "'",
+            "g`",
+            "g'",
+            -- registers
+        --    '"',
+            "<c-r>",
+            -- spelling
+            "z=",
+        },
+        triggers_blacklist = {
+            -- list of mode / prefixes that should never be hooked by WhichKey
+            -- this is mostly relevant for keymaps that start with a native binding
+            i = { "j", "k", '"' },
+            v = { "j", "k", '"' },
+        },
     }
 end, 0)
 
