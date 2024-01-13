@@ -10,6 +10,7 @@
 	lola = log --graph --decorate --pretty=oneline --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit --all
 [core]
 	editor = nvim
+	commentChar = ";"
 [pull]
 	rebase = true
 [diff]
