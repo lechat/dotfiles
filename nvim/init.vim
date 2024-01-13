@@ -272,10 +272,10 @@ autocmd FileType python let b:coc_root_patterns = ['.git', '.env']
 
 "inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
-noremap <silent> <C-Up> :<C-U>ObviousResizeUp<CR>
-noremap <silent> <C-Down> :<C-U>ObviousResizeDown<CR>
-noremap <silent> <C-Left> :<C-U>ObviousResizeLeft<CR>
-noremap <silent> <C-Right> :<C-U>ObviousResizeRight<CR>
+" noremap <silent> <C-Up> :<C-U>ObviousResizeUp<CR>
+" noremap <silent> <C-Down> :<C-U>ObviousResizeDown<CR>
+" noremap <silent> <C-Left> :<C-U>ObviousResizeLeft<CR>
+" noremap <silent> <C-Right> :<C-U>ObviousResizeRight<CR>
 
 " let g:easytags_async = 1
 " let g:easytags_autorecurse = 0
@@ -373,32 +373,32 @@ autocmd FileType go nmap <leader>gi <Plug>(go-install)
 
 
 " Fugitive
-nnoremap <leader>gg :Neogit<CR>
+"nnoremap <leader>gg :Neogit<CR>
 "nnoremap <leader>ga :Gwrite<CR>
 "nnoremap <leader>gc :Gcommit %<CR>
 "nnoremap <leader>gd :Gdiff<CR>
 "nnoremap <leader>gl :Glog<CR>
 "nnoremap <leader>gr :Gremove<CR>
 "nnoremap <leader>gpl :GitPullRebase<CR>
-nnoremap <leader>gps :Neogit push<CR>
+"nnoremap <leader>gps :Neogit push<CR>
 "nnoremap <leader>gm :Merginal<CR>
 
 " nnoremap <leader>x :ccl<CR>
-nnoremap <leader>z :Neotree toggle<CR>
-nnoremap <leader>t :TagbarToggle<CR>
-nnoremap <leader>y :tabprev<CR>
-nnoremap <leader>u :tabfirst<CR>
-nnoremap <leader>i :tablast<CR>
-nnoremap <leader>o :tabnext<CR>
+"nnoremap <leader>z :Neotree toggle<CR>
+"nnoremap <leader>t :TagbarToggle<CR>
+"nnoremap <leader>y :tabprev<CR>
+"nnoremap <leader>u :tabfirst<CR>
+"nnoremap <leader>i :tablast<CR>
+"nnoremap <leader>o :tabnext<CR>
 
 " nnoremap <leader>s :Shell<CR>
-nnoremap <leader>w :w<CR>
-nnoremap <leader>u :UndotreeToggle<CR>
+"nnoremap <leader>w :w<CR>
+"nnoremap <leader>u :UndotreeToggle<CR>
 
-nnoremap <leader>j :wincmd j<CR>
-nnoremap <leader>k :wincmd k<CR>
-nnoremap <leader>h :wincmd h<CR>
-nnoremap <leader>l :wincmd l<CR>
+" nnoremap <leader>j :wincmd j<CR>
+" nnoremap <leader>k :wincmd k<CR>
+" nnoremap <leader>h :wincmd h<CR>
+" nnoremap <leader>l :wincmd l<CR>
 
 "nnoremap <silent> <C-S> :if expand("%") == ""<CR>browse confirm w<CR>else<CR>confirm w<CR>endif<CR>
 imap <c-s> <c-o><c-s>
@@ -564,7 +564,7 @@ endfunction
 " let g:vimshell_force_overwrite_statusline = 0
 
 " Disable preview window on completion
-set completeopt-=preview
+" set completeopt-=preview
 "
 " YouCompleteMe
 " let g:ycm_complete_in_comments = 1
@@ -589,11 +589,11 @@ set completeopt-=preview
 " <C-h>, <BS>: close popup and delete backword char.
 
 " Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+" autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+" autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+" autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+" autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 " pytest conversion macros
 let @e = '^cf(assert f,xi ==Akbj'
@@ -642,3 +642,4 @@ let @r = '^ssect(pytest.raises'
 " let g:deoplete#enable_at_startup = 1
 
 " lua require('neogit').setup {}
+set fillchars=vert:│
