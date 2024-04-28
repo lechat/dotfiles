@@ -164,7 +164,7 @@ NORMAL 00
 # normal file
 FILE 00
 # directory
-DIR 34
+DIR 01;36
 # 777 directory
 OTHER_WRITABLE 34;40
 # symbolic link
@@ -230,7 +230,8 @@ EXEC 01;31  # Unix
 .java 32
 .pl 32
 .pm 32
-.py 32
+*py 01;33
+.py 01;33
 .rb 32
 .hs 32
 .php 32

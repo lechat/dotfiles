@@ -14,11 +14,10 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    --    "python-mode/python-mode",
-    --    "vim-syntastic/syntastic",
     "neovim/nvim-lspconfig",
     "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {},
     "nvim-lua/plenary.nvim",
+    "nvim-neotest/nvim-nio",
     "sindrets/diffview.nvim",
     {
         "NeogitOrg/neogit",
