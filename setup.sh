@@ -5,38 +5,42 @@ set -o pipefail
 set -o errexit
 
 function save_to_old() {
-    local TS=$(date +'%Y-%m-%d_%H%M')
-    for item in .zshrc .vimrc .autoenv .tmux.conf .xinitrc .gitconfig .Xmodmap .dir_colors .git_template; do
-        if [ -e $HOME/$item ] && [ -L $HOME/$item ]; then
-            echo "Skipping saving a link of $item"
-        else
-            echo "Moving $item to $HOME/.old_dotfiles.$TS/"
-            mkdir -p $HOME/.old_dotfiles.$TS
-            mv $HOME/$item $HOME/.old_dotfiles.$TS/
-        fi
-    done
+  local TS=$(date +'%Y-%m-%d_%H%M')
+  for item in .zshrc .vimrc .autoenv .tmux.conf .xinitrc .gitconfig .Xmodmap .dir_colors .git_template; do
+    if [ -e $HOME/$item ] && [ -L $HOME/$item ]; then
+      echo "Skipping saving a link of $item"
+    else
+      if [ -e $HOME/$item ]; then
+        echo "Moving $item to $HOME/.old_dotfiles.$TS/"
+        mkdir -p $HOME/.old_dotfiles.$TS
+        mv $HOME/$item $HOME/.old_dotfiles.$TS/
+      else
+        echo "Skipping non-existent file $HOME/$item"
+      fi
+    fi
+  done
 }
 
 function install_fonts() {
     # The marker file is left once fonts are installed
-    if [ -f $HOME/.fonts_installed ]; then
+    if [ -f $HOME/.config/fonts_installed ]; then
         return
     fi
     # clone
-    git clone https://github.com/powerline/fonts.git --depth=1
+    git clone --filter=blob:none https://github.com/ryanoasis/nerd-fonts.git fonts
     # install
     cd fonts
     ./install.sh
     # clean-up a bit
     cd ..
     rm -rf fonts
-    touch $HOME/.fonts_installed
+    touch $HOME/.config/fonts_installed
 }
 
 function install_coc() {
     # Install latest nodejs
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-    export NVM_DIR="$HOME/.config/nvm"
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
     if [ -s "$NVM_DIR/nvm.sh" ]; then
         source "$NVM_DIR/nvm.sh"
         nvm install node
