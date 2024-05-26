@@ -144,13 +144,14 @@ export GPG_AGENT_INFO
 eval "$(direnv hook zsh)"
 #zprof
 
-# [ -f ~/.local/bin/virtualenvwrapper.sh ] && source ~/.local/bin/virtualenvwrapper.sh
+[ -f ~/.local/bin/virtualenvwrapper.sh ] && source ~/.local/bin/virtualenvwrapper.sh
+[ -f /usr/share/virtualenvwrapper/virtualenvwrapper.sh ] && source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # The next line updates PATH for the Google Cloud SDK.
-[ -f '$HOME/src/gcloud/google-cloud-sdk/path.zsh.inc' ] && . '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'
+[ -f '$HOME/src/gcloud/google-cloud-sdk/path.zsh.inc' ] && source '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'
 # The next line enables shell command completion for gcloud.
-[ -f '$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc' ] && . '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'
+[ -f '$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc' ] && source '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'
 
 autoload -U +X bashcompinit && bashcompinit
 [ -f /usr/bin/terraform ] && complete -o nospace -C /usr/bin/terraform terraform
