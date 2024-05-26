@@ -233,13 +233,26 @@ let.startify_change_to_dir = 0
 let.startify_change_to_vcs_root = 1
 let.startify_change_to_dir = 0
 
+local autocmd_group = vim.api.nvim_create_augroup("Custom auto-commands", { clear = true })
+
 autocmd('FileType', {
     pattern = 'python',
-    command = 'setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4'
+    command = 'setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4',
+})
+autocmd({ "BufWritePost" }, {
+    pattern = '*.py',
+    callback = function()
+        local fn = vim.api.nvim_buf_get_name(0)
+        vim.cmd(":silent !black -q -l 79 " .. fn)
+        vim.cmd(":silent !isort --profile black --float-to-top -q " .. fn)
+        vim.cmd(":silent !docformatter --in-place --wrap-summaries 79 --wrap-descriptions 79 " .. fn)
+    end,
+    group = autocmd_group
 })
 autocmd('FileType', {
     pattern = {'javascript', 'html', 'bash'},
-    command = 'setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2'
+    command = 'setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2',
+    group = autocmd_group
 })
 
 -- All plugin configurations
