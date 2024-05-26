@@ -127,7 +127,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS' --color=fg:#d0d0d0,bg:#121212,hl:#5f8
 eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
 eval "$(direnv hook zsh)"
 
-[ -e $HOME/src ] && cd $HOME/src
+#[ -e $HOME/src ] && cd $HOME/src
 
 #zprof
 # Invoke GnuPG-Agent the first time we login.
