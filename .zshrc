@@ -4,6 +4,8 @@
 # Disable Ctrl-S
 stty -ixon
 
+DISABLE_AUTO_UPDATE=true
+zstyle ':omz:update' mode disabled
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
@@ -61,11 +63,11 @@ ENABLE_CORRECTION=true
 ZSH_TMUX_AUTOSTART=true
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
 
-plugins=(git python pip docker vi-mode kubectl tmux fzf bazel aws zsh-autosuggestions)
+plugins=(git python pip docker vi-mode kubectl tmux fzf bazel zsh-autosuggestions)
 FZF_BASE=/usr/share/fzf
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=4,bg=16"
 
-plugins=(git python pip docker vi-mode kubectl tmux fzf aws)
+plugins=(git python pip docker vi-mode kubectl tmux fzf)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -82,7 +84,7 @@ export PATH=$HOME/.local/bin:$HOME/.krew/bin:$HOME/bin:/usr/local/bin:/usr/bin:/
 source $HOME/.aliases.sh
 
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
-export PYTHONPATH=.
+export PYTHONPATH=.:$HOME/.local/lib/python3.6/site-packages:$PYTHONPATH
 
 # Automatically quote URLs pasted in command line
 autoload -U url-quote-magic
@@ -131,6 +133,8 @@ export PROJECT_HOME=$HOME/src
 export XDG_CONFIG_HOME=$HOME/.config
 export EDITOR=$(which vim)
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS' --color=fg:#d0d0d0,bg:#121212,hl:#5f87af --color=fg+:#d0d0d0,bg+:#964e8a,hl+:#5fd7ff --color=info:#afaf87,prompt:#964e8a,pointer:#af5fff --color=marker:#87ff00,spinner:#af5fff,header:#87afaf'
+export ADO_TOKEN=$(cat $HOME/ado_token)
+export AZURE_TOKEN=$ADO_TOKEN
 
 eval "$(dircolors $HOME/.dir_colors)"
 eval "$(direnv hook zsh)"
@@ -150,12 +154,12 @@ else
 fi
 export GPG_TTY=`tty`
 export GPG_AGENT_INFO
-export NO_PROXY=$NO_PROXY,.internal.sc.com,.eks.amazonaws.com,.awscloud.dev.net
-export no_proxy=$no_proxy,.internal.sc.com,.eks.amazonaws.com,.awscloud.dev.net
-export NO_PROXY=$NO_PROXY,.eks.amazonaws.com
-export no_proxy=$no_proxy,.EKS.AMAZONAWS.COM
-export NO_PROXY=$NO_PROXY,.internal.sc.com,.eks.amazonaws.com
-export no_proxy=$no_proxy,.internal.sc.com,.eks.amazonaws.com
+export HTTP_PROXY=$HTTP_PROXY
+export NO_PROXY=$NO_PROXY,127.0.0.1,localhost,.localdomain,.scb.net,.standardchartered.com,proxypacservice,.sc.net,.scbdev.com,.scb.cloud,.standardchartered.com,.standardchartered.net,.sc.com,.sc.net,.dev.net,.scb.net,.global.standardchartered.com,.internal.sc.com,.eks.amazonaws.com,.awscloud.dev.net,eks.eu-west-2.amazonaws.com,eks.ap-southeast-1.amazonaws.com,sts01.internal.sc.com
+unset no_proxy
+unset http_proxy
+unset https_proxy
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 #zprof
 
 [ -f ~/.local/bin/virtualenvwrapper.sh ] && source ~/.local/bin/virtualenvwrapper.sh
@@ -178,9 +182,14 @@ autoload -U +X bashcompinit && bashcompinit
 [ -f /etc/zsh_completion.d/fzf-key-bindings ] && source /etc/zsh_completion.d/fzf-key-bindings
 # Ubuntu
 [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+[ -f $HOME/.ado_token ] && source $HOME/.ado_token
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+if ! ps -ef | grep -v grep | grep remove-hook; then
+  nohup ~/.local/bin/remove-hook 2>&1 > /dev/null &
+fi
 [ -e $HOME/src ] && cd $HOME/src
+nslookup gateway.zscloud.net > /dev/null || source ~/split_vpn.sh && source ~/office_proxy.sh

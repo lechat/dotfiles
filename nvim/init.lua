@@ -57,8 +57,8 @@ require("lazy").setup({
     },
     {
         "NeogitOrg/neogit",
+        -- url = "https://github.com/lechat/neogit.git",
         -- branch = "commentChar",
-        -- dev = true, 
         dependencies = {
             "nvim-lua/plenary.nvim",         -- required
             "nvim-telescope/telescope.nvim", -- optional
@@ -166,7 +166,7 @@ set.expandtab = true
 set.autoindent = true
 set.showmatch = true
 set.autoread = true
-set.fillchars = { vert = '│' }
+set.fillchars = { vert = '▏' }
 set.wildmode = { 'longest', 'list', 'full' }
 set.wildmenu = true
 set.re = 1
@@ -663,10 +663,15 @@ vim.defer_fn(function()
 end, 0)
 
 require("neogit").setup {
+    disable_insert_on_commit = true,
     sections = {
         stashes = {
             folded = false,
             hidden = false
+        }
+    },
+    mappings = {
+        commit_editor = {
         }
     }
 }

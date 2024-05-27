@@ -10,23 +10,32 @@
 	editor = nvim
 	commentChar = ";"
 	pager = less -FX
+	commentChar = ";"
 [pull]
-   rebase = true
+	rebase = true
 [diff]
-    tool = vimdiff
+    tool = nvimdiff
+	algorithm = histogram
 [merge]
-    tool = vimdiff
-[mergetool]
+    tool = nvimdiff
+	conflictstyle = zdiff3
+[difftool "nvimdiff"]
+    prompt = true
+    keepBackup = false
+    trustExitCode = true
+    # Set nvim as the editor
+    cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
+[mergetool "nvimdiff"]
     prompt = false
     keepBackup = false
     trustExitCode = true
     # Set nvim as the editor
-    cmd = nvim -d \"$LOCAL\" \"$BASE\" \"$REMOTE\" \"$MERGED\"
+    cmd = nvim -d \"$LOCAL\" \"$MERGED\" \"$REMOTE\"
 [push]
-    followTags = true
-    templatedir = ~/.git_template
+	followTags = true
+	default = current
 [gpg]
-   program = gpg
+	program = gpg
 [url "https://gitlab.com/cznic/mathutil.git"]
     insteadOf = https://gitlab.com/cznic/mathutil
 [url "https://gitlab.com/cznic/xc.git"]
@@ -39,3 +48,10 @@
     insteadOf = https://gitlab.com/cznic/strutil
 [url "https://github.com/googleapis/google-cloud-go.git"]
     insteadOf = https://cloud.google.com/go?go-get=1
+[init]
+	templateDir = /home/scb/.git_template
+	defaultBranch = master
+[rebase]
+	autosquash = true
+[fetch]
+	prune = true

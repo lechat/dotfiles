@@ -66,14 +66,15 @@ sts () {
 		gettoken --awsAccount $account --roleName $role
 		if [ "$cluster" = "" ]
 		then
+            echo "aws --ca-bundle /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem eks list-clusters --region $region"
 			opts=($(aws --ca-bundle /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem eks list-clusters --region $region | jq -r '.clusters[]'))
 			select opt in "${opts[@]}"
 			do
 			break
 			done
-			eks $opt -r $region
+			$HOME/.local/bin/eks.sh $opt -r $region
 		else
-			eks $cluster -r $region
+			$HOME/.local/bin/eks.sh $cluster -r $region
 		fi
 	fi
 }

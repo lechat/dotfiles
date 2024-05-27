@@ -3,13 +3,14 @@ alias ls-al='nocorrect ls -al'
 alias rsync='noglob rsync'
 alias docker='podman'
 alias dicker='podman'
-alias grep='grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,vendor} --exclude=tags'
+alias grep='grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,vendor,.terraform} --exclude=tags'
 alias pygrep='grep -r --include="*.py"'
 alias ktx='kubectx'
 alias kns='kubens'
 alias kgn='kubectl get ns'
 alias vimdiff='nvim -d'
 alias sts=~/.local/bin/sts_eks.sh
+alias eks=~/.local/bin/eks.sh
 
 #CA_BUNDLE=$HOME/SCB-bundle.crt
 CA_BUNDLE=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
@@ -18,6 +19,7 @@ ACC_HK=533746428624
 ACC_SG=373893023700
 export BANKID="2007382"
 export SSO_PASSWORD=$(cat $HOME/.login)
+export SSO_PWD=$SSO_PASSWORD
 ZONE_ACC="o.2007382"
 
 function kl {
@@ -75,46 +77,6 @@ function ekslogin() {
         fi
         if [ $AREGION = "hk" ]; then
             AREGION="ap-east-1"
-        fi
-
-        echo aws --ca-bundle $CA_BUNDLE eks update-kubeconfig --name "$CLUSTER" --region $AREGION --alias $CLUSTER
-        aws --ca-bundle $CA_BUNDLE eks update-kubeconfig --name "$CLUSTER" --region $AREGION --alias $CLUSTER
-        kubens kube-system
-    fi
-}
-
-function eks() {
-    local AREGION="sg"
-    if [ -z $1 ]; then
-        echo "Usage:"
-        echo
-        echo "eks CLUSTER [-r REGION]"
-        echo
-        echo "Region names: hk,sg default: sg"
-    else
-        while [[ $# -gt 0 ]]; do
-            case $1 in
-                -r|--region)
-                    AREGION="$2"
-                    shift # past argument
-                    shift # past value
-                    ;;
-                *)
-                    CLUSTER="$1"
-                    shift # past argument
-                    ;;
-            esac
-        done
-        AREGION=${AREGION-"sg"}
-
-        if [ $AREGION = "sg" ]; then
-            AREGION="ap-southeast-1"
-        fi
-        if [ $AREGION = "hk" ]; then
-            AREGION="ap-east-1"
-        fi
-        if [ $AREGION = "lon" ]; then
-            AREGION="eu-west-2"
         fi
 
         echo aws --ca-bundle $CA_BUNDLE eks update-kubeconfig --name "$CLUSTER" --region $AREGION --alias $CLUSTER
