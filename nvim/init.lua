@@ -1,554 +1,289 @@
-vim.cmd('source ~/dotfiles/nvim/init.vim')
-
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system({
-        "git",
-        "clone",
-        "--filter=blob:none",
-        "https://github.com/folke/lazy.nvim.git",
-        "--branch=stable", -- latest stable release
-        lazypath,
-    })
+  vim.fn.system({"git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath})
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Basic settings
+vim.opt.compatible = false
+vim.opt.encoding = "utf-8"
+vim.opt.filetype = "on"
+vim.opt.syntax = "on"
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.expandtab = true
+vim.opt.autoindent = true
+vim.opt.showmatch = true
+vim.opt.autoread = true
+vim.opt.fillchars:append("vert:│")
+vim.g.is_posix = 1
+vim.g.mapleader = " "
+vim.opt.wildmenu = true
+vim.opt.wildmode = {"list:longest", "full"}
+vim.opt.re = 1
+vim.opt.ttyfast = true
+vim.opt.lazyredraw = true
+vim.opt.synmaxcol = 150
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.do_legacy_filetype = 1
+vim.g.python3_host_prog = "/bin/python3"
+vim.opt.termguicolors = true
+vim.opt.incsearch = true
+vim.opt.hlsearch = true
+vim.opt.scrolloff = 3
+vim.opt.foldenable = false
+vim.opt.colorcolumn = "79,90,120"
+
+-- Ensure NVM's PATH is available to Neovim
+vim.env.PATH = vim.env.PATH .. ":/home/aleksey/.config/nvm/versions/node/v22.2.0/bin"
+
+-- Plugin setup with lazy.nvim
 require("lazy").setup({
-    "neovim/nvim-lspconfig",
-    "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {},
-    "nvim-lua/plenary.nvim",
-    "nvim-neotest/nvim-nio",
-    "sindrets/diffview.nvim",
-    {
-        "NeogitOrg/neogit",
-        -- branch = "commentChar",
-        -- dev = true, 
-        dependencies = {
-            "nvim-lua/plenary.nvim",         -- required
-            "nvim-telescope/telescope.nvim", -- optional
-            "sindrets/diffview.nvim",        -- optional
-        },
-    },
-    "dkprice/vim-easygrep",
-    "itchyny/lightline.vim",
-    "majutsushi/tagbar",
-    "Raimondi/delimitMate",
-    "mbbill/undotree",
-    "justinmk/vim-sneak",
-    --    "airblade/vim-gitgutter",
-    "lewis6991/gitsigns.nvim",
-    "junegunn/gv.vim",
-    --    "Yggdroot/indentLine",
-    --"idanarye/vim-merginal",
-    "tmux-plugins/vim-tmux-focus-events",
-    "fatih/vim-go",
-    -- Color schemes
-    "jnurmine/Zenburn",
-    "dracula/vim",
-    "navarasu/onedark.nvim",
-    "altercation/vim-colors-solarized",
-    "lmintmate/blue-mood-vim",
-    "Rigellute/shades-of-purple.vim",
-    "liuchengxu/space-vim-dark",
-    "sainnhe/gruvbox-material",
-    "dylanaraps/wal.vim",
-    -- 
-    -- "kshenoy/vim-signature",
-    "chentoast/marks.nvim",
-    "mhinz/vim-startify",
-    "pangloss/vim-javascript",
-    -- "tpope/vim-dispatch",
-    --"google/vim-maktaba",
-    {"neoclide/coc.nvim", branch = "release"},
-    "github/copilot.vim",
-    "prabirshrestha/async.vim",
-    {
-        "nvim-neo-tree/neo-tree.nvim",
-        branch = "v3.x",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-            "MunifTanjim/nui.nvim",
-        }
-    },
-    --"stackline/vim-asynctags",
-    {
-        "folke/tokyonight.nvim",
-        lazy = false,
-        priority = 1000,
-        opts = {},
-    },
-    "pedrohdz/vim-yaml-folds",
-    "nvim-treesitter/nvim-treesitter",
-    "mfussenegger/nvim-dap",
-    "pocco81/dap-buddy.nvim",
-    "mfussenegger/nvim-dap-python",
-    {
-        "rcarriga/nvim-dap-ui"
-    },
-    {
-      "theHamsta/nvim-dap-virtual-text"
-    },
-    {
-        "folke/which-key.nvim",
-        event = "VeryLazy",
+  { "neovim/nvim-lspconfig",
+    dependencies = {
+      { "ms-jpq/coq_nvim", branch = "coq",
         init = function()
-            vim.o.timeout = true
-            vim.o.timeoutlen = 300
-            require("which-key").setup {
-                plugins = {
-                    registers = false
-                }
-            }
+          vim.g.coq_settings = {
+            auto_start = true,
+            limits = { completion_auto_timeout = 0.1 },
+            clients = {
+              lsp = { enabled = true },
+              buffers = { enabled = true }
+            },
+            keymap = {
+              recommended = true,
+              manual_complete = "<C-Space>"
+            },
+            -- Moved display.icons to config to ensure proper initialization
+          }
         end,
-    },
-    "folke/neodev.nvim",
-    "williamboman/mason.nvim",
-    "jbyuki/one-small-step-for-vimkind",
-}, {
-    dev = {
-      path = "~/src"
-    }
-})
-local set = vim.opt
-local cmd = vim.cmd
-local let = vim.g
-local lett = vim.o
-local map = vim.api.nvim_set_keymap
-local autocmd = vim.api.nvim_create_autocmd
-
-vim.diagnostic.config({virtual_text=true})
---set.nocompatible = true
-set.encoding = 'utf-8'
---set.scriptencoding = 'utf-8'
-set.runtimepath:append('~/.vim')
-set.runtimepath:append('~/.vim/after')
-set.softtabstop = 4
-set.shiftwidth = 4
-set.tabstop = 4
-set.expandtab = true
-set.autoindent = true
-set.showmatch = true
-set.autoread = true
-set.fillchars = { vert = '│' }
-set.wildmode = { 'longest', 'list', 'full' }
-set.wildmenu = true
-set.re = 1
-set.ttyfast = true
-set.lazyredraw = true
-set.mouse = ''
---set.t_Co = '256'
-set.background = 'dark'
-set.termguicolors = true
-set.nu = true
-set.updatetime = 100
-set.signcolumn = 'yes'
---set.nobackup = true
-set.ruler = true
-set.showcmd = true
-set.laststatus = 2
-set.backspace = 'indent,eol,start'
-set.incsearch = true
-set.hlsearch = true
-set.scrolloff = 3
-set.foldenable = false
-set.foldmethod = 'manual'
-set.wildignore = '*.sw*,*.pyc,*.class'
-set.grepprg = 'grep'
-set.autowrite = true
-set.backup = false
-set.writebackup = false
-set.signcolumn = 'yes'
---map('n', '<Space>', '', {})
---vim.g.mapleader = ' '
-
-let.loaded_ruby_provider = 0
-let.loaded_node_provider = 0
-let.loaded_perl_provider = 0
-
-let.python3_host_prog = '/bin/python3'
-
-let.is_posix = 1
-let.vim_json_conceal = 0
-
-let.easytags_async = 1
-let.easytags_python_enabled = 1
-let.easytags_autoresume = 1
-
-let.PylintCWindow = 1
-let.PylintOnWrite = 1
-let.PylintOnOpen = 0
-
-let.EasyGrepRecursive = 1
-let.EasyGrepCommand = 1
-let.EasyGrepFilesToExclude = ".git,*.tar*,*.zip,tags"
-
---let.gruvbox_material_foreground = 'original'
---let.gruvbox_material_background = 'hard'
---let.gruvbox_material_better_performance = 1
---let.gruvbox_material_ui_contrast = 'high'
---let.lightline = {colorscheme= 'gruvbox_material'}
-
---let.pymode_debug = 1
-let.pymode = 1
-let.pymode_python = 'python3'
-let.pymode_python_version = '3.10.6'
-let.pymode_options_max_line_length = 79
-let.pymode_indent = 1
-let.pymode_motion = 1
-let.pymode_virtualenv = 1
-let.pymode_run = 0
-let.pymode_breakpoint = 1
-let.pymode_breakpoint_bind = '<leader>b'
-let.pymode_lint = 1
-let.pymode_lint_on_write = 1
-let.pymode_lint_options_pylint = "$HOME/.pylintrc"
-let.pymode_lint_onfly = 0
-let.pymode_lint_message = 1
-let.pymode_lint_checkers = {'pyflakes', 'pycodestyle', 'pep8'}
-let.pymode_lint_ignore = {"C901"}
-let.pymode_lint_options_mccabe = { complexity = 12 }
--- Disable showing Python docs on K
-let.pymode_doc = 0
-let.pymode_folding = 0
-
-let.pymode_rope = 0
-let.pymode_rope_completion = 0
-let.pymode_rope_complete_on_dot = 0
-
-let.pymode_syntax = 1
-let.pymode_syntax_slow_sync = 1
-let.pymode_syntax_all = 1
-let.pymode_breakpoint_cmd = 'import pudb; pu.db'
-
-let.go_fmt_command = "goimports"
-let.go_highlight_types = 1
-let.go_list_type = "quickfix"
-let.go_auto_type_info = 1
-let.go_version_warning = 0
-
-let.indentLine_char = '·'
-
-let.startify_change_to_dir = 0
-let.startify_change_to_vcs_root = 1
-let.startify_change_to_dir = 0
-
-local autocmd_group = vim.api.nvim_create_augroup("Custom auto-commands", { clear = true })
-
-autocmd('FileType', {
-    pattern = 'python',
-    command = 'setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4',
-})
-autocmd({ "BufWritePost" }, {
-    pattern = '*.py',
-    callback = function()
-        local fn = vim.api.nvim_buf_get_name(0)
-        vim.cmd(":silent !black -q -l 79 " .. fn)
-        vim.cmd(":silent !isort --profile black --float-to-top -q " .. fn)
-        vim.cmd(":silent !docformatter --in-place --wrap-summaries 79 --wrap-descriptions 79 " .. fn)
-    end,
-    group = autocmd_group
-})
-autocmd('FileType', {
-    pattern = {'javascript', 'html', 'bash'},
-    command = 'setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2',
-    group = autocmd_group
-})
-
--- All plugin configurations
---
-require("mason").setup()
-require("neodev").setup({
-  library = {
-    enabled = true, -- when not enabled, neodev will not change any settings to the LSP server
-    -- these settings will be used for your Neovim config directory
-    runtime = true, -- runtime path
-    types = true, -- full signature, docs and completion of vim.api, vim.treesitter, vim.lsp and others
-    plugins = { "nvim-dap-ui" }, -- installed opt or start plugins in packpath
-    -- you can also specify the list of plugins to make available as a workspace library
-    -- plugins = { "nvim-treesitter", "plenary.nvim", "telescope.nvim" },
-  },
-  setup_jsonls = true, -- configures jsonls to provide completion for project specific .luarc.json files
-  -- for your Neovim config directory, the config.library settings will be used as is
-  -- for plugin directories (root_dirs having a /lua directory), config.library.plugins will be disabled
-  -- for any other directory, config.library.enabled will be set to false
-  override = function(root_dir, options) end,
-  -- With lspconfig, Neodev will automatically setup your lua-language-server
-  -- If you disable this, then you have to set {before_init=require("neodev.lsp").before_init}
-  -- in your lsp start options
-  lspconfig = true,
-  -- much faster, but needs a recent built of lua-language-server
-  -- needs lua-language-server >= 3.6.0
-  pathStrict = true,
-})
-require('coc')
-require("dapui").setup(
-  {
-    controls = {
-      element = "repl",
-      enabled = true,
-      icons = {
-        disconnect = "",
-        pause = "",
-        play = "",
-        run_last = "",
-        step_back = "",
-        step_into = "",
-        step_out = "",
-        step_over = "",
-        terminate = ""
-      }
-    },
-    element_mappings = {},
-    expand_lines = true,
-    floating = {
-      border = "single",
-      mappings = {
-        close = { "q", "<Esc>" }
-      }
-    },
-    force_buffers = true,
-    icons = {
-      collapsed = "",
-      current_frame = "",
-      expanded = ""
-    },
-    layouts = { {
-        elements = { {
-            id = "scopes",
-            size = 0.25
-          }, {
-            id = "breakpoints",
-            size = 0.25
-          }, {
-            id = "stacks",
-            size = 0.25
-          }, {
-            id = "watches",
-            size = 0.25
-          } },
-        position = "right",
-        size = 40
-      }, {
-        elements = { {
-            id = "repl",
-            size = 0.5
-          }, {
-            id = "console",
-            size = 0.5
-          } },
-        position = "bottom",
-        size = 10
-      } },
-    mappings = {
-      edit = "e",
-      expand = { "<CR>", "<2-LeftMouse>" },
-      open = "o",
-      remove = "d",
-      repl = "r",
-      toggle = "t"
-    },
-    render = {
-      indent = 1,
-      max_value_lines = 100
-    }
-  }
-)
---
--- Onedark colorscheme config
-require('onedark').setup  {
-    -- Main options --
-    style = 'darker', -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
-    transparent = false,  -- Show/hide background
-    term_colors = true, -- Change terminal color as per the selected theme style
-    ending_tildes = false, -- Show the end-of-buffer tildes. By default they are hidden
-    cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
-
-    -- toggle theme style ---
-    toggle_style_key = "<leader>od", -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
-    toggle_style_list = {'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light'}, -- List of styles to toggle between
-
-    -- Change code style ---
-    -- Options are italic, bold, underline, none
-    -- You can configure multiple style with comma separated, For e.g., keywords = 'italic,bold'
-    code_style = {
-        comments = 'italic',
-        keywords = 'none',
-        functions = 'none',
-        strings = 'none',
-        variables = 'none'
-    },
-
-    -- Lualine options --
-    lualine = {
-        transparent = false, -- lualine center bar transparency
-    },
-
-    -- Custom Highlights --
-    colors = {}, -- Override default colors
-    highlights = {}, -- Override highlight groups
-
-    -- Plugins Config --
-    diagnostics = {
-        darker = true, -- darker colors for diagnostic
-        undercurl = true,   -- use undercurl instead of underline for diagnostics
-        background = true,    -- use background color for virtual text
-    },
-}
-
-require('onedark').load()
-cmd('colorscheme shades_of_purple')
-require("ibl").setup()
-
-require('nvim-treesitter.configs').setup {
-    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "python" },
-    autoinstall = true,
-    highlight = {
-        enable = true,
-    },
-    indent = {
-        enable = true
-    }
-}
-require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
-require("nvim-dap-virtual-text").setup()
-
--- document existing key chains
-require('which-key').register {
-    ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-    ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-    ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-    -- ['<leader>h'] = { name = 'More git', _ = 'which_key_ignore' },
-    ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-    ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-    ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-}
-local highlight = {
-    "CursorColumn",
-    "Whitespace",
-}
-require("ibl").setup {
-    indent = { highlight = highlight, char = "" },
-    whitespace = {
-        highlight = highlight,
-        remove_blankline_trail = false,
-    },
-    scope = { enabled = false },
-}
-require("neogit").setup {
-  disable_insert_on_commit = true,
-  graph_style = "unicode",
-  disable_editor_help = false,
-  sections = {
-    stashes = {
-      folded = false,
-      hidden = false
-    }
-  }
-}
-require("marks").setup {
-}
-local dap = require("dap")
-dap.configurations = {
-  python = {
-      {
-          type = "python",
-          request = "launch",
-          name = "Launch file",
-          program = "${file}",
-          pythonPath = function()
-              -- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
-              -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
-              -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
-              local cwd = vim.fn.getcwd()
-              if vim.fn.executable(cwd .. "/venv/bin/python") == 1 then
-                  return cwd .. "/venv/bin/python"
-              elseif vim.fn.executable(cwd .. "/.venv/bin/python") == 1 then
-                  return cwd .. "/.venv/bin/python"
+        config = function()
+          local lspconfig = require("lspconfig")
+          lspconfig.pyright.setup({
+            cmd = {"pyright-langserver", "--stdio"},
+            on_attach = function(client, bufnr)
+              print("Pyright LSP attached to buffer " .. bufnr)
+            end,
+            on_init = function(client)
+              if not vim.fn.executable("pyright-langserver") then
+                vim.notify("Pyright not found. Install with 'npm install -g pyright'", vim.log.levels.ERROR)
               else
-                  return "/usr/bin/python"
+                vim.notify("Pyright found at " .. vim.fn.exepath("pyright-langserver"), vim.log.levels.INFO)
               end
-          end,
+            end,
+            settings = {
+              python = {
+                analysis = {
+                  autoSearchPaths = true,
+                  useLibraryCodeForTypes = true
+                }
+              }
+            }
+          })
+          -- Configure display.icons after lspkind is set up
+          vim.g.coq_settings = vim.tbl_extend("force", vim.g.coq_settings or {}, {
+            display = {
+              icons = {
+                mode = "short",  -- Use "short" for icons only (removes text labels)
+                spacing = 1  -- Space between icon and label
+              }
+            }
+          })
+        end,
       },
+      { "ms-jpq/coq.thirdparty", branch = "3p", event = "InsertEnter" },
+      { "onsails/lspkind.nvim",
+        config = function()
+          require("lspkind").init({
+            preset = "codicons",
+            symbol_map = {
+              Text = "",
+              Method = "",
+              Function = "",
+              Constructor = "",
+              Field = "",
+              Variable = "",
+              Class = "",
+              Interface = "",
+              Module = "",
+              Property = "",
+              Unit = "",
+              Value = "",
+              Enum = "",
+              Keyword = "",
+              Snippet = "",
+              Color = "",
+              File = "",
+              Reference = "",
+              Folder = "",
+              EnumMember = "",
+              Constant = "",
+              Struct = "",
+              Event = "",
+              Operator = "",
+              TypeParameter = ""
+            }
+          })
+        end,
+      },
+    },
   },
-  lua = { 
-    { 
-      type = 'nlua', 
-      request = 'attach',
-      name = "Attach to running Neovim instance",
-    }
-  }
-}
-dap.adapters.nlua = function(callback, config)
-  callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or 8086 })
-end
--- End of setup section
+  { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {}, event = "BufReadPost" },
+  { "nvim-lua/plenary.nvim", lazy = true },
+  { "nvim-neotest/nvim-nio", lazy = true },
+  { "sindrets/diffview.nvim", cmd = "DiffviewOpen" },
+  { "NeogitOrg/neogit", cmd = "Neogit", dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim", "sindrets/diffview.nvim"} },
+  { "itchyny/lightline.vim", event = "VimEnter",
+    init = function()
+      vim.g.lightline = {
+        colorscheme = "Tomorrow_Night_Blue",
+        active = { left = {{"mode"}, {"filename"}}, right = {{"lineinfo"}} }
+      }
+    end,
+  },
+  { "majutsushi/tagbar", cmd = "TagbarToggle" },
+  { "Raimondi/delimitMate", event = "InsertEnter" },
+  { "mbbill/undotree", cmd = "UndotreeToggle" },
+  { "justinmk/vim-sneak", event = "BufReadPost" },
+  { "lewis6991/gitsigns.nvim", event = "BufReadPost" },
+  { "fatih/vim-go", ft = "go",
+    init = function()
+      vim.g.go_fmt_command = "goimports"
+      vim.g.go_highlight_types = 1
+      vim.g.go_list_type = "quickfix"
+      vim.g.go_auto_type_info = 1
+    end,
+  },
+  { "mhinz/vim-startify", enabled = false },
+  { "Rigellute/shades-of-purple.vim", event = "VimEnter",
+    config = function() vim.cmd("colorscheme shades_of_purple") end,
+  },
+  { "nvim-neo-tree/neo-tree.nvim", cmd = "Neotree",
+    dependencies = {"nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim"},
+  },
+  { "mfussenegger/nvim-dap", event = "VeryLazy",
+    config = function()
+      local dap = require("dap")
+      dap.configurations = {
+        python = {
+          {
+            type = "python",
+            request = "launch",
+            name = "Launch file",
+            program = "${file}",
+            pythonPath = function()
+              local cwd = vim.fn.getcwd()
+              if vim.fn.executable(cwd .. "/venv/bin/python") == 1 then return cwd .. "/venv/bin/python"
+              elseif vim.fn.executable(cwd .. "/.venv/bin/python") == 1 then return cwd .. "/.venv/bin/python"
+              else return "/usr/bin/python" end
+            end,
+          },
+        },
+        lua = {
+          { type = "nlua", request = "attach", name = "Attach to running Neovim instance" }
+        }
+      }
+      dap.adapters.nlua = function(callback, config)
+        callback({ type = "server", host = config.host or "127.0.0.1", port = config.port or 8086 })
+      end
+    end,
+  },
+  { "rcarriga/nvim-dap-ui", event = "VeryLazy", dependencies = {"mfussenegger/nvim-dap"},
+    config = function() require("dapui").setup() end,
+  },
+  { "nvim-telescope/telescope.nvim", cmd = "Telescope", dependencies = {"nvim-lua/plenary.nvim"}},
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate",
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = {"python", "lua", "go", "javascript"},
+        highlight = { enable = true },
+        incremental_selection = { enable = true },
+        textobjects = { enable = true }
+      })
+    end,
+  },
+  { "folke/which-key.nvim", event = "VeryLazy",
+    config = function()
+      require("which-key").setup({
+        notify = false
+      })
+    end,
+  },
+  { "github/copilot.vim", event = "InsertEnter",
+    config = function()
+      vim.g.copilot_no_tab_map = true
+      vim.g.copilot_filetypes = { python = true, lua = true, go = true }
+      vim.keymap.set("i", "<C-j>", 'copilot#Accept("<CR>")', { expr = true, silent = true, replace_keycodes = false })
+    end,
+  },
+})
+
+-- Autocommands
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = {"javascript", "html"},
+  callback = function() vim.opt_local.tabstop = 2 vim.opt_local.shiftwidth = 2 end,
+})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "python",
+  callback = function() vim.opt_local.tabstop = 4 vim.opt_local.shiftwidth = 4 vim.b.coc_root_patterns = {".git", ".env"} end,
+})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "go",
+  callback = function() vim.keymap.set("n", "<leader>gi", "<Plug>(go-install)", { buffer = true }) end,
+})
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = {"*.sh", "*.py", "*.js", "*.yaml", "*.html", "*.groovy"},
+  callback = function() vim.cmd("%s/\\s\\+$//e") end,
+})
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = "*.py",
+  callback = function()
+    vim.lsp.start_client(require("lspconfig").pyright)
+  end,
+})
+vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+  pattern = "*grep*",
+  command = "cwindow",
+})
 
 -- Key mappings
---
--- DAP
-vim.keymap.set("n", "<F4>", function() require('dapui').toggle() end)
-vim.keymap.set('n', '<F5>', function() require('dap').continue() end)
-vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
-vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)
-vim.keymap.set('n', '<F12>', function() require('dap').step_out() end)
-vim.keymap.set('n', '<Leader>b', function() require('dap').toggle_breakpoint() end)
-vim.keymap.set('n', '<Leader>B', function() require('dap').set_breakpoint() end)
-vim.keymap.set('n', '<Leader>lp', function() require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end)
-vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end)
-vim.keymap.set('n', '<Leader>dl', function() require('dap').run_last() end)
-vim.keymap.set({'n', 'v'}, '<Leader>dh', function()
-    require('dap.ui.widgets').hover()
-end)
-vim.keymap.set({'n', 'v'}, '<Leader>dp', function()
-    require('dap.ui.widgets').preview()
-end)
-vim.keymap.set('n', '<Leader>df', function()
-    local widgets = require('dap.ui.widgets')
-    widgets.centered_float(widgets.frames)
-end)
-vim.keymap.set('n', '<Leader>ds', function()
-    local widgets = require('dap.ui.widgets')
-    widgets.centered_float(widgets.scopes)
-end)
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    vim.keymap.set("n", "<leader>gg", ":Neogit<CR>")
+    vim.keymap.set("n", "<leader>x", ":ccl<CR>")
+    vim.keymap.set("n", "<leader>z", ":Neotree toggle<CR>")
+    vim.keymap.set("n", "<leader>t", ":TagbarToggle<CR>")
+    vim.keymap.set("n", "<leader>y", ":tabprev<CR>")
+    vim.keymap.set("n", "<leader>u", ":tabfirst<CR>")
+    vim.keymap.set("n", "<leader>i", ":tablast<CR>")
+    vim.keymap.set("n", "<leader>o", ":tabnext<CR>")
+    vim.keymap.set("n", "<leader>w", ":w<CR>")
+    vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>")
+    vim.keymap.set("n", "<leader>j", ":wincmd j<CR>")
+    vim.keymap.set("n", "<leader>k", ":wincmd k<CR>")
+    vim.keymap.set("n", "<leader>h", ":wincmd h<CR>")
+    vim.keymap.set("n", "<leader>l", ":wincmd l<CR>")
+    vim.keymap.set({"n", "i"}, "<C-S>", ":w<CR>")
+    -- DAP mappings
+    vim.keymap.set("n", "<F5>", function() require('dap').continue() end)
+    vim.keymap.set("n", "<F10>", function() require('dap').step_over() end)
+    vim.keymap.set("n", "<F11>", function() require('dap').step_into() end)
+    vim.keymap.set("n", "<F12>", function() require('dap').step_out() end)
+    vim.keymap.set("n", "<Leader>b", function() require('dap').toggle_breakpoint() end)
+    vim.keymap.set("n", "<F4>", function() require('dapui').toggle() end)
+    -- Telescope mappings
+    vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+    vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+    vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
+    vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+  end,
+})
 
--- See `:help telescope.builtin`
-vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
-vim.keymap.set('n', '<leader>/', function()
-    -- You can pass additional configuration to telescope to change theme, layout, etc.
-    require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-        winblend = 10,
-        previewer = false,
-    })
-end, { desc = '[/] Fuzzily search in current buffer' })
-
-vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
-vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
-vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
-vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
-vim.keymap.set('n', '<leader>st', require('telescope.builtin').treesitter, { desc = '[S]earch [T]reesitter' })
-
-
-vim.keymap.set("n", "<leader>gg", ":Neogit<CR>")
-vim.keymap.set("n", "<leader>j", ":wincmd j<CR>")
-vim.keymap.set("n", "<leader>k", ":wincmd k<CR>")
-vim.keymap.set("n", "<leader>h", ":wincmd h<CR>")
-vim.keymap.set("n", "<leader>l", ":wincmd l<CR>")
-vim.keymap.set("n", "<leader>z", ":Neotree toggle<CR>")
-vim.keymap.set("n", "<leader>t", ":TagbarToggle<CR>")
-vim.keymap.set("n", "<leader>y", ":tabprev<CR>")
-vim.keymap.set("n", "<leader>u", ":tabfirst<CR>")
-vim.keymap.set("n", "<leader>i", ":tablast<CR>")
-vim.keymap.set("n", "<leader>o", ":tabnext<CR>")
-vim.keymap.set("n", "<leader>w", ":w<CR>")
-vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>")
-
--- vim.keymap.set("n", "<C-Up>", ":<C-U>ObviousResizeUp<CR>")
--- vim.keymap.set("n", "<C-Down>", ":<C-U>ObviousResizeDown<CR>")
--- vim.keymap.set("n", "<C-Left>", ":<C-U>ObviousResizeLeft<CR>")
--- vim.keymap.set("n", "<C-Right>", ":<C-U>ObviousResizeRight<CR>")
--- vim: set ts=2 sw=2 tw=0 et :
+-- Commands
+vim.api.nvim_create_user_command("Q", "q", {})
+vim.api.nvim_create_user_command("W", "w", {})
+vim.api.nvim_create_user_command("Qa", "qa", {})
+vim.keymap.set("", "X", "x", { noremap = true })
