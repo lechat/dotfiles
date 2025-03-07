@@ -36,9 +36,21 @@ vim.opt.hlsearch = true
 vim.opt.scrolloff = 3
 vim.opt.foldenable = false
 vim.opt.colorcolumn = "79,90,120"
+vim.opt.mouse = ""
 
 -- Ensure NVM's PATH is available to Neovim
 vim.env.PATH = vim.env.PATH .. ":/home/aleksey/.config/nvm/versions/node/v22.2.0/bin"
+
+-- Define the Fullpath function in Vimscript (for lualine component)
+vim.cmd([[
+  function! Fullpath() abort
+    let path = expand('%:p')
+    if path == ''
+      return '[No File]'
+    endif
+    return path
+  endfunction
+]])
 
 -- Plugin setup with lazy.nvim
 require("lazy").setup({
@@ -54,10 +66,10 @@ require("lazy").setup({
               buffers = { enabled = true }
             },
             keymap = {
-              recommended = true,
-              manual_complete = "<C-Space>"
+              recommended = true, -- Enable default keybindings
+              manual_complete = "<C-Space>",
+              pre_select = true, -- Automatically pre-select the first item
             },
-            -- Moved display.icons to config to ensure proper initialization
           }
         end,
         config = function()
@@ -83,18 +95,16 @@ require("lazy").setup({
               }
             }
           })
-          -- Configure display.icons after lspkind is set up
           vim.g.coq_settings = vim.tbl_extend("force", vim.g.coq_settings or {}, {
             display = {
               icons = {
-                mode = "short",  -- Use "short" for icons only (removes text labels)
-                spacing = 1  -- Space between icon and label
+                mode = "short",
+                spacing = 1
               }
             }
           })
         end,
       },
-      { "ms-jpq/coq.thirdparty", branch = "3p", event = "InsertEnter" },
       { "onsails/lspkind.nvim",
         config = function()
           require("lspkind").init({
@@ -129,6 +139,22 @@ require("lazy").setup({
           })
         end,
       },
+      { "williamboman/mason.nvim",
+        build = ":MasonUpdate",
+        config = function()
+          require("mason").setup()
+        end,
+      },
+      { "jay-babu/mason-nvim-dap.nvim",
+        dependencies = { "williamboman/mason.nvim", "mfussenegger/nvim-dap" },
+        config = function()
+          require("mason-nvim-dap").setup({
+            ensure_installed = { "python" },
+            automatic_setup = true,
+            handlers = {},
+          })
+        end,
+      },
     },
   },
   { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {}, event = "BufReadPost" },
@@ -136,12 +162,44 @@ require("lazy").setup({
   { "nvim-neotest/nvim-nio", lazy = true },
   { "sindrets/diffview.nvim", cmd = "DiffviewOpen" },
   { "NeogitOrg/neogit", cmd = "Neogit", dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim", "sindrets/diffview.nvim"} },
-  { "itchyny/lightline.vim", event = "VimEnter",
-    init = function()
-      vim.g.lightline = {
-        colorscheme = "Tomorrow_Night_Blue",
-        active = { left = {{"mode"}, {"filename"}}, right = {{"lineinfo"}} }
-      }
+  { "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("lualine").setup({
+        options = {
+          theme = "auto",
+          component_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
+          globalstatus = false,
+        },
+        sections = {
+          lualine_a = { "mode" },
+          lualine_b = { { "Fullpath", separator = { left = "" }, padding = 0 } },
+          lualine_c = { "modified" },
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = { "location" },
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = { "filename" },
+          lualine_x = { "location" },
+          lualine_y = {},
+          lualine_z = {},
+        },
+      })
+    end,
+  },
+  { "chentoast/marks.nvim",
+    event = "BufReadPost",
+    config = function()
+      require("marks").setup({
+        default_mappings = true,
+        cyclic = true,
+        force_write_shada = false,
+        refresh_interval = 150,
+      })
     end,
   },
   { "majutsushi/tagbar", cmd = "TagbarToggle" },
@@ -157,9 +215,155 @@ require("lazy").setup({
       vim.g.go_auto_type_info = 1
     end,
   },
-  { "mhinz/vim-startify", enabled = false },
-  { "Rigellute/shades-of-purple.vim", event = "VimEnter",
-    config = function() vim.cmd("colorscheme shades_of_purple") end,
+  { "goolord/alpha-nvim",
+    event = "VimEnter",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      local alpha = require("alpha")
+      local theta = require("alpha.themes.theta")
+      local dashboard = require("alpha.themes.dashboard")
+
+      -- Header (mimicking vim-startify's ASCII art with dynamic version)
+      local version = vim.version()
+      local version_str = string.format("v%d.%d.%d", version.major, version.minor, version.patch)
+      theta.header.val = {
+        [[             _/      _/                                  _/ ]],
+        [[    _/_/    _/    _/_/      _/_/    _/      _/      _/_/_/  _/_/ ]],
+        [[   _/  _/  _/  _/_/_/_/  _/    _/  _/      _/  _/  _/    _/    _/ ]],
+        [[  _/    _/_/  _/        _/    _/    _/  _/    _/  _/    _/    _/ ]],
+        [[ _/      _/    _/_/_/    _/_/        _/      _/  _/    _/    _/ ]] .. version_str,
+      }
+
+      -- Recent files (mimicking vim-startify's MRU) - Manual implementation
+      local mru_section = {
+        type = "group",
+        val = function()
+          local oldfiles = vim.v.oldfiles or {}
+          local buttons = {}
+          for i, file in ipairs(oldfiles) do
+            if i > 10 then break end -- Limit to 10 files
+            if vim.fn.filereadable(file) == 1 then
+              local icon, hl = require("nvim-web-devicons").get_icon_by_filetype(vim.fn.fnamemodify(file, ":e"))
+              local filename = vim.fn.fnamemodify(file, ":t")
+              local path = vim.fn.fnamemodify(file, ":p:h")
+              table.insert(buttons, dashboard.button(tostring(i - 1), (icon or " ") .. " " .. filename .. " (" .. path .. ")", ":e " .. file .. " <CR>", { hl = nil }))
+            end
+          end
+          return {
+            { type = "text", val = "Recent Files", opts = { hl = "SpecialComment", position = "center" } },
+            { type = "padding", val = 1 },
+            unpack(buttons),
+          }
+        end,
+        opts = { shrink_margin = false, position = "center" },
+      }
+
+      -- Bookmarks and quick actions (integrated into buttons)
+      theta.buttons.val = {
+        { type = "text", val = "Quick Actions", opts = { hl = "SpecialComment", position = "center" } },
+        { type = "padding", val = 1 },
+        dashboard.button("i", "Neovim Config", ":edit ~/.config/nvim/init.lua<CR>", { hl = nil }),
+        dashboard.button("p", "Project File", ":edit ~/projects/main.py<CR>", { hl = nil }),
+        dashboard.button("e", "New File", ":ene <BAR> startinsert <CR>", { hl = nil }),
+        dashboard.button("q", "Quit", ":qa <CR>", { hl = nil }),
+      }
+
+      -- Footer (custom section since theta.footer might not exist)
+      local footer_section = {
+        type = "text",
+        val = "Loaded " .. require("lazy").stats().count .. " plugins",
+        opts = { hl = "Comment", position = "center" },
+      }
+
+      -- Layout
+      theta.config.layout = {
+        { type = "padding", val = 2 },
+        theta.header,
+        { type = "padding", val = 2 },
+        mru_section,
+        { type = "padding", val = 2 },
+        theta.buttons,
+        { type = "padding", val = 1 },
+        footer_section,
+      }
+
+      -- Apply the configuration
+      alpha.setup(theta.config)
+    end,
+  },
+  { "Rigellute/shades-of-purple.vim",
+    lazy = false,
+    config = function()
+      vim.cmd("colorscheme shades_of_purple")
+    end,
+  },
+  { "folke/tokyonight.nvim",
+    lazy = true,
+    opts = {
+      style = "night",
+      transparent = false,
+      terminal_colors = true,
+    },
+  },
+  { "catppuccin/nvim", name = "catppuccin",
+    lazy = true,
+    opts = {
+      flavour = "mocha",
+      background = { light = "latte", dark = "mocha" },
+      transparent_background = false,
+      term_colors = true,
+    },
+  },
+  { "LunarVim/bigfile.nvim",
+    lazy = true,
+    enabled = false,
+  },
+  { "sainnhe/gruvbox-material",
+    lazy = true,
+    config = function()
+      vim.g.gruvbox_material_background = "hard"
+      vim.g.gruvbox_material_better_performance = 1
+    end,
+  },
+  { "mfussenegger/nvim-dap-python",
+    ft = "python",
+    config = function()
+      require("dap-python").setup("/usr/bin/python") -- Adjust path as needed
+    end,
+  },
+  { "theHamsta/nvim-dap-virtual-text",
+    event = "VeryLazy",
+    config = function()
+      require("nvim-dap-virtual-text").setup()
+    end,
+  },
+  { "navarasu/onedark.nvim",
+    lazy = true,
+    config = function()
+      require("onedark").setup({
+        style = "dark",
+      })
+      vim.cmd("colorscheme onedark")
+    end,
+  },
+  { "liuchengxu/space-vim-dark",
+    lazy = true,
+    config = function()
+      vim.cmd("colorscheme space-vim-dark")
+    end,
+  },
+  { "altercation/vim-colors-solarized",
+    lazy = true,
+    config = function()
+      vim.g.solarized_termcolors = 256
+      vim.cmd("colorscheme solarized")
+    end,
+  },
+  { "jnurmine/Zenburn",
+    lazy = true,
+    config = function()
+      vim.cmd("colorscheme zenburn")
+    end,
   },
   { "nvim-neo-tree/neo-tree.nvim", cmd = "Neotree",
     dependencies = {"nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim"},
