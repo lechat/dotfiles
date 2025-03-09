@@ -56,89 +56,69 @@ vim.cmd([[
 require("lazy").setup({
   { "neovim/nvim-lspconfig",
     dependencies = {
-      { "ms-jpq/coq_nvim", branch = "coq",
-        init = function()
-          vim.g.coq_settings = {
-            auto_start = true,
-            limits = { completion_auto_timeout = 0.1 },
-            clients = {
-              lsp = { enabled = true },
-              buffers = { enabled = true }
-            },
-            keymap = {
-              recommended = true, -- Enable default keybindings
-              manual_complete = "<C-Space>",
-              pre_select = true, -- Automatically pre-select the first item
-            },
-          }
-        end,
+      -- nvim-cmp and its sources
+      { "hrsh7th/nvim-cmp",
         config = function()
-          local lspconfig = require("lspconfig")
-          lspconfig.pyright.setup({
-            cmd = {"pyright-langserver", "--stdio"},
-            on_attach = function(client, bufnr)
-              print("Pyright LSP attached to buffer " .. bufnr)
-            end,
-            on_init = function(client)
-              if not vim.fn.executable("pyright-langserver") then
-                vim.notify("Pyright not found. Install with 'npm install -g pyright'", vim.log.levels.ERROR)
-              else
-                vim.notify("Pyright found at " .. vim.fn.exepath("pyright-langserver"), vim.log.levels.INFO)
-              end
-            end,
-            settings = {
-              python = {
-                analysis = {
-                  autoSearchPaths = true,
-                  useLibraryCodeForTypes = true
+          local cmp = require("cmp")
+          cmp.setup({
+            -- Disable snippet support since you don’t use snippets
+            snippet = {
+              expand = function(args)
+                -- No-op: We’re not using snippets
+              end,
+            },
+            -- Define keybindings for completion
+            mapping = cmp.mapping.preset.insert({
+              ["<Tab>"] = cmp.mapping.select_next_item(), -- Cycle to next item
+              ["<S-Tab>"] = cmp.mapping.select_prev_item(), -- Cycle to previous item
+              ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Confirm selection
+              ["<C-Space>"] = cmp.mapping.complete(), -- Trigger completion manually
+            }),
+            -- Define completion sources
+            sources = cmp.config.sources({
+              { name = "nvim_lsp" }, -- LSP completions
+              { name = "buffer" },   -- Buffer completions
+            }),
+            -- Optional: Formatting for completion menu with lspkind
+            formatting = {
+              format = require("lspkind").cmp_format({
+                mode = "symbol_text", -- Show both symbol and text
+                preset = "codicons",
+                symbol_map = {
+                  Text = "",
+                  Method = "",
+                  Function = "",
+                  Constructor = "",
+                  Field = "",
+                  Variable = "",
+                  Class = "",
+                  Interface = "",
+                  Module = "",
+                  Property = "",
+                  Unit = "",
+                  Value = "",
+                  Enum = "",
+                  Keyword = "",
+                  Snippet = "",
+                  Color = "",
+                  File = "",
+                  Reference = "",
+                  Folder = "",
+                  EnumMember = "",
+                  Constant = "",
+                  Struct = "",
+                  Event = "",
+                  Operator = "",
+                  TypeParameter = ""
                 }
-              }
-            }
-          })
-          vim.g.coq_settings = vim.tbl_extend("force", vim.g.coq_settings or {}, {
-            display = {
-              icons = {
-                mode = "short",
-                spacing = 1
-              }
-            }
+              }),
+            },
           })
         end,
       },
-      { "onsails/lspkind.nvim",
-        config = function()
-          require("lspkind").init({
-            preset = "codicons",
-            symbol_map = {
-              Text = "",
-              Method = "",
-              Function = "",
-              Constructor = "",
-              Field = "",
-              Variable = "",
-              Class = "",
-              Interface = "",
-              Module = "",
-              Property = "",
-              Unit = "",
-              Value = "",
-              Enum = "",
-              Keyword = "",
-              Snippet = "",
-              Color = "",
-              File = "",
-              Reference = "",
-              Folder = "",
-              EnumMember = "",
-              Constant = "",
-              Struct = "",
-              Event = "",
-              Operator = "",
-              TypeParameter = ""
-            }
-          })
-        end,
-      },
+      { "hrsh7th/cmp-nvim-lsp" }, -- LSP source for nvim-cmp
+      { "hrsh7th/cmp-buffer" },   -- Buffer source for nvim-cmp
+      { "onsails/lspkind.nvim" }, -- For icons in the completion menu
       { "williamboman/mason.nvim",
         build = ":MasonUpdate",
         config = function()
@@ -156,6 +136,32 @@ require("lazy").setup({
         end,
       },
     },
+    config = function()
+      -- LSP setup for pyright
+      local lspconfig = require("lspconfig")
+      lspconfig.pyright.setup({
+        capabilities = require("cmp_nvim_lsp").default_capabilities(), -- Enable LSP capabilities for nvim-cmp
+        cmd = {"pyright-langserver", "--stdio"},
+        on_attach = function(client, bufnr)
+          print("Pyright LSP attached to buffer " .. bufnr)
+        end,
+        on_init = function(client)
+          if not vim.fn.executable("pyright-langserver") then
+            vim.notify("Pyright not found. Install with 'npm install -g pyright'", vim.log.levels.ERROR)
+          else
+            vim.notify("Pyright found at " .. vim.fn.exepath("pyright-langserver"), vim.log.levels.INFO)
+          end
+        end,
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true
+            }
+          }
+        }
+      })
+    end,
   },
   { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {}, event = "BufReadPost" },
   { "nvim-lua/plenary.nvim", lazy = true },
@@ -227,11 +233,12 @@ require("lazy").setup({
       local version = vim.version()
       local version_str = string.format("v%d.%d.%d", version.major, version.minor, version.patch)
       theta.header.val = {
-        [[             _/      _/                                  _/ ]],
-        [[    _/_/    _/    _/_/      _/_/    _/      _/      _/_/_/  _/_/ ]],
-        [[   _/  _/  _/  _/_/_/_/  _/    _/  _/      _/  _/  _/    _/    _/ ]],
-        [[  _/    _/_/  _/        _/    _/    _/  _/    _/  _/    _/    _/ ]],
-        [[ _/      _/    _/_/_/    _/_/        _/      _/  _/    _/    _/ ]] .. version_str,
+[[    _/      _/                                  _/ ]],
+[[   _/_/    _/    _/_/      _/_/    _/      _/      _/_/_/  _/_/ ]],
+[[  _/  _/  _/  _/_/_/_/  _/    _/  _/      _/  _/  _/    _/    _/ ]],
+[[ _/    _/_/  _/        _/    _/    _/  _/    _/  _/    _/    _/ ]],
+[[_/      _/    _/_/_/    _/_/        _/      _/  _/    _/    _/ ]],
+[[Neovim ]] .. version_str,
       }
 
       -- Recent files (mimicking vim-startify's MRU) - Manual implementation
