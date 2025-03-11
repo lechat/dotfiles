@@ -25,9 +25,6 @@ require("lazy").setup({
     {
       "folke/which-key.nvim",
       event = "VeryLazy",
-      opts = {
-        notify = false
-      }, 
       init = function()
         vim.o.timeout = true
         vim.o.timeoutlen = 300
@@ -37,7 +34,7 @@ require("lazy").setup({
           }
         }
       end,
-   },
+    },
       -- Fuzzy Finder (files, lsp, etc)
     {
       'nvim-telescope/telescope.nvim',
@@ -60,13 +57,22 @@ require("lazy").setup({
     },
     {
         "NeogitOrg/neogit",
+<<<<<<< HEAD
+        -- branch = "commentChar",
+        -- dev = true, 
+=======
         -- url = "https://github.com/lechat/neogit.git",
         -- branch = "commentChar",
+>>>>>>> c5a500e (Latest SCB changes)
         dependencies = {
             "nvim-lua/plenary.nvim",         -- required
             "nvim-telescope/telescope.nvim", -- optional
             "sindrets/diffview.nvim",        -- optional
+<<<<<<< HEAD
         },
+=======
+        }
+>>>>>>> c5a500e (Latest SCB changes)
     },
     "dkprice/vim-easygrep",
     "itchyny/lightline.vim",
@@ -99,6 +105,7 @@ require("lazy").setup({
     -- "tpope/vim-dispatch",
     --"google/vim-maktaba",
     {"neoclide/coc.nvim", branch = "release"},
+    --"github/copilot.vim",
     "prabirshrestha/async.vim",
     {
         "nvim-neo-tree/neo-tree.nvim",
@@ -117,6 +124,7 @@ require("lazy").setup({
         opts = {},
     },
     "pedrohdz/vim-yaml-folds",
+    "nvim-treesitter/nvim-treesitter",
     "mfussenegger/nvim-dap",
     "pocco81/dap-buddy.nvim",
     "mfussenegger/nvim-dap-python",
@@ -126,14 +134,22 @@ require("lazy").setup({
     {
       "theHamsta/nvim-dap-virtual-text"
     },
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        init = function()
+            vim.o.timeout = true
+            vim.o.timeoutlen = 300
+            require("which-key").setup {
+                plugins = {
+                    registers = false
+                }
+            }
+        end,
+    },
     "folke/neodev.nvim",
     "williamboman/mason.nvim",
     "jbyuki/one-small-step-for-vimkind",
-    {
-        "github/copilot.vim",
-    --    tag = "v1.30.0"
-    },
-    --"zbirenbaum/copilot.lua"
 }, {
     dev = {
       path = "~/src"
@@ -159,7 +175,11 @@ set.expandtab = true
 set.autoindent = true
 set.showmatch = true
 set.autoread = true
+<<<<<<< HEAD
+set.fillchars = { vert = '│' }
+=======
 set.fillchars = { vert = '▏' }
+>>>>>>> c5a500e (Latest SCB changes)
 set.wildmode = { 'longest', 'list', 'full' }
 set.wildmenu = true
 set.re = 1
@@ -172,6 +192,7 @@ set.termguicolors = true
 set.nu = true
 set.updatetime = 100
 set.signcolumn = 'yes'
+--set.nobackup = true
 set.ruler = true
 set.showcmd = true
 set.laststatus = 2
@@ -187,7 +208,6 @@ set.autowrite = true
 set.backup = false
 set.writebackup = false
 set.signcolumn = 'yes'
---set.cursorline = true
 --map('n', '<Space>', '', {})
 --vim.g.mapleader = ' '
 
@@ -443,20 +463,15 @@ require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
 require("nvim-dap-virtual-text").setup()
 
 -- document existing key chains
--- require('which-key').add({
---     { "<leader>c", group = "[C]ode" },
---     { "<leader>c_", hidden = true },
---     { "<leader>d", group = "[D]ocument" },
---     { "<leader>d_", hidden = true },
---     { "<leader>g", group = "[G]it" },
---     { "<leader>g_", hidden = true },
---     { "<leader>r", group = "[R]ename" },
---     { "<leader>r_", hidden = true },
---     { "<leader>s", group = "[S]earch" },
---     { "<leader>s_", hidden = true },
---     { "<leader>w", group = "[W]orkspace" },
---     { "<leader>w_", hidden = true },
--- })
+require('which-key').register {
+    ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
+    ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
+    ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
+    -- ['<leader>h'] = { name = 'More git', _ = 'which_key_ignore' },
+    ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
+    ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
+    ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+}
 local highlight = {
     "CursorColumn",
     "Whitespace",
@@ -471,13 +486,8 @@ require("ibl").setup {
 }
 require("neogit").setup {
   disable_insert_on_commit = true,
-  auto_show_console = false,
   graph_style = "unicode",
   disable_editor_help = false,
-  console_timeout = 20000,
-  auto_show_console = false,
-  auto_show_console_on = "error",
-  process_spinner = false,
   sections = {
     stashes = {
       folded = false,
@@ -678,22 +688,3 @@ require("neogit").setup {
         }
     }
 }
-
-require("neo-tree").setup {
-    auto_close = true,
-    update_focused_file = {
-        enable = true,
-        update_cwd = true,
-        ignore_list = {}
-    },
-    view = {
-        auto_resize = true,
-    },
-    filesystem = {
-        follow_current_file = {
-            enabled = true
-        }
-    }
-}
--- require('copilot').setup({
--- })

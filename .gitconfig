@@ -11,11 +11,17 @@
 	commentChar = ";"
 	pager = less -FX
 	commentChar = ";"
+[branch]
+    sort = -committerdate
+[tag]
+    sort = version:refname
 [pull]
 	rebase = true
 [diff]
     tool = nvimdiff
 	algorithm = histogram
+    colorMoved = plain
+    renames = true
 [merge]
     tool = nvimdiff
 	conflictstyle = zdiff3
@@ -24,16 +30,18 @@
     keepBackup = false
     trustExitCode = true
     # Set nvim as the editor
-    cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
+    cmd = nvim -d  \"$LOCAL\" \"$REMOTE\"
 [mergetool "nvimdiff"]
     prompt = false
     keepBackup = false
     trustExitCode = true
     # Set nvim as the editor
-    cmd = nvim -d \"$LOCAL\" \"$MERGED\" \"$REMOTE\"
+    cmd = nvim -d -c \"wincmd l\" \"$LOCAL\" \"$MERGED\" \"$REMOTE\"
 [push]
 	followTags = true
 	default = current
+    autoSetupRemote = true
+    renames = true
 [gpg]
 	program = gpg
 [url "https://gitlab.com/cznic/mathutil.git"]
@@ -52,6 +60,23 @@
 	templateDir = /home/scb/.git_template
 	defaultBranch = master
 [rebase]
-	autosquash = true
+	autoSquash = true
+    autoStash = true
+    updateRefs = true
 [fetch]
 	prune = true
+    pruneTags = true
+    all = true
+[credential]
+	helper = store
+
+[credential "https://dev.azure.com"]
+    username = sc-ado
+    helper = "!f() { test \"$1\" = get && echo \"password=oirdx74i5ag6kk5kd7b2lin6haxzhe3tngezeaq3bkcpsde3kl6a\"; }; f"
+
+[help]
+    autocorrect = prompt
+
+[rerere]
+    enabled = true
+    autoupdate = true

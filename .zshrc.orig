@@ -137,8 +137,16 @@ export ADO_TOKEN=$(cat $HOME/ado_token)
 export PAT=$ADO_TOKEN
 export AZURE_TOKEN=$ADO_TOKEN
 
+<<<<<<< HEAD
+eval "$(dircolors $HOME/.dir_colors)"
+eval "$(direnv hook zsh)"
+||||||| parent of b56ba8c (Various changes)
+eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
+eval "$(direnv hook zsh)"
+=======
 eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
 #eval "$(direnv hook zsh)"
+>>>>>>> b56ba8c (Various changes)
 
 #[ -e $HOME/src ] && cd $HOME/src
 

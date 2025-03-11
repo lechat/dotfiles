@@ -1,4 +1,5 @@
 alias sudp='nocorrect sudo'
+alias ncim='nocorrect nvim'
 alias ls-al='nocorrect ls -al'
 alias rsync='noglob rsync'
 alias docker='podman'
@@ -10,7 +11,9 @@ alias kns='kubens'
 alias kgn='kubectl get ns'
 alias vimdiff='nvim -d'
 alias sts=~/.local/bin/sts_eks.sh
+alias stsadm=~/.local/bin/sts_eks_admin.sh
 alias eks=~/.local/bin/eks.sh
+alias replace-infra=~/.local/bin/replace_infra.sh
 
 #CA_BUNDLE=$HOME/SCB-bundle.crt
 CA_BUNDLE=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
@@ -84,3 +87,6 @@ function ekslogin() {
         kubens kube-system
     fi
 }
+
+function urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
+
