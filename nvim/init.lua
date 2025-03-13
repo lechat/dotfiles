@@ -132,31 +132,6 @@ require("lazy").setup({
         end,
       },
     },
-    config = function()
-      local lspconfig = require("lspconfig")
-      lspconfig.pyright.setup({
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
-        cmd = {"pyright-langserver", "--stdio"},
-        on_attach = function(client, bufnr)
-          print("Pyright LSP attached to buffer " .. bufnr)
-        end,
-        on_init = function(client)
-          if not vim.fn.executable("pyright-langserver") then
-            vim.notify("Pyright not found. Install with 'npm install -g pyright'", vim.log.levels.ERROR)
-          else
-            vim.notify("Pyright found at " .. vim.fn.exepath("pyright-langserver"), vim.log.levels.INFO)
-          end
-        end,
-        settings = {
-          python = {
-            analysis = {
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true
-            }
-          }
-        }
-      })
-    end,
   },
   { "nvim-lua/plenary.nvim", lazy = true }, -- Utility functions library for Neovim plugins
   { "nvim-neotest/nvim-nio", lazy = true }, -- Async I/O library for Neovim plugins
@@ -167,81 +142,12 @@ require("lazy").setup({
   { "nvim-lualine/lualine.nvim", -- Statusline plugin with customizable sections
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      local normal_bg = vim.api.nvim_get_hl_by_name("Normal", true).background
-      if normal_bg == nil then
-        normal_bg = "#2D2A2E"
-      else
-        normal_bg = string.format("#%06x", normal_bg)
-      end
-      local custom_shades = {
-        normal = {
-          a = { fg = "#000000", bg = "#FFC107", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        insert = {
-          a = { fg = "#000000", bg = "#00FF00", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        visual = {
-          a = { fg = "#000000", bg = "#FF00FF", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        replace = {
-          a = { fg = "#000000", bg = "#FF0000", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        command = {
-          a = { fg = "#000000", bg = "#FFC107", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        inactive = {
-          a = { fg = "#888888", bg = "#1C2526" },
-          b = { fg = "#888888", bg = "#1C2526" },
-          c = { fg = "#888888", bg = "#1C2526" },
-        },
-      }
       require("lualine").setup({
         options = {
-          theme = custom_shades,
+          theme = "OceanicNext",
           component_separators = { left = "|", right = "|" },
           section_separators = { left = "", right = "" },
           globalstatus = false,
-        },
-        sections = {
-          lualine_a = { "mode" },
-          lualine_b = { { "Fullpath", separator = { left = "", right = "" }, padding = { left = 1, right = 1 } } },
-          lualine_c = { 
-            { 
-              function() 
-                return vim.bo.modified and "[+]" or "" 
-              end,
-              color = { fg = "#FF5555" },
-            },
-          },
-          lualine_x = {},
-          lualine_y = {},
-          lualine_z = { "location" },
-        },
-        inactive_sections = {
-          lualine_a = {},
-          lualine_b = {},
-          lualine_c = { 
-            "filename",
-            { 
-              function() 
-                return vim.bo.modified and "[+]" or "" 
-              end,
-              color = { fg = "#FF5555" },
-            },
-          },
-          lualine_x = { "location" },
-          lualine_y = {},
-          lualine_z = {},
         },
       })
     end,
