@@ -167,64 +167,28 @@ require("lazy").setup({
   { "nvim-lualine/lualine.nvim", -- Statusline plugin with customizable sections
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      local normal_bg = vim.api.nvim_get_hl_by_name("Normal", true).background
-      if normal_bg == nil then
-        normal_bg = "#2D2A2E"
-      else
-        normal_bg = string.format("#%06x", normal_bg)
-      end
-      local custom_shades = {
-        normal = {
-          a = { fg = "#000000", bg = "#FFC107", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        insert = {
-          a = { fg = "#000000", bg = "#00FF00", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        visual = {
-          a = { fg = "#000000", bg = "#FF00FF", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        replace = {
-          a = { fg = "#000000", bg = "#FF0000", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        command = {
-          a = { fg = "#000000", bg = "#FFC107", gui = "bold" },
-          b = { fg = "#FFFFFF", bg = normal_bg },
-          c = { fg = "#FFFFFF", bg = normal_bg },
-        },
-        inactive = {
-          a = { fg = "#888888", bg = "#1C2526" },
-          b = { fg = "#888888", bg = "#1C2526" },
-          c = { fg = "#888888", bg = "#1C2526" },
-        },
-      }
       require("lualine").setup({
         options = {
-          theme = custom_shades,
+          theme = "OceanicNext",
+          icons_enabled = true,
           component_separators = { left = "|", right = "|" },
           section_separators = { left = "", right = "" },
           globalstatus = false,
         },
         sections = {
-          lualine_a = { "mode" },
-          lualine_b = { { "Fullpath", separator = { left = "", right = "" }, padding = { left = 1, right = 1 } } },
-          lualine_c = { 
-            { 
-              function() 
-                return vim.bo.modified and "[+]" or "" 
-              end,
-              color = { fg = "#FF5555" },
-            },
-          },
-          lualine_x = {},
-          lualine_y = {},
+          lualine_a = { "mode", "buffers" },
+          lualine_b = { "branch", "diff", "diagnostics"},
+          lualine_c = { { "filename", file_status=true, path=3, padding = { left = 1, right = 1 } } },
+          --lualine_c = { 
+          --  { 
+          --    function() 
+          --      return vim.bo.modified and "[+]" or "" 
+          --    end,
+          --    color = { fg = "#FF5555" },
+          --  },
+          --},
+          lualine_x = { "encoding", "fileformat", "filetype" },
+          lualine_y = { "progress" },
           lualine_z = { "location" },
         },
         inactive_sections = {
@@ -562,8 +526,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.keymap.set("n", "<Leader>b", function() require('dap').toggle_breakpoint() end)
     vim.keymap.set("n", "<F4>", function() require('dapui').toggle() end)
     -- Telescope mappings
-    vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-    vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+    vim.keymap.set('n', 'sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+    vim.keymap.set('n', 'rg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
     vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
     vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
   end,

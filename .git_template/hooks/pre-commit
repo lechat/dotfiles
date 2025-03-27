@@ -1,15 +1,1 @@
-#!/bin/bash
-
-changes_count=$(git diff --cached | wc -l)
-
-if [ "$changes_count" -ne "0" ]; then
-    pudb_lines=$(git diff --cached | grep ^+ | grep -v pre-commit | grep pudb | sed 's_^+\s*__g')
-
-    if [ "$pudb_lines" != "" ]; then
-        cat <<\EOF
-ERROR: Remove pudb breakpoint!
-EOF
-        exit 1
-    fi
-fi
-exit 0
+/home/aleksey/dotfiles/.git_template/hooks/pre-commit

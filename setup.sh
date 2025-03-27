@@ -4,139 +4,118 @@ set -o nounset
 set -o pipefail
 set -o errexit
 
-function save_to_old() {
-  local TS=$(date +'%Y-%m-%d_%H%M')
-  for item in .zshrc .vimrc .autoenv .tmux.conf .xinitrc .gitconfig .Xmodmap .dir_colors .git_template; do
-    if [ -e $HOME/$item ] && [ -L $HOME/$item ]; then
-      echo "Skipping saving a link of $item"
-    else
-      if [ -e $HOME/$item ]; then
-        echo "Moving $item to $HOME/.old_dotfiles.$TS/"
-        mkdir -p $HOME/.old_dotfiles.$TS
-        mv $HOME/$item $HOME/.old_dotfiles.$TS/
-      else
-        echo "Skipping non-existent file $HOME/$item"
-      fi
-    fi
-  done
+# Default behavior: do backup and install fonts
+DO_BACKUP=1
+DO_FONTS=1
+DOTFILES="$HOME/dotfiles"
+
+function parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --no-backup)
+                DO_BACKUP=0
+                shift
+                ;;
+            --no-fonts)
+                DO_FONTS=0
+                shift
+                ;;
+            *)
+                echo "Unknown option: $1"
+                echo "Usage: $0 [--no-backup] [--no-fonts]"
+                exit 1
+                ;;
+        esac
+    done
 }
 
 function install_fonts() {
-    # The marker file is left once fonts are installed
-    if [ -f $HOME/.config/fonts_installed ]; then
+    if [ -f "$HOME/.config/fonts_installed" ]; then
+        echo "Fonts already installed, skipping."
         return
     fi
-    # clone
     git clone --filter=blob:none https://github.com/ryanoasis/nerd-fonts.git fonts
-    # install
     cd fonts
     ./install.sh
-    # clean-up a bit
     cd ..
     rm -rf fonts
-    touch $HOME/.config/fonts_installed
-}
-
-function install_coc() {
-    # Install latest nodejs
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
-    if [ -s "$NVM_DIR/nvm.sh" ]; then
-        source "$NVM_DIR/nvm.sh"
-        nvm install node
-    fi
-    # Use package feature to install coc.nvim
-
-    # for vim8
-    # mkdir -p $HOME/.vim/pack/coc/start
-    # cd $HOME/.vim/pack/coc/start
-    # curl --fail -L https://github.com/neoclide/coc.nvim/archive/release.tar.gz | tar xzfv -
-    # for neovim
-    # mkdir -p $HOME/.local/share/nvim/site/pack/coc/start
-    # cd $HOME/.local/share/nvim/site/pack/coc/start
-    # curl --fail -L https://github.com/neoclide/coc.nvim/archive/release.tar.gz | tar xzfv -
-
-    # Install extensions
-    if [ ! -d $HOME/.config/coc/extensions ]; then
-        mkdir -p $HOME/.config/coc/extensions
-        cd $HOME/.config/coc/extensions
-        if [ ! -f package.json ]
-        then
-          echo '{"dependencies":{}}'> package.json
-        fi
-        # Change extension names to the extensions you need
-        npm install coc-css coc-docker coc-go coc-html coc-html-css-support coc-pyright coc-json coc-copilot coc-snippets --global-style --ignore-scripts --no-bin-links --no-package-lock --only=prod
-    fi
+    touch "$HOME/.config/fonts_installed"
 }
 
 function do_clone() {
-    if [ ! -d $HOME/.vim/bundle/Vundle.Vim ]; then
-        git clone https://github.com/VundleVim/Vundle.vim.git $HOME/.vim/bundle/Vundle.Vim
+    local OH_MY_ZSH_DIR="$HOME/.oh-my-zsh"
+
+    if [ -d "$OH_MY_ZSH_DIR/.git" ]; then
+        echo "oh-my-zsh already installed at $OH_MY_ZSH_DIR"
     else
-        echo "Vundle already installed"
+        if [ -d "$OH_MY_ZSH_DIR" ]; then
+            echo "Warning: $OH_MY_ZSH_DIR exists but is not a valid Git repo. Removing..."
+            rm -rf "$OH_MY_ZSH_DIR"
+        fi
+        echo "Cloning oh-my-zsh to $OH_MY_ZSH_DIR"
+        git clone https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
     fi
 
-    if [ ! -d $HOME/.oh-my-zsh/.git ]; then
-    	git clone https://github.com/robbyrussell/oh-my-zsh.git $HOME/.oh-my-zsh
-    else
-        echo "oh-my-zsh already installed"
-    fi
-
-    local CUSTOM_PATH=${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}
-    if [ ! -d $CUSTOM_PATH ]; then
-        mkdir -p $HOME/dotfiles/.oh-my-zsh/custom/plugins
-    fi
-
-    if [ ! -d $CUSTOM_PATH/plugins/zsh-autosuggestions ]; then
-        git clone https://github.com/zsh-users/zsh-autosuggestions $CUSTOM_PATH/plugins/zsh-autosuggestions
+    local CUSTOM_PATH=${ZSH_CUSTOM:-$OH_MY_ZSH_DIR/custom}
+    if [ ! -d "$CUSTOM_PATH/plugins/zsh-autosuggestions" ]; then
+        echo "Cloning zsh-autosuggestions to $CUSTOM_PATH/plugins/zsh-autosuggestions"
+        git clone https://github.com/zsh-users/zsh-autosuggestions "$CUSTOM_PATH/plugins/zsh-autosuggestions"
     else
         echo "zsh-autosuggestions already installed"
     fi
 }
 
+function backup_file() {
+    local src="$1"      # Source file in $DOTFILES
+    local dest="$2"     # Destination in $HOME
+    local ts="$3"       # Timestamp for backup directory
+    local rel_path="$4" # Relative path for subfolder backups
+
+    if [ $DO_BACKUP -eq 1 ] && [ -e "$dest" ] && [ ! "$(readlink "$dest")" = "$src" ]; then
+        echo "Backing up $dest to $HOME/.old_dotfiles.$ts/"
+        mkdir -p "$HOME/.old_dotfiles.$ts/$(dirname "$rel_path")"
+        mv "$dest" "$HOME/.old_dotfiles.$ts/$rel_path"
+    fi
+}
+
 function make_links() {
-    for dir in $HOME/.oh-my-zsh/completions $HOME/.local/bin $HOME/.local/share/nvim $HOME/.config/nvim/lua; do
-        echo "Creating directory: $dir"
-        mkdir -p $dir
+    local TS
+    [ $DO_BACKUP -eq 1 ] && TS=$(date +'%Y-%m-%d_%H%M')
+
+    # Symlink files in the root of $DOTFILES to $HOME
+    for file in "$DOTFILES"/*; do
+        if [ -f "$file" ]; then
+            local dest="$HOME/$(basename "$file")"
+            backup_file "$file" "$dest" "$TS" "$(basename "$file")"
+            ln -sf "$file" "$dest"
+            echo "Symlinked $(basename "$file") to $dest"
+        fi
     done
 
-    ln -sf $HOME/dotfiles/.vimrc $HOME/.vimrc
-    ln -sf $HOME/dotfiles/.vim $HOME/.vim
-    ln -sf $HOME/dotfiles/.zshrc $HOME/.zshrc
+    # Symlink files in subfolders, creating directories as needed, excluding .git
+    find "$DOTFILES" -mindepth 2 -type f -not -path "$DOTFILES/.git/*" | while read -r src; do
+        # Get relative path from $DOTFILES (e.g., ".local/bin/kubectx")
+        local rel_path="${src#$DOTFILES/}"
+        # Destination path in $HOME (e.g., "$HOME/.local/bin/kubectx")
+        local dest="$HOME/$rel_path"
+        # Directory to create (e.g., "$HOME/.local/bin")
+        local dest_dir="$(dirname "$dest")"
 
-    ln -sf $HOME/dotfiles/.tmux.conf $HOME/.tmux.conf
-    ln -sf $HOME/dotfiles/.xinitrc $HOME/.xinitrc
-    ln -sf $HOME/dotfiles/.Xmodmap $HOME/.Xmodmap
-    ln -sf $HOME/dotfiles/.gitconfig $HOME/.gitconfig
-    ln -sf $HOME/dotfiles/.dir_colors/solarized $HOME/.dir_colors
+        # Backup if file exists and isn’t already the right symlink
+        backup_file "$src" "$dest" "$TS" "$rel_path"
 
-    if [ -e $HOME/.autoenv ] && [ -L $HOME/.autoenv ]; then
-        unlink $HOME/.autoenv
-    fi
-    ln -sf $HOME/dotfiles/.autoenv $HOME/.autoenv
-
-    if [ -e $HOME/.git_template ] && [ -L $HOME/.git_template ]; then
-        unlink $HOME/.git_template
-    fi
-    ln -sf $HOME/dotfiles/.git_template $HOME/.git_template
-
-    ln -sf $HOME/dotfiles/local/bin/kubectx $HOME/.local/bin/kubectx
-    ln -sf $HOME/dotfiles/completions/_kubectx.zsh $HOME/.oh-my-zsh/completions/_kubectx.zsh
-    ln -sf $HOME/dotfiles/local/bin/kubens $HOME/.local/bin/kubens
-    ln -sf $HOME/dotfiles/completions/_kubens.zsh $HOME/.oh-my-zsh/completions/_kubens.zsh
-    ln -sf $HOME/dotfiles/nvim/init.lua $HOME/.local/share/nvim/init.lua
-    ln -sf $HOME/dotfiles/nvim/init.lua $HOME/.config/nvim/init.lua
-    ln -sf $HOME/dotfiles/nvim/lua/coc.lua $HOME/.config/nvim/lua/coc.lua
+        # Create the directory and symlink
+        mkdir -p "$dest_dir"
+        ln -sf "$src" "$dest"
+        echo "Symlinked $rel_path to $dest"
+    done
 }
 
 function main() {
-    save_to_old
+    parse_args "$@"
     do_clone
-    install_fonts
+    [ $DO_FONTS -eq 1 ] && install_fonts
     make_links
-    install_coc
-    vim +PluginInstall +qall
 }
 
-main
-
+main "$@"

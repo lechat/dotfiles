@@ -1,4 +1,1 @@
-#!/bin/bash
-
-.git/hooks/ctags >/dev/null 2>&1 &
-
+/home/aleksey/dotfiles/.git_template/hooks/post-merge

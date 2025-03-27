@@ -1,18 +1,18 @@
 # This is Git's per-user configuration file.
 [user]
-	name = Aleksey Maksimov
-	email = ctpeko3a@gmail.com
-	signingkey = 73B247E7C736117E
+   name = Aleksey Maksimov
+   email = ctpeko3a@gmail.com
+   signingkey = 73B247E7C736117E
 [alias]
-	lola = 'log --graph --decorate --pretty=oneline --abbrev-commit --all'
+   lola = 'log --graph --decorate --pretty=oneline --abbrev-commit --all'
     lol = 'log --graph --decorate --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit'
-	lol = log --graph --decorate --pretty=oneline --abbrev-commit
-	lola = log --graph --decorate --pretty=oneline --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit --all
+   lol = log --graph --decorate --pretty=oneline --abbrev-commit
+   lola = log --graph --decorate --pretty=oneline --pretty=format:'%C(yellow)%h%Creset -%C(bold red)%d%Creset %s  %C(white)- %an, %ar%Creset' --abbrev-commit --all
 [core]
-	editor = nvim
-	commentChar = ";"
+   editor = nvim
+   commentChar = ";"
 [pull]
-	rebase = true
+   rebase = true
 [diff]
     tool = vimdiff
 [merge]
@@ -24,11 +24,11 @@
     # Set nvim as the editor
     cmd = nvim -d \"$LOCAL\" \"$BASE\" \"$REMOTE\" \"$MERGED\"
 [push]
-	followTags = true
+   followTags = true
 [init]
-	templatedir = ~/.git_template
+   templatedir = ~/.git_template
 [gpg]
-	program = gpg
+   program = gpg
 [url "https://gitlab.com/cznic/mathutil.git"]
     insteadOf = https://gitlab.com/cznic/mathutil
 [url "https://gitlab.com/cznic/xc.git"]
@@ -41,3 +41,4 @@
     insteadOf = https://gitlab.com/cznic/strutil
 [url "https://github.com/googleapis/google-cloud-go.git"]
     insteadOf = https://cloud.google.com/go?go-get=1
+
