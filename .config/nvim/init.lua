@@ -518,6 +518,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.keymap.set("n", "<leader>h", ":wincmd h<CR>")
     vim.keymap.set("n", "<leader>l", ":wincmd l<CR>")
     vim.keymap.set({"n", "i"}, "<C-S>", ":w<CR>")
+    vim.keymap.set("n", "<M-w>", "<C-W>", { noremap = true, silent = true })
     -- DAP mappings
     vim.keymap.set("n", "<F5>", function() require('dap').continue() end)
     vim.keymap.set("n", "<F10>", function() require('dap').step_over() end)
