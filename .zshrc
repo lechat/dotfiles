@@ -124,7 +124,7 @@ export XDG_CONFIG_HOME=$HOME/.config
 export EDITOR=$(which vim)
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS' --color=fg:#d0d0d0,bg:#121212,hl:#5f87af --color=fg+:#d0d0d0,bg+:#964e8a,hl+:#5fd7ff --color=info:#afaf87,prompt:#964e8a,pointer:#af5fff --color=marker:#87ff00,spinner:#af5fff,header:#87afaf'
 
-eval `dircolors $HOME/dotfiles/.dir_colors/solarized`
+eval "$(dircolors $HOME/.dir_colors)"
 eval "$(direnv hook zsh)"
 
 #[ -e $HOME/src ] && cd $HOME/src
