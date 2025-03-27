@@ -79,12 +79,15 @@ function backup_file() {
 }
 
 function make_links() {
-    local TS
+    local TS=""
     [ $DO_BACKUP -eq 1 ] && TS=$(date +'%Y-%m-%d_%H%M')
 
-    # Symlink files in the root of $DOTFILES to $HOME
+    # Enable dotglob to include dotfiles in globbing
+    shopt -s dotglob
+
+    # Symlink files in the root of $DOTFILES to $HOME, excluding setup.sh
     for file in "$DOTFILES"/*; do
-        if [ -f "$file" ]; then
+        if [ -f "$file" ] && [ "$(basename "$file")" != "setup.sh" ]; then
             local dest="$HOME/$(basename "$file")"
             backup_file "$file" "$dest" "$TS" "$(basename "$file")"
             ln -sf "$file" "$dest"
