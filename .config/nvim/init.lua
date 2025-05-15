@@ -21,7 +21,6 @@ vim.g.is_posix = 1                  -- Treat shell scripts as POSIX-compliant fo
 vim.g.mapleader = " "               -- Set leader key to space for custom keybindings
 vim.opt.wildmenu = true             -- Enable enhanced command-line completion menu
 vim.opt.wildmode = {"list:longest", "full"} -- Configure wildmenu: list matches, then complete longest common string
-vim.opt.re = 1                      -- Use older regex engine for better performance in some cases
 vim.opt.ttyfast = true              -- Optimize for fast terminal connections
 vim.opt.lazyredraw = true           -- Delay redraws during macros/scripts for performance
 vim.opt.synmaxcol = 150             -- Limit syntax highlighting to 150 columns to avoid slowdown
@@ -35,9 +34,14 @@ vim.opt.incsearch = true            -- Show search matches as you type
 vim.opt.hlsearch = true             -- Highlight all search matches
 vim.opt.scrolloff = 3               -- Keep 3 lines visible above/below cursor when scrolling
 vim.opt.foldenable = false          -- Disable folding by default
-vim.opt.colorcolumn = "79,90,120"   -- Highlight columns 79, 90, and 120 for line length guidance
+--vim.opt.colorcolumn = "79,90,120"   -- Highlight columns 79, 90, and 120 for line length guidance
 vim.opt.mouse = ""                  -- Explicitly disable mouse support
 vim.opt.number = true               -- Show line numbers
+-- settings as of 2025-05-15
+vim.opt.regexpengine = 1         -- Use the old regexp engine
+vim.g.matchparen_timeout = 20    -- Reduce timeout for matching parentheses
+vim.g.matchparen_insert_timeout = 20
+vim.opt.redrawtime = 1500        -- Maximum time spent trying to highlight syntax
 
 -- Ensure NVM's PATH is available to Neovim
 vim.env.PATH = vim.env.PATH .. ":/home/aleksey/.config/nvm/versions/node/v22.2.0/bin"
@@ -116,6 +120,9 @@ require("lazy").setup({
       { "hrsh7th/cmp-buffer" },   -- Buffer source for nvim-cmp
       { "onsails/lspkind.nvim" }, -- Icons for completion menu
       { "williamboman/mason.nvim", -- Manage LSP servers, DAP servers, linters, and formatters
+        cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+        enabled = true,
+        version = "v1.8.0",
         build = ":MasonUpdate",
         config = function()
           require("mason").setup()
@@ -160,9 +167,16 @@ require("lazy").setup({
   },
   { "nvim-lua/plenary.nvim", lazy = true }, -- Utility functions library for Neovim plugins
   { "nvim-neotest/nvim-nio", lazy = true }, -- Async I/O library for Neovim plugins
-  { "sindrets/diffview.nvim", cmd = "DiffviewOpen" }, -- Git diff viewer with side-by-side comparison
-  { "NeogitOrg/neogit", cmd = "Neogit", -- Git integration with a Magit-like interface
-    dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim", "sindrets/diffview.nvim"}
+  { "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+  }, -- Git diff viewer with side-by-side comparison
+  { "NeogitOrg/neogit",
+    cmd = "Neogit", -- Git integration with a Magit-like interface
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      { "nvim-telescope/telescope.nvim", lazy = true },
+      { "sindrets/diffview.nvim", lazy = true },
+    },
   },
   { "nvim-lualine/lualine.nvim", -- Statusline plugin with customizable sections
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -234,87 +248,129 @@ require("lazy").setup({
       vim.g.go_auto_type_info = 1
     end,
   },
-  { "goolord/alpha-nvim", -- Dashboard/start screen for Neovim
-    event = "VimEnter",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-      local alpha = require("alpha")
-      local theta = require("alpha.themes.theta")
-      local dashboard = require("alpha.themes.dashboard")
-      theta.header.val = {}
-      local mru_section = {
-        type = "group",
-        val = function()
-          local oldfiles = vim.v.oldfiles or {}
-          local buttons = {}
-          local counter = 0
-          for _, file in ipairs(oldfiles) do
-            if counter >= 10 then break end
-            if vim.fn.filereadable(file) == 1 then
-              local icon, hl = require("nvim-web-devicons").get_icon_by_filetype(vim.fn.fnamemodify(file, ":e"))
-              local filename = vim.fn.fnamemodify(file, ":t")
-              local path = vim.fn.fnamemodify(file, ":h")
-              local button = {
-                type = "button",
-                val = (icon or " ") .. " " .. filename .. " (" .. path .. ")",
-                on_press = function()
-                  vim.cmd(":e " .. file)
-                end,
-                opts = {
-                  position = "left",
-                  hl = nil,
-                  shrink_margin = false,
-                },
-              }
-              table.insert(buttons, button)
-              counter = counter + 1
-            end
-          end
-          return {
-            { type = "text", val = "Recent Files", opts = { hl = "SpecialComment", position = "left" } },
-            { type = "padding", val = 1 },
-            { type = "group", val = buttons, opts = { spacing = 0, position = "left" } },
-          }
-        end,
-        opts = { shrink_margin = false, position = "left" },
-      }
-      local buttons_section = {
-        type = "group",
-        val = {
-          { type = "text", val = "Quick Actions", opts = { hl = "SpecialComment", position = "left" } },
-          { type = "padding", val = 1 },
-          { type = "group",
-            val = {
-              { type = "button", val = "Neovim Config", on_press = function() vim.cmd(":edit ~/.config/nvim/init.lua") end, opts = { position = "left", hl = nil } },
-              { type = "button", val = "Project File", on_press = function() vim.cmd(":edit ~/projects/main.py") end, opts = { position = "left", hl = nil } },
-              { type = "button", val = "New File", on_press = function() vim.cmd(":ene <BAR> startinsert") end, opts = { position = "left", hl = nil } },
-              { type = "button", val = "Quit", on_press = function() vim.cmd(":qa") end, opts = { position = "left", hl = nil } },
-            },
-            opts = { spacing = 0, position = "left", align = "left" },
-          },
-        },
-        opts = { position = "left" },
-      }
-      local footer_section = {
-        type = "text",
-        val = "Loaded " .. require("lazy").stats().count .. " plugins",
-        opts = { hl = "Comment", position = "left" },
-      }
-      theta.config.layout = {
-        { type = "padding", val = 2 },
-        mru_section,
-        { type = "padding", val = 2 },
-        buttons_section,
-        { type = "padding", val = 1 },
-        footer_section,
-      }
-      alpha.setup(theta.config)
-    end,
+  { "goolord/alpha-nvim",
+    cond = function()
+      -- Only load Alpha when no arguments are passed to nvim
+      return vim.fn.argc() == 0
+     end,
+     event = "VimEnter",
+     dependencies = { "nvim-tree/nvim-web-devicons" },
+     config = function()
+       local alpha = require("alpha")
+       local theta = require("alpha.themes.theta")
+       
+       -- Clear the existing header
+       theta.header.val = {}
+       
+       -- Optimized MRU section that only processes 5 files
+       local mru_section = {
+         type = "group",
+         val = function()
+           local oldfiles = vim.v.oldfiles or {}
+           local buttons = {}
+           local max_files = 5 -- Only process 5 files
+           local counter = 0
+           
+           for _, file in ipairs(oldfiles) do
+             if counter >= max_files then break end
+             
+             if vim.fn.filereadable(file) == 1 then
+               -- Simplified icon handling - use a generic icon
+               local icon = " "
+               local filename = vim.fn.fnamemodify(file, ":t")
+               local path = vim.fn.fnamemodify(file, ":h")
+               
+               local button = {
+                 type = "button",
+                 val = icon .. " " .. filename .. " (" .. path .. ")",
+                 on_press = function()
+                   vim.cmd(":e " .. file)
+                 end,
+                 opts = {
+                   position = "left",
+                   hl = nil,
+                   shrink_margin = false,
+                 },
+               }
+               
+               table.insert(buttons, button)
+               counter = counter + 1
+             end
+           end
+           
+           return {
+             { type = "text", val = "Recent Files", opts = { hl = "SpecialComment", position = "left" } },
+             { type = "padding", val = 1 },
+             { type = "group", val = buttons, opts = { spacing = 0, position = "left" } },
+           }
+         end,
+         opts = { shrink_margin = false, position = "left" },
+       }
+       
+       -- Reuse your existing buttons section
+       local buttons_section = {
+         type = "group",
+         val = {
+           { type = "text", val = "Quick Actions", opts = { hl = "SpecialComment", position = "left" } },
+           { type = "padding", val = 1 },
+           { type = "group",
+             val = {
+               { type = "button", val = "Neovim Config", on_press = function() vim.cmd(":edit ~/.config/nvim/init.lua") end, opts = { position = "left", hl = nil } },
+               { type = "button", val = "Project File", on_press = function() vim.cmd(":edit ~/projects/main.py") end, opts = { position = "left", hl = nil } },
+               { type = "button", val = "New File", on_press = function() vim.cmd(":ene <BAR> startinsert") end, opts = { position = "left", hl = nil } },
+               { type = "button", val = "Quit", on_press = function() vim.cmd(":qa") end, opts = { position = "left", hl = nil } },
+             },
+             opts = { spacing = 0, position = "left", align = "left" },
+           },
+         },
+         opts = { position = "left" },
+       }
+       
+       local footer_section = {
+         type = "text",
+         val = "Loaded " .. require("lazy").stats().count .. " plugins",
+         opts = { hl = "Comment", position = "left" },
+       }
+       
+       -- Set layout with all required fields
+       local layout = {
+         { type = "padding", val = 2 },
+         mru_section,
+         { type = "padding", val = 2 },
+         buttons_section,
+         { type = "padding", val = 1 },
+         footer_section,
+       }
+       
+       -- This ensures all required fields are present
+       alpha.setup({
+         layout = layout,
+         opts = {
+           margin = 5,
+           setup = function()
+             -- Disables statusline in dashboard
+             vim.opt.laststatus = 0
+             
+             -- Return to normal status when leaving dashboard
+             vim.api.nvim_create_autocmd("BufUnload", {
+               callback = function()
+                 vim.opt.laststatus = 3
+               end,
+               pattern = "<buffer>",
+             })
+           end,
+         }
+       })
+     end,
   },
   { "Rigellute/shades-of-purple.vim", -- Shades of Purple colorscheme
+    priority = 1000,
     lazy = false,
     config = function()
       vim.cmd("colorscheme shades_of_purple")
+      vim.cmd([[
+        hi MatchParen cterm=underline,reverse ctermfg=NONE gui=underline,bold guibg=NONE guifg=NONE
+      ]])
     end,
   },
   { "folke/tokyonight.nvim", -- Tokyo Night colorscheme with multiple styles
@@ -419,19 +475,6 @@ require("lazy").setup({
     dependencies = {"mfussenegger/nvim-dap"},
     config = function() require("dapui").setup() end,
   },
-  { "nvim-telescope/telescope.nvim", cmd = "Telescope", -- Fuzzy finder for files, buffers, and more (First instance)
-    dependencies = {"nvim-lua/plenary.nvim"}
-  },
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", -- Syntax highlighting and parsing with Treesitter (First instance)
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {"python", "lua", "go", "javascript"},
-        highlight = { enable = true },
-        incremental_selection = { enable = true },
-        textobjects = { enable = true }
-      })
-    end,
-  },
   { "folke/which-key.nvim", event = "VeryLazy", -- Display keybinding hints in a popup (First instance)
     config = function()
       require("which-key").setup({
@@ -439,28 +482,62 @@ require("lazy").setup({
       })
     end,
   },
-  { "rcarriga/nvim-dap-ui", event = "VeryLazy", -- UI for nvim-dap with variable inspection (Duplicate)
-    dependencies = {"mfussenegger/nvim-dap"},
-    config = function() require("dapui").setup() end,
-  },
-  { "nvim-telescope/telescope.nvim", cmd = "Telescope", -- Fuzzy finder for files, buffers, and more (Duplicate)
+  { "nvim-telescope/telescope.nvim", cmd = "Telescope", -- Fuzzy finder for files, buffers, and more
     dependencies = {"nvim-lua/plenary.nvim"}
   },
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", -- Syntax highlighting and parsing with Treesitter (Duplicate)
+  { "nvim-treesitter/nvim-treesitter", 
+    build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = {"python", "lua", "go", "javascript"},
-        highlight = { enable = true },
-        incremental_selection = { enable = true },
-        textobjects = { enable = true }
+        -- Keep your language list, but optimize how they're loaded
+        ensure_installed = {"python", "lua", "go", "javascript"}, -- Install these, but don't load all at startup
+        
+        highlight = { 
+          enable = true,
+          -- Only load syntax highlighting for files under a size threshold
+          disable = function(lang, buf)
+            local max_filesize = 100 * 1024 -- 100 KB
+            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then
+              return true
+            end
+          end,
+          -- This improves initial load time by deferring some highlight work
+          additional_vim_regex_highlighting = false,
+        },
+        
+        -- Defer loading of these features until they're needed
+        incremental_selection = { 
+          enable = true,
+          keymaps = {
+            init_selection = "gnn",
+            node_incremental = "grn",
+            scope_incremental = "grc",
+            node_decremental = "grm",
+          },
+        },
+        
+        -- Only load textobjects if you actually use them
+        textobjects = { 
+          enable = true,
+          select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = "@class.inner",
+            },
+          },
+        },
+        
+        -- Set module_path to ensure parsers are cached
+        parser_install_dir = vim.fn.stdpath("data") .. "/site/parsers",
       })
-    end,
-  },
-  { "folke/which-key.nvim", event = "VeryLazy", -- Display keybinding hints in a popup (Duplicate)
-    config = function()
-      require("which-key").setup({
-        notify = false
-      })
+      
+      -- Make sure the parser directory is in the runtimepath
+      vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site/parsers")
     end,
   },
   { "github/copilot.vim", event = "InsertEnter", -- GitHub Copilot for AI-powered code suggestions
@@ -473,32 +550,62 @@ require("lazy").setup({
 })
 
 -- Autocommands
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = {"javascript", "html", "ts"},
-  callback = function() vim.opt_local.tabstop = 2 vim.opt_local.shiftwidth = 2 end,
-})
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "python",
-  callback = function() vim.opt_local.tabstop = 4 vim.opt_local.shiftwidth = 4 vim.b.coc_root_patterns = {".git", ".env"} end,
-})
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "go",
-  callback = function() vim.keymap.set("n", "<leader>gi", "<Plug>(go-install)", { buffer = true }) end,
-})
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = {"*.sh", "*.py", "*.js", "*.yaml", "*.html", "*.groovy"},
-  callback = function() vim.cmd("%s/\\s\\+$//e") end,
-})
-vim.api.nvim_create_autocmd("BufEnter", {
-  pattern = "*.py",
-  callback = function()
-    vim.lsp.start_client(require("lspconfig").pyright)
-  end,
-})
-vim.api.nvim_create_autocmd("QuickFixCmdPost", {
-  pattern = "*grep*",
-  command = "cwindow",
-})
+vim.defer_fn(function()
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = {"javascript", "html", "ts"},
+    callback = function() 
+      vim.opt_local.tabstop = 2
+      vim.opt_local.shiftwidth = 2
+    end,
+  })
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "python",
+    callback = function()
+      -- Indentation (PEP 8 standard)
+      vim.opt_local.tabstop = 4          -- Width of a tab character
+      vim.opt_local.softtabstop = 4      -- Number of spaces a tab counts for during editing
+      vim.opt_local.shiftwidth = 4       -- Number of spaces for each indentation level
+      vim.opt_local.expandtab = true     -- Convert tabs to spaces
+      
+      -- Line length guidance (PEP 8 standard is 79 characters)
+      vim.opt_local.textwidth = 79       -- Standard PEP 8 line length
+      
+      -- Search path for imports
+      vim.opt_local.path:append("**")    -- Search in all subdirectories
+      
+      -- Python-specific settings
+      vim.b.python_highlight_all = 1     -- Enable all Python syntax highlighting features
+      
+      -- For LSP
+      vim.b.coc_root_patterns = {".git", ".env", "pyproject.toml", "setup.py"}
+      
+      -- Format with Black using PEP 8 line length
+      vim.keymap.set("n", "<leader>pf", ":!black -l 79 %<CR>", {buffer = true})  -- Format with Black
+    end,
+  })
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "go",
+    callback = function() vim.keymap.set("n", "<leader>gi", "<Plug>(go-install)", { buffer = true }) end,
+  })
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = {"*.sh", "*.py", "*.js", "*.yaml", "*.html", "*.groovy"},
+    callback = function() vim.cmd("%s/\\s\\+$//e") end,
+  })
+  vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+    pattern = "*grep*",
+    command = "cwindow",
+  })
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "lua",
+    callback = function()
+      vim.opt_local.tabstop = 2       -- Number of spaces a tab character represents
+      vim.opt_local.shiftwidth = 2    -- Number of spaces for each indentation level
+      vim.opt_local.softtabstop = 2   -- Number of spaces a tab counts for during editing
+      vim.opt_local.expandtab = true  -- Convert tabs to spaces
+    end,
+  })
+
+end, 100)
 
 -- Key mappings
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -508,7 +615,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.keymap.set("n", "<leader>z", ":Neotree toggle<CR>")
     vim.keymap.set("n", "<leader>t", ":TagbarToggle<CR>")
     vim.keymap.set("n", "<leader>y", ":tabprev<CR>")
-    vim.keymap.set("n", "<leader>u", ":tabfirst<CR>")
     vim.keymap.set("n", "<leader>i", ":tablast<CR>")
     vim.keymap.set("n", "<leader>o", ":tabnext<CR>")
     vim.keymap.set("n", "<leader>w", ":w<CR>")
@@ -533,9 +639,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
   end,
 })
-
 -- Commands
 vim.api.nvim_create_user_command("Q", "q", {})
 vim.api.nvim_create_user_command("W", "w", {})
 vim.api.nvim_create_user_command("Qa", "qa", {})
 vim.keymap.set("", "X", "x", { noremap = true })
+
+vim.diagnostic.config({
+  update_in_insert = false,  -- Don't update diagnostics in insert mode
+  severity_sort = true,
+})
