@@ -532,6 +532,14 @@ require("lazy").setup({
           },
         },
         
+        comment = {
+          enable = true,
+          -- Set mappings that don't overlap
+          toggler = {
+            line = 'gcc',
+            block = 'gbc', -- Change from gc to gbc
+          },
+        },
         -- Set module_path to ensure parsers are cached
         parser_install_dir = vim.fn.stdpath("data") .. "/site/parsers",
       })
@@ -547,6 +555,18 @@ require("lazy").setup({
       vim.keymap.set("i", "<C-j>", 'copilot#Accept("<CR>")', { expr = true, silent = true, replace_keycodes = false })
     end,
   },
+  { "numToStr/Comment.nvim", 
+    event = "VeryLazy",
+    config = function()
+      require("Comment").setup({
+        -- Set clear mappings to prevent overlap
+        mappings = {
+          basic = true,
+          extra = false, -- Disable extra mappings that might conflict
+        }
+      })
+    end,
+  }
 })
 
 -- Autocommands
@@ -649,3 +669,13 @@ vim.diagnostic.config({
   update_in_insert = false,  -- Don't update diagnostics in insert mode
   severity_sort = true,
 })
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client:supports_method('textDocument/completion') then
+      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+    end
+  end,
+})
+
