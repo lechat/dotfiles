@@ -7,7 +7,7 @@ sts () {
     shift 1
 	local role="Admin"
 	local cluster=""
-    local region="sg"
+    local REGION="sg"
     local ldap="o.aws.gf.dev.2007382@zone1.scb.net"
 
 	if [ "$account" = "" ]
@@ -26,7 +26,7 @@ sts () {
 		while [[ $# -gt 0 ]]
 		do
 			case $1 in
-				(-r | --region) region="$2"
+				(-r | --region) REGION="$2"
 					shift
 					shift ;;
 				(-u | --user) role="$2"
@@ -54,51 +54,52 @@ sts () {
                 exit 1
 			fi
 		fi
-		if [ "$region" = "sg" ]
+		if [ "$REGION" = "sg" ]
 		then
-			region=ap-southeast-1
+			REGION=ap-southeast-1
 		fi
-		if [ "$region" = "hk" ]
+		if [ "$REGION" = "hk" ]
 		then
-			region=ap-east-1
+			REGION=ap-east-1
 		fi
-		if [ "$region" = "lon" ]
+		if [ "$REGION" = "lon" ]
 		then
-			region=eu-west-2
+			REGION=eu-west-2
 		fi
 		[ -z $SSO_PASSWORD ] && export SSO_PASSWORD=$(cat $HOME/.login)
         echo "Attempting to login to account $account with role $role"
-        echo aws-auth-token login --force --role $role --account $account --username $ldap
-        aws-auth-token login --force --role $role --account $account --username $ldap
+        echo aws-auth-token login --force --role $role --account $account --username $ldap --credential-process
+        aws-auth-token login --force --role $role --account $account --username $ldap --credential-process
         if [ "$?" != "0" ]; then
             echo "Cannot assume role"
             exit 1
         fi
-        #   if [ "$account" == "238634994034" ]; then
-        #       echo $HOME/.local/bin/sts.exp $account
-        #       $HOME/.local/bin/sts.exp $account $role
-        #   else
-        #       echo gettoken --awsAccount $account --roleName $role --region $region
-        #       if gettoken --awsAccount $account --roleName $role; then
-        #           echo
-        #       else
-        #           echo "Error getting SAML/STS auth"
-        #           exit 1
-        #       fi
-        #   fi
-        sed -i "s/eu-west-1/$region/g" ~/.aws/credentials
-        sed -i "s/ap-east-1/$region/g" ~/.aws/credentials
+        ACCESS_KEY_ID=$(echo "$JSON_CREDS" | jq -r '.AccessKeyId')
+        SECRET_ACCESS_KEY=$(echo "$JSON_CREDS" | jq -r '.SecretAccessKey')
+        SESSION_TOKEN=$(echo "$JSON_CREDS" | jq -r '.SessionToken')
+        EXPIRATION=$(echo "$JSON_CREDS" | jq -r '.Expiration')
+        cat << EOF > $HOME/.aws/credentials
+[default]
+output                   = json
+REGION                   = $REGION
+aws_access_key_id        = $ACCESS_KEY_ID
+aws_secret_access_key    = $SECRET_ACCESS_KEY
+aws_session_token        = $SESSION_TOKEN
+aws_security_token       = $SESSION_TOKEN
+x_security_token_expires = $EXPIRATION
+
+EOF
 		if [ "$cluster" = "" ]
 		then
-            echo "aws --ca-bundle /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem eks list-clusters --region $region"
-			opts=($(aws --ca-bundle /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem eks list-clusters --region $region | jq -r '.clusters[]'))
+            echo "aws --ca-bundle /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem eks list-clusters --REGION $REGION"
+			opts=($(aws --ca-bundle /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem eks list-clusters --REGION $REGION | jq -r '.clusters[]'))
 			select opt in "${opts[@]}"
 			do
 			break
 			done
-			$HOME/.local/bin/eks.sh $opt -r $region
+			$HOME/.local/bin/eks.sh $opt -r $REGION
 		else
-			$HOME/.local/bin/eks.sh $cluster -r $region
+			$HOME/.local/bin/eks.sh $cluster -r $REGION
 		fi
 	fi
 }
