@@ -22,7 +22,7 @@ bindkey "^[OH" beginning-of-line
 bindkey "^[OF" end-of-line
 
 # Customize to your needs...
-export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/scb/.config/nvm/versions/node/v20.0.0/bin
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -63,7 +63,7 @@ ENABLE_CORRECTION=true
 ZSH_TMUX_AUTOSTART=true
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
 
-plugins=(git python pip docker vi-mode kubectl tmux fzf bazel zsh-autosuggestions)
+plugins=(git python pip docker vi-mode kubectl tmux fzf terraform zsh-autosuggestions)
 FZF_BASE=/usr/share/fzf
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=4,bg=16"
 
@@ -127,7 +127,7 @@ autoload -U compinit; compinit
 
 export GOPATH=$HOME/src/go
 export GOPROXY=https://artifactory.global.standardchartered.com/artifactory/api/go/go-release
-export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
+export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin:/home/scb/.config/nvm/versions/node/v20.0.0/bin
 export WORKON_HOME=$HOME/venv
 export PROJECT_HOME=$HOME/src
 export XDG_CONFIG_HOME=$HOME/.config

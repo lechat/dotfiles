@@ -25,7 +25,7 @@ vim.opt.re = 1                      -- Use older regex engine for better perform
 vim.opt.ttyfast = true              -- Optimize for fast terminal connections
 vim.opt.lazyredraw = true           -- Delay redraws during macros/scripts for performance
 vim.opt.synmaxcol = 150             -- Limit syntax highlighting to 150 columns to avoid slowdown
-vim.g.loaded_ruby_provider = 0      -- Disable Ruby provider to reduce startup time
+vim.g.loaded_ruby_provider = 0      -- Disable Ruby provider top reduce startup time
 vim.g.loaded_node_provider = 0      -- Disable Node.js provider to reduce startup time
 vim.g.loaded_perl_provider = 0      -- Disable Perl provider to reduce startup time
 vim.g.do_legacy_filetype = 1        -- Enable legacy filetype detection for compatibility
@@ -35,7 +35,7 @@ vim.opt.incsearch = true            -- Show search matches as you type
 vim.opt.hlsearch = true             -- Highlight all search matches
 vim.opt.scrolloff = 3               -- Keep 3 lines visible above/below cursor when scrolling
 vim.opt.foldenable = false          -- Disable folding by default
-vim.opt.colorcolumn = "79,90,120"   -- Highlight columns 79, 90, and 120 for line length guidance
+--vim.opt.colorcolumn = "79,90,120"   -- Highlight columns 79, 90, and 120 for line length guidance
 vim.opt.mouse = ""                  -- Explicitly disable mouse support
 vim.opt.number = true               -- Show line numbers
 
@@ -137,7 +137,12 @@ require("lazy").setup({
   { "nvim-neotest/nvim-nio", lazy = true }, -- Async I/O library for Neovim plugins
   { "sindrets/diffview.nvim", cmd = "DiffviewOpen" }, -- Git diff viewer with side-by-side comparison
   { "NeogitOrg/neogit", cmd = "Neogit", -- Git integration with a Magit-like interface
-    dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim", "sindrets/diffview.nvim"}
+    dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim", "sindrets/diffview.nvim"},
+    config = function()
+        require("neogit").setup {
+            auto_show_console = false
+        }
+    end,
   },
   { "nvim-lualine/lualine.nvim", -- Statusline plugin with customizable sections
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -167,7 +172,7 @@ require("lazy").setup({
   { "Raimondi/delimitMate", event = "InsertEnter" }, -- Auto-close brackets, quotes, etc.
   { "mbbill/undotree", cmd = "UndotreeToggle" }, -- Visualize undo history as a tree
   { "justinmk/vim-sneak", event = "BufReadPost" }, -- Enhanced motion with two-character search
-  { "lewis6991/gitsigns.nvim", event = "BufReadPost" }, -- Git signs (added/changed/deleted) in the gutter
+  { "lewis6991/gitsigns.nvim" }, -- Git signs (added/changed/deleted) in the gutter
   { "fatih/vim-go", ft = "go", -- Go development plugin with formatting and highlighting
     init = function()
       vim.g.go_fmt_command = "goimports"
@@ -367,9 +372,10 @@ require("lazy").setup({
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", -- Syntax highlighting and parsing with Treesitter (First instance)
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = {"python", "lua", "go", "javascript"},
+        ensure_installed = {"python", "lua", "go", "javascript", "terraform"},
         highlight = { enable = true },
         incremental_selection = { enable = true },
+        indent = { enable = true },
         textobjects = { enable = true }
       })
     end,
@@ -405,18 +411,50 @@ require("lazy").setup({
       })
     end,
   },
-  { "github/copilot.vim", event = "InsertEnter", -- GitHub Copilot for AI-powered code suggestions
+  { "github/copilot.vim", -- event = "InsertEnter", -- GitHub Copilot for AI-powered code suggestions
     config = function()
       vim.g.copilot_no_tab_map = true
-      vim.g.copilot_filetypes = { python = true, lua = true, go = true }
+      vim.g.copilot_filetypes = { python = true, lua = true, go = true, terraform = true, hcl = true }
       vim.keymap.set("i", "<C-j>", 'copilot#Accept("<CR>")', { expr = true, silent = true, replace_keycodes = false })
     end,
   },
+  { "leoluz/nvim-dap-go",
+    config = function()
+      require('dap-go').setup()
+    end,
+  },
+  { "ravitemer/mcphub.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",  -- Required for Job and HTTP requests
+    },
+    -- uncomment the following line to load hub lazily
+    cmd = "MCPHub",  -- lazy load 
+    build = "npm install -g mcp-hub@latest",  -- Installs required mcp-hub npm module
+    -- uncomment this if you don't want mcp-hub to be available globally or can't use -g
+    -- build = "bundled_build.lua",  -- Use this and set use_bundled_binary = true in opts  (see Advanced configuration)
+    config = function()
+      require("mcphub").setup({
+        use_bundled_binary = false, -- Uses bundled mcp-hub script instead of global installation
+        cmd = "/home/scb/.config/nvm/versions/node/v20.0.0/bin/mcp-hub",
+      })
+    end,
+  },
+--  { "CopilotC-Nvim/CopilotChat.nvim",
+--    dependencies = {
+--      { "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
+--      { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+--    },
+--    build = "make tiktoken", -- Only on MacOS or Linux
+--    opts = {
+--      -- See Configuration section for options
+--    },
+--    -- See Commands section for default commands if you want to lazy load on them
+--  },
 })
 
 -- Autocommands
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = {"javascript", "html", "ts"},
+  pattern = {"javascript", "html", "ts", "terraform"},
   callback = function() vim.opt_local.tabstop = 2 vim.opt_local.shiftwidth = 2 end,
 })
 vim.api.nvim_create_autocmd("FileType", {
@@ -440,6 +478,12 @@ vim.api.nvim_create_autocmd("BufEnter", {
 vim.api.nvim_create_autocmd("QuickFixCmdPost", {
   pattern = "*grep*",
   command = "cwindow",
+})
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = "*.tf",
+  callback = function()
+    require'lspconfig'.terraformls.setup{}
+  end,
 })
 
 -- Key mappings
@@ -468,11 +512,28 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.keymap.set("n", "<Leader>b", function() require('dap').toggle_breakpoint() end)
     vim.keymap.set("n", "<F4>", function() require('dapui').toggle() end)
     -- Telescope mappings
-    vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-    vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+    vim.keymap.set('n', 'sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+    vim.keymap.set('n', 'rg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
     vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
     vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
-  end,
+    vim.keymap.set('n', '<leader>dd', function()
+  local pos = vim.api.nvim_win_get_cursor(0)
+  local row, col = pos[1], pos[2]
+  -- Insert a new line above
+  vim.api.nvim_buf_set_lines(0, row-1, row-1, false, {""})
+  -- Get the line under the cursor (now at row)
+  local below_line = vim.api.nvim_buf_get_lines(0, row, row+1, false)[1] or ""
+  -- Extract leading whitespace for indentation
+  local indent = below_line:match("^(%s*)") or ""
+  -- Insert text with the same indentation
+  local padded = indent .. "import pudb; pu.db"
+  vim.api.nvim_buf_set_lines(0, row-1, row, false, {padded})
+  -- Move cursor back to the original line and column
+  vim.api.nvim_win_set_cursor(0, {row+1, col})
+  -- Save the file
+  vim.cmd('write')
+end, { noremap = true, silent = true })
+end,
 })
 
 -- Commands
@@ -480,3 +541,7 @@ vim.api.nvim_create_user_command("Q", "q", {})
 vim.api.nvim_create_user_command("W", "w", {})
 vim.api.nvim_create_user_command("Qa", "qa", {})
 vim.keymap.set("", "X", "x", { noremap = true })
+
+-- DAP colors
+vim.fn.sign_define("DapBreakpoint", {text="🛑", texthl='', linehl='', numhl=''})
+vim.fn.sign_define("DapStopped", {text="", texthl='MatchParen', linehl='MatchParen', numhl='MatchParen'})
