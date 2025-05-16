@@ -61,7 +61,7 @@ export ZSH_THEME="agnoster"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 ENABLE_CORRECTION=true
 ZSH_TMUX_AUTOSTART=true
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=4,bg=16"
 
 plugins=(git python pip docker vi-mode kubectl tmux fzf terraform zsh-autosuggestions)
 FZF_BASE=/usr/share/fzf
