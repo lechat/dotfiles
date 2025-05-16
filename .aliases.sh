@@ -21,7 +21,7 @@ export AWS_CA_BUNDLE=/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
 ACC_HK=533746428624
 ACC_SG=373893023700
 export BANKID="2007382"
-export SSO_PASSWORD=$(cat $HOME/.login)
+export SSO_PASSWORD=$(cat $HOME/.creds)
 export SSO_PWD=$SSO_PASSWORD
 ZONE_ACC="o.2007382"
 
