@@ -141,28 +141,42 @@ require("lazy").setup({
     },
     config = function()
       local lspconfig = require("lspconfig")
-      lspconfig.pyright.setup({
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
-        cmd = {"pyright-langserver", "--stdio"},
-        on_attach = function(client, bufnr)
-          print("Pyright LSP attached to buffer " .. bufnr)
-        end,
-        on_init = function(client)
-          if not vim.fn.executable("pyright-langserver") then
-            vim.notify("Pyright not found. Install with 'npm install -g pyright'", vim.log.levels.ERROR)
-          else
-            vim.notify("Pyright found at " .. vim.fn.exepath("pyright-langserver"), vim.log.levels.INFO)
-          end
-        end,
+      lspconfig.basedpyright.setup {
+        cmd = { 'basedpyright-langserver', '--stdio' },
         settings = {
-          python = {
+          basedpyright = {
             analysis = {
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true
-            }
-          }
-        }
-      })
+              typeCheckingMode = 'off',
+              diagnosticSeverityOverrides = {
+                reportUnknownParamterType = 'none',
+                reportMissingParameterType = 'none',
+              },
+            },
+          },
+        },
+      }
+      -- lspconfig.pyright.setup({
+      --   capabilities = require("cmp_nvim_lsp").default_capabilities(),
+      --   cmd = {"pyright-langserver", "--stdio"},
+      --   on_attach = function(client, bufnr)
+      --     print("Pyright LSP attached to buffer " .. bufnr)
+      --   end,
+      --   on_init = function(client)
+      --     if not vim.fn.executable("pyright-langserver") then
+      --       vim.notify("Pyright not found. Install with 'npm install -g pyright'", vim.log.levels.ERROR)
+      --     else
+      --       vim.notify("Pyright found at " .. vim.fn.exepath("pyright-langserver"), vim.log.levels.INFO)
+      --     end
+      --   end,
+      --   settings = {
+      --     python = {
+      --       analysis = {
+      --         autoSearchPaths = true,
+      --         useLibraryCodeForTypes = true
+      --       }
+      --     }
+      --   }
+      -- })
     end,
   },
   { "nvim-lua/plenary.nvim", lazy = true }, -- Utility functions library for Neovim plugins
@@ -268,7 +282,7 @@ require("lazy").setup({
          val = function()
            local oldfiles = vim.v.oldfiles or {}
            local buttons = {}
-           local max_files = 5 -- Only process 5 files
+           local max_files = 10 -- Only process 10 files
            local counter = 0
            
            for _, file in ipairs(oldfiles) do
@@ -541,11 +555,11 @@ require("lazy").setup({
           },
         },
         -- Set module_path to ensure parsers are cached
-        parser_install_dir = vim.fn.stdpath("data") .. "/site/parsers",
+        -- parser_install_dir = vim.fn.stdpath("data") .. "/site/parsers",
       })
       
       -- Make sure the parser directory is in the runtimepath
-      vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site/parsers")
+      -- vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site/parsers")
     end,
   },
   { "github/copilot.vim", event = "InsertEnter", -- GitHub Copilot for AI-powered code suggestions
@@ -657,6 +671,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.keymap.set('n', 'rg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
     vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
     vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+    vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open float window to show lsp warnings'})
   end,
 })
 -- Commands
@@ -668,6 +683,10 @@ vim.keymap.set("", "X", "x", { noremap = true })
 vim.diagnostic.config({
   update_in_insert = false,  -- Don't update diagnostics in insert mode
   severity_sort = true,
+  signs = true,
+  float = {
+    source = "always",
+  },
 })
 
 vim.api.nvim_create_autocmd('LspAttach', {
