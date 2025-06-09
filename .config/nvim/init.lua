@@ -169,6 +169,26 @@ require("lazy").setup({
       "nvim-lua/plenary.nvim",
       { "nvim-telescope/telescope.nvim", lazy = true },
       { "sindrets/diffview.nvim", lazy = true },
+      config = function()
+        require("neogit").setup({
+          disable_signs = false, -- Enable signs in the gutter
+          disable_context_highlighting = false, -- Enable context highlighting
+          disable_commit_confirmation = true, -- Disable commit confirmation prompt
+          integrations = {
+            diffview = true, -- Integrate with diffview.nvim
+            telescope = true, -- Integrate with telescope.nvim
+          },
+          sections = {
+            untracked = { folded = true, hidden = false }, -- Fold untracked files by default
+            unstaged = { folded = false, hidden = false },   -- Fold unstaged changes by default
+            staged = { folded = false, hidden = false },      -- Fold staged changes by default
+            stashes = { folded = true, hidden = false },     -- Fold stashes by default
+            unpulled = { folded = true },    -- Fold unpulled changes by default
+            unmerged = { folded = false, hidden = false },    -- Fold unmerged changes by default
+            recent = { folded = false, hidden = false },       -- Fold recent commits by default
+          },
+        })
+      end,
     },
   },
   { "nvim-lualine/lualine.nvim", -- Statusline plugin with customizable sections
