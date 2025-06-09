@@ -85,35 +85,10 @@ require("lazy").setup({
             }),
             formatting = {
               format = require("lspkind").cmp_format({
-                mode = "symbol_text",
-                preset = "codicons",
-                symbol_map = {
-                  Text = "",
-                  Method = "",
-                  Function = "",
-                  Constructor = "",
-                  Field = "",
-                  Variable = "",
-                  Class = "",
-                  Interface = "",
-                  Module = "",
-                  Property = "",
-                  Unit = "",
-                  Value = "",
-                  Enum = "",
-                  Keyword = "",
-                  Snippet = "",
-                  Color = "",
-                  File = "",
-                  Reference = "",
-                  Folder = "",
-                  EnumMember = "",
-                  Constant = "",
-                  Struct = "",
-                  Event = "",
-                  Operator = "",
-                  TypeParameter = ""
-                }
+                mode = "symbol_text", -- Use both symbol and text in completion menu
+                preset = "codicons",  -- Use codicons for icons
+                maxwidth = 50,        -- Adjust the width of the completion menu
+                ellipsis_char = "…",  -- Use ellipsis for long text
               }),
             },
           })
@@ -318,7 +293,6 @@ require("lazy").setup({
           { type = "group",
             val = {
               { type = "button", val = "Neovim Config", on_press = function() vim.cmd(":edit ~/.config/nvim/init.lua") end, opts = { position = "left", hl = nil } },
-              { type = "button", val = "Project File", on_press = function() vim.cmd(":edit ~/projects/main.py") end, opts = { position = "left", hl = nil } },
               { type = "button", val = "New File", on_press = function() vim.cmd(":ene <BAR> startinsert") end, opts = { position = "left", hl = nil } },
               { type = "button", val = "Quit", on_press = function() vim.cmd(":qa") end, opts = { position = "left", hl = nil } },
             },
@@ -461,10 +435,10 @@ require("lazy").setup({
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", -- Syntax highlighting and parsing with Treesitter
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = {"python", "lua", "go", "javascript"},
-        highlight = { enable = true },
+        ensure_installed = {"python", "lua", "go", "javascript", "terraform" },
+        highlight = { enable = true },    -- Enable syntax highlighting
         incremental_selection = { enable = true },
-        textobjects = { enable = true }
+        textobjects = { enable = true }   -- Enable text objects for easier code manipulation
       })
     end,
   },
@@ -482,8 +456,9 @@ require("lazy").setup({
   { "github/copilot.vim", event = "InsertEnter", -- GitHub Copilot for AI-powered code suggestions
     config = function()
       vim.g.copilot_no_tab_map = true
-      vim.g.copilot_filetypes = { python = true, lua = true, go = true }
+      vim.g.copilot_filetypes = { python = true, lua = true, go = true, terraform = true }
       vim.keymap.set("i", "<C-j>", 'copilot#Accept("<CR>")', { expr = true, silent = true, replace_keycodes = false })
+      vim.keymap.set("i", "<C-Right>", 'copilot#AcceptWord()', { expr = true, silent = true, replace_keycodes = false })
     end,
   },
 })
