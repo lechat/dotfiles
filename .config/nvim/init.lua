@@ -1,8 +1,14 @@
+local parser_install_dir = vim.fn.stdpath("data") .. "/site/parser"
+vim.fn.mkdir(parser_install_dir, "p") -- Create the directory if it doesn't exist
+vim.opt.runtimepath:append(parser_install_dir) -- Add to runtime PATH
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({"git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath})
 end
 vim.opt.rtp:prepend(lazypath)
+
+vim.loader.enable()  -- Enable the new bytecode loader for faster startup
 
 -- Basic settings
 vim.opt.compatible = false          -- Disable Vi compatibility mode for modern Vim features
@@ -67,7 +73,7 @@ require("lazy").setup({
           cmp.setup({
             snippet = {
               expand = function(args)
-                -- No-op: We’re not using snippets
+                -- No-op: We're not using snippets
               end,
             },
             mapping = cmp.mapping.preset.insert({
@@ -85,31 +91,31 @@ require("lazy").setup({
                 mode = "symbol_text",
                 preset = "codicons",
                 symbol_map = {
-                  Text = "",
-                  Method = "",
-                  Function = "",
-                  Constructor = "",
-                  Field = "",
-                  Variable = "",
-                  Class = "",
-                  Interface = "",
-                  Module = "",
-                  Property = "",
-                  Unit = "",
-                  Value = "",
-                  Enum = "",
-                  Keyword = "",
-                  Snippet = "",
-                  Color = "",
-                  File = "",
-                  Reference = "",
-                  Folder = "",
-                  EnumMember = "",
-                  Constant = "",
-                  Struct = "",
-                  Event = "",
-                  Operator = "",
-                  TypeParameter = ""
+                  Text = "",
+                  Method = "",
+                  Function = "",
+                  Constructor = "",
+                  Field = "",
+                  Variable = "",
+                  Class = "",
+                  Interface = "",
+                  Module = "",
+                  Property = "",
+                  Unit = "",
+                  Value = "",
+                  Enum = "",
+                  Keyword = "",
+                  Snippet = "",
+                  Color = "",
+                  File = "",
+                  Reference = "",
+                  Folder = "",
+                  EnumMember = "",
+                  Constant = "",
+                  Struct = "",
+                  Event = "",
+                  Operator = "",
+                  TypeParameter = ""
                 }
               }),
             },
@@ -119,49 +125,26 @@ require("lazy").setup({
       { "hrsh7th/cmp-nvim-lsp" }, -- LSP source for nvim-cmp
       { "hrsh7th/cmp-buffer" },   -- Buffer source for nvim-cmp
       { "onsails/lspkind.nvim" }, -- Icons for completion menu
-      { "williamboman/mason.nvim", -- Manage LSP servers, DAP servers, linters, and formatters
-        cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
-        enabled = true,
-        version = "v1.8.0",
-        build = ":MasonUpdate",
-        config = function()
-          require("mason").setup()
-        end,
-      },
-      { "jay-babu/mason-nvim-dap.nvim", -- Bridge between mason.nvim and nvim-dap for debugging
-        dependencies = { "williamboman/mason.nvim", "mfussenegger/nvim-dap" },
-        config = function()
-          require("mason-nvim-dap").setup({
-            ensure_installed = { "python" },
-            automatic_setup = true,
-            handlers = {},
-          })
-        end,
-      },
+      -- Mason plugins are now separate and configured above
     },
+    -- Remove the config function here since LSP setup is now handled by mason-lspconfig
     config = function()
-      local lspconfig = require("lspconfig")
-      lspconfig.pyright.setup({
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
-        cmd = {"pyright-langserver", "--stdio"},
-        on_attach = function(client, bufnr)
-          print("Pyright LSP attached to buffer " .. bufnr)
-        end,
-        on_init = function(client)
-          if not vim.fn.executable("pyright-langserver") then
-            vim.notify("Pyright not found. Install with 'npm install -g pyright'", vim.log.levels.ERROR)
-          else
-            vim.notify("Pyright found at " .. vim.fn.exepath("pyright-langserver"), vim.log.levels.INFO)
-          end
-        end,
-        settings = {
-          python = {
-            analysis = {
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true
-            }
-          }
-        }
+      -- This is now minimal - actual LSP setup is done in mason-lspconfig
+      -- Just ensure diagnostic configuration
+      vim.diagnostic.config({
+        update_in_insert = false,
+        severity_sort = true,
+        virtual_text = {
+          source = "always",
+          prefix = "●",
+        },
+        float = {
+          source = "always",
+          header = "",
+          border = "rounded",
+        },
+        signs = true,
+        underline = true,
       })
     end,
   },
@@ -190,7 +173,7 @@ require("lazy").setup({
           globalstatus = false,
         },
         sections = {
-          lualine_a = { "mode", "buffers" },
+          lualine_a = { "mode" },
           lualine_b = { "branch", "diff", "diagnostics"},
           lualine_c = { { "filename", file_status=true, path=3, padding = { left = 1, right = 1 } } },
           --lualine_c = { 
@@ -354,7 +337,7 @@ require("lazy").setup({
              -- Return to normal status when leaving dashboard
              vim.api.nvim_create_autocmd("BufUnload", {
                callback = function()
-                 vim.opt.laststatus = 3
+                 vim.opt.laststatus = 2
                end,
                pattern = "<buffer>",
              })
@@ -485,28 +468,34 @@ require("lazy").setup({
   { "nvim-telescope/telescope.nvim", cmd = "Telescope", -- Fuzzy finder for files, buffers, and more
     dependencies = {"nvim-lua/plenary.nvim"}
   },
+  { "andymass/vim-matchup",
+    event = "BufReadPost",
+    config = function()
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end,
+    dependencies = {"nvim-treesitter/nvim-treesitter"}
+  },
   { "nvim-treesitter/nvim-treesitter", 
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        -- Keep your language list, but optimize how they're loaded
-        ensure_installed = {"python", "lua", "go", "javascript"}, -- Install these, but don't load all at startup
-        
+        ensure_installed = {"python", "lua", "go", "javascript"},     
+
         highlight = { 
           enable = true,
-          -- Only load syntax highlighting for files under a size threshold
-          disable = function(lang, buf)
+          disable = function(_, buf)
             local max_filesize = 100 * 1024 -- 100 KB
             local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
             if ok and stats and stats.size > max_filesize then
               return true
             end
           end,
-          -- This improves initial load time by deferring some highlight work
           additional_vim_regex_highlighting = false,
         },
         
-        -- Defer loading of these features until they're needed
+        -- Disable comment module (you're using Comment.nvim)
+        comment = { enable = false },
+        
         incremental_selection = { 
           enable = true,
           keymaps = {
@@ -517,7 +506,6 @@ require("lazy").setup({
           },
         },
         
-        -- Only load textobjects if you actually use them
         textobjects = { 
           enable = true,
           select = {
@@ -530,22 +518,33 @@ require("lazy").setup({
               ["ic"] = "@class.inner",
             },
           },
+          move = {
+            enable = true,
+            set_jumps = true,
+            goto_next_start = {
+              ["]f"] = "@function.outer",
+              ["]c"] = "@class.outer",
+            },
+            goto_next_end = {
+              ["]F"] = "@function.outer",
+              ["]C"] = "@class.outer",
+            },
+            goto_previous_start = {
+              ["[f"] = "@function.outer",
+              ["[c"] = "@class.outer",
+            },
+            goto_previous_end = {
+              ["[F"] = "@function.outer",
+              ["[C"] = "@class.outer",
+            },
+          }
         },
-        
-        comment = {
-          enable = true,
-          -- Set mappings that don't overlap
-          toggler = {
-            line = 'gcc',
-            block = 'gbc', -- Change from gc to gbc
-          },
+        matchup = {
+          enable = true,              -- mandatory, false will disable the whole extension
+          disable = {},               -- optional, list of language that will be disabled
+          -- [options]
         },
-        -- Set module_path to ensure parsers are cached
-        parser_install_dir = vim.fn.stdpath("data") .. "/site/parsers",
       })
-      
-      -- Make sure the parser directory is in the runtimepath
-      vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site/parsers")
     end,
   },
   { "github/copilot.vim", event = "InsertEnter", -- GitHub Copilot for AI-powered code suggestions
@@ -564,6 +563,38 @@ require("lazy").setup({
           basic = true,
           extra = false, -- Disable extra mappings that might conflict
         }
+      })
+    end,
+  },
+  { "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-neotest/neotest-python"
+    },
+    config = function()
+      require("neotest").setup({
+        adapters = {
+          require("neotest-python")({
+            -- Command to run pytest
+            -- If using virtualenv or conda, specify the python path
+            python = vim.fn.exepath("python"),
+            
+            -- Test runner to use (pytest, unittest, etc.)
+            runner = "pytest",
+            
+            -- Arguments for pytest
+            args = {"--verbose"},
+            
+            -- Enable DAP integration
+            dap = {
+              justMyCode = false,
+              console = "integratedTerminal",
+            },
+          }),
+        },
       })
     end,
   }
@@ -597,10 +628,33 @@ vim.defer_fn(function()
       vim.b.python_highlight_all = 1     -- Enable all Python syntax highlighting features
       
       -- For LSP
-      vim.b.coc_root_patterns = {".git", ".env", "pyproject.toml", "setup.py"}
+      -- vim.b.coc_root_patterns = {".git", ".env", "pyproject.toml", "setup.py"}
       
-      -- Format with Black using PEP 8 line length
-      vim.keymap.set("n", "<leader>pf", ":!black -l 79 %<CR>", {buffer = true})  -- Format with Black
+      -- Format with Ruff
+      vim.keymap.set("n", "<leader>pf", function()
+        vim.lsp.buf.format({ 
+          filter = function(client) 
+            return client.name == "ruff" 
+          end,
+          async = true 
+        })
+      end, bufopts)
+      
+      -- Organize imports with Ruff
+      vim.keymap.set("n", "<leader>pi", function()
+        vim.lsp.buf.code_action({
+          context = { only = { "source.organizeImports" } },
+          apply = true,
+        })
+      end, bufopts)
+      
+      -- Fix all auto-fixable issues
+      vim.keymap.set("n", "<leader>px", function()
+        vim.lsp.buf.code_action({
+          context = { only = { "source.fixAll" } },
+          apply = true,
+        })
+      end, bufopts)
     end,
   })
   vim.api.nvim_create_autocmd("FileType", {
@@ -627,6 +681,9 @@ vim.defer_fn(function()
 
 end, 100)
 
+-- functions
+local functions = require('custom.functions')
+
 -- Key mappings
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
@@ -643,20 +700,33 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.keymap.set("n", "<leader>k", ":wincmd k<CR>")
     vim.keymap.set("n", "<leader>h", ":wincmd h<CR>")
     vim.keymap.set("n", "<leader>l", ":wincmd l<CR>")
+    vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show diagnostic message' })
     vim.keymap.set({"n", "i"}, "<C-S>", ":w<CR>")
-    vim.keymap.set("n", "<M-w>", "<C-W>", { noremap = true, silent = true })
+    vim.keymap.set("n", "<M-w>", "<C-W>", { noremap = true, silent = true })  -- Map Alt-W to do the same as Ctrl-W, much easier to access
     -- DAP mappings
     vim.keymap.set("n", "<F5>", function() require('dap').continue() end)
     vim.keymap.set("n", "<F10>", function() require('dap').step_over() end)
     vim.keymap.set("n", "<F11>", function() require('dap').step_into() end)
     vim.keymap.set("n", "<F12>", function() require('dap').step_out() end)
-    vim.keymap.set("n", "<Leader>b", function() require('dap').toggle_breakpoint() end)
+    -- vim.keymap.set("n", "<Leader>b", function() require('dap').toggle_breakpoint() end)
     vim.keymap.set("n", "<F4>", function() require('dapui').toggle() end)
     -- Telescope mappings
     vim.keymap.set('n', 'sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
     vim.keymap.set('n', 'rg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
     vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
     vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+    vim.keymap.set("n", "<Leader>b", functions.smart_breakpoint, {
+      noremap = true, 
+      silent = true, 
+      desc = "Toggle smart breakpoint (pudb for Python, DAP for others)"
+    })
+    -- Key mappings for neotest
+    vim.keymap.set("n", "<leader>tt", function() require("neotest").run.run() end, { desc = "Run nearest test" })
+    vim.keymap.set("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, { desc = "Run tests in current file" })
+    vim.keymap.set("n", "<leader>ts", function() require("neotest").summary.toggle() end, { desc = "Toggle test summary" })
+    vim.keymap.set("n", "<leader>td", function() require("neotest").run.run({ strategy = "dap" }) end, { desc = "Debug nearest test" })
+    vim.keymap.set("n", "<leader>tl", function() require("neotest").run.run_last() end, { desc = "Run last test" })
+    vim.keymap.set("n", "<leader>to", function() require("neotest").output.open() end, { desc = "Show test output" })
   end,
 })
 -- Commands
@@ -670,12 +740,13 @@ vim.diagnostic.config({
   severity_sort = true,
 })
 
-vim.api.nvim_create_autocmd('LspAttach', {
-  callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if client:supports_method('textDocument/completion') then
-      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
-    end
-  end,
-})
+-- New Veovim feature, which is not helpful. Commenting out
+--vim.api.nvim_create_autocmd('LspAttach', {
+--  callback = function(ev)
+--    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+--    if client:supports_method('textDocument/completion') then
+--      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+--    end
+--  end,
+--})
 
