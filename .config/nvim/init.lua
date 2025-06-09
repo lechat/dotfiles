@@ -4,6 +4,8 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+vim.loader.enable()  -- Enable the new bytecode loader for faster startup
+
 -- Basic settings
 vim.opt.compatible = false          -- Disable Vi compatibility mode for modern Vim features
 vim.opt.encoding = "utf-8"          -- Set file encoding to UTF-8 for wide character support
@@ -21,7 +23,6 @@ vim.g.is_posix = 1                  -- Treat shell scripts as POSIX-compliant fo
 vim.g.mapleader = " "               -- Set leader key to space for custom keybindings
 vim.opt.wildmenu = true             -- Enable enhanced command-line completion menu
 vim.opt.wildmode = {"list:longest", "full"} -- Configure wildmenu: list matches, then complete longest common string
-vim.opt.re = 1                      -- Use older regex engine for better performance in some cases
 vim.opt.ttyfast = true              -- Optimize for fast terminal connections
 vim.opt.lazyredraw = true           -- Delay redraws during macros/scripts for performance
 vim.opt.synmaxcol = 150             -- Limit syntax highlighting to 150 columns to avoid slowdown
@@ -35,9 +36,15 @@ vim.opt.incsearch = true            -- Show search matches as you type
 vim.opt.hlsearch = true             -- Highlight all search matches
 vim.opt.scrolloff = 3               -- Keep 3 lines visible above/below cursor when scrolling
 vim.opt.foldenable = false          -- Disable folding by default
-vim.opt.colorcolumn = "79,90,120"   -- Highlight columns 79, 90, and 120 for line length guidance
+--vim.opt.colorcolumn = "79,90,120"   -- Highlight columns 79, 90, and 120 for line length guidance
 vim.opt.mouse = ""                  -- Explicitly disable mouse support
 vim.opt.number = true               -- Show line numbers
+
+-- settings as of 2025-05-15
+vim.opt.regexpengine = 1         -- Use the old regexp engine
+vim.g.matchparen_timeout = 20    -- Reduce timeout for matching parentheses
+vim.g.matchparen_insert_timeout = 20
+vim.opt.redrawtime = 1500        -- Maximum time spent trying to highlight syntax
 
 -- Ensure NVM's PATH is available to Neovim
 vim.env.PATH = vim.env.PATH .. ":/home/aleksey/.config/nvm/versions/node/v22.2.0/bin"
@@ -147,7 +154,11 @@ require("lazy").setup({
               autoSearchPaths = true,
               useLibraryCodeForTypes = true,
               diagnosticMode = "workspace",
-            }
+              typeCheckingMode = "basic",
+            },
+            typeCheckingMode = "basic",
+            reportMissingTypeStubs = "none",
+            reportCallIssue = "none"
           }
         }
       })
@@ -170,36 +181,20 @@ require("lazy").setup({
         end,
         filetypes = { "terraform", "tf", "terraform-vars" },
       })
-      
-      lspconfig.pyright.setup({
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
-        cmd = {"pyright-langserver", "--stdio"},
-        on_attach = function(client, bufnr)
-          print("Pyright LSP attached to buffer " .. bufnr)
-        end,
-        on_init = function(client)
-          if not vim.fn.executable("pyright-langserver") then
-            vim.notify("Pyright not found. Install with 'npm install -g pyright'", vim.log.levels.ERROR)
-          else
-            vim.notify("Pyright found at " .. vim.fn.exepath("pyright-langserver"), vim.log.levels.INFO)
-          end
-        end,
-        settings = {
-          python = {
-            analysis = {
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true
-            }
-          }
-        }
-      })
     end,
   },
   { "nvim-lua/plenary.nvim", lazy = true }, -- Utility functions library for Neovim plugins
   { "nvim-neotest/nvim-nio", lazy = true }, -- Async I/O library for Neovim plugins
-  { "sindrets/diffview.nvim", cmd = "DiffviewOpen" }, -- Git diff viewer with side-by-side comparison
-  { "NeogitOrg/neogit", cmd = "Neogit", -- Git integration with a Magit-like interface
-    dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim", "sindrets/diffview.nvim"}
+  { "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+  }, -- Git diff viewer with side-by-side comparison
+  { "NeogitOrg/neogit",
+    cmd = "Neogit", -- Git integration with a Magit-like interface
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      { "nvim-telescope/telescope.nvim", lazy = true },
+      { "sindrets/diffview.nvim", lazy = true },
+    },
   },
   { "nvim-lualine/lualine.nvim", -- Statusline plugin with customizable sections
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -213,7 +208,7 @@ require("lazy").setup({
           globalstatus = false,
         },
         sections = {
-          lualine_a = { "mode", "buffers" },
+          lualine_a = { "mode" },
           lualine_b = { "branch", "diff", "diagnostics"},
           lualine_c = { { "filename", file_status=true, path=3, padding = { left = 1, right = 1 } } },
           --lualine_c = { 
@@ -349,9 +344,13 @@ require("lazy").setup({
     end,
   },
   { "Rigellute/shades-of-purple.vim", -- Shades of Purple colorscheme
+    priority = 1000,
     lazy = false,
     config = function()
       vim.cmd("colorscheme shades_of_purple")
+      vim.cmd([[
+        hi MatchParen cterm=underline,reverse ctermfg=NONE gui=underline,bold guibg=NONE guifg=NONE
+      ]])
     end,
   },
   { "folke/tokyonight.nvim", -- Tokyo Night colorscheme with multiple styles
@@ -474,6 +473,10 @@ require("lazy").setup({
       require("which-key").setup({
         notify = false
       })
+      -- Register group descriptions
+      require("which-key").register({
+        ["<leader>p"] = { name = "Python" },
+      })
     end,
   },
   { "github/copilot.vim", event = "InsertEnter", -- GitHub Copilot for AI-powered code suggestions
@@ -484,6 +487,87 @@ require("lazy").setup({
     end,
   },
 })
+
+-- Autocommands
+vim.defer_fn(function()
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = {"javascript", "html", "ts"},
+    callback = function()
+      vim.opt_local.tabstop = 2
+      vim.opt_local.shiftwidth = 2
+    end,
+  })
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "python",
+    callback = function()
+      -- Indentation (PEP 8 standard)
+      vim.opt_local.tabstop = 4          -- Width of a tab character
+      vim.opt_local.softtabstop = 4      -- Number of spaces a tab counts for during editing
+      vim.opt_local.shiftwidth = 4       -- Number of spaces for each indentation level
+      vim.opt_local.expandtab = true     -- Convert tabs to spaces
+
+      -- Search path for imports
+      vim.opt_local.path:append("**")    -- Search in all subdirectories
+
+      -- Python-specific settings
+      vim.b.python_highlight_all = 1     -- Enable all Python syntax highlighting features
+
+      -- For LSP
+      -- vim.b.coc_root_patterns = {".git", ".env", "pyproject.toml", "setup.py"}
+
+      -- Format with Ruff
+      vim.keymap.set("n", "<leader>pf", function()
+        vim.lsp.buf.format({
+          filter = function(client)
+            return client.name == "ruff"
+          end,
+          async = true
+        })
+      end, { buffer = true, desc = "Format Python with Ruff"})
+
+      -- Organize imports with Ruff
+      vim.keymap.set("n", "<leader>pi", function()
+        vim.lsp.buf.code_action({
+          context = { only = { "source.organizeImports" } },
+          apply = true,
+        })
+      end, { buffer = true, desc = "Organize Python imports"})
+
+      -- Fix all auto-fixable issues
+      vim.keymap.set("n", "<leader>px", function()
+        vim.lsp.buf.code_action({
+          context = { only = { "source.fixAll" } },
+          apply = true,
+        })
+      end, { buffer = true, desc = "Fix all Python issues" })
+    end,
+  })
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "go",
+    callback = function() vim.keymap.set("n", "<leader>gi", "<Plug>(go-install)", { buffer = true }) end,
+  })
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = {"*.sh", "*.py", "*.js", "*.yaml", "*.html", "*.groovy"},
+    callback = function() vim.cmd("%s/\\s\\+$//e") end,
+  })
+  vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+    pattern = "*grep*",
+    command = "cwindow",
+  })
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "lua",
+    callback = function()
+      vim.opt_local.tabstop = 2       -- Number of spaces a tab character represents
+      vim.opt_local.shiftwidth = 2    -- Number of spaces for each indentation level
+      vim.opt_local.softtabstop = 2   -- Number of spaces a tab counts for during editing
+      vim.opt_local.expandtab = true  -- Convert tabs to spaces
+    end,
+  })
+
+end, 100)
+
+-- functions
+local functions = require('custom.functions')
 
 -- Autocommands
 vim.api.nvim_create_autocmd("FileType", {
@@ -530,7 +614,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.keymap.set("n", "<leader>k", ":wincmd k<CR>")
     vim.keymap.set("n", "<leader>h", ":wincmd h<CR>")
     vim.keymap.set("n", "<leader>l", ":wincmd l<CR>")
+    vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show diagnostic message' })
     vim.keymap.set({"n", "i"}, "<C-S>", ":w<CR>")
+    vim.keymap.set("n", "<M-w>", "<C-W>", { noremap = true, silent = true })  -- Map Alt-W to do the same as Ctrl-W, much easier to access
     -- DAP mappings
     vim.keymap.set("n", "<F5>", function() require('dap').continue() end)
     vim.keymap.set("n", "<F10>", function() require('dap').step_over() end)
@@ -543,6 +629,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.keymap.set('n', 'rg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
     vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
     vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+
+    vim.keymap.set("n", "gd", require('telescope.builtin').lsp_definitions, { buffer = bufnr, desc = "Go to definition" })
   end,
 })
 
