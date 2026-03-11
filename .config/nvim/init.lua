@@ -41,10 +41,10 @@ vim.opt.mouse = ""                  -- Explicitly disable mouse support
 vim.opt.number = true               -- Show line numbers
 
 -- settings as of 2025-05-15
-vim.opt.regexpengine = 1         -- Use the old regexp engine
-vim.g.matchparen_timeout = 20    -- Reduce timeout for matching parentheses
-vim.g.matchparen_insert_timeout = 20
-vim.opt.redrawtime = 1500        -- Maximum time spent trying to highlight syntax
+vim.opt.regexpengine = 1              -- Use the old regexp engine
+vim.g.matchparen_timeout = 20         -- Reduce timeout for matching parentheses
+vim.g.matchparen_insert_timeout = 20  -- Reduce timeout for matching parentheses in insert mode
+vim.opt.redrawtime = 1500             -- Maximum time spent trying to highlight syntax
 
 -- Ensure NVM's PATH is available to Neovim
 vim.env.PATH = vim.env.PATH .. ":/home/aleksey/.config/nvm/versions/node/v22.2.0/bin"
@@ -115,11 +115,10 @@ require("lazy").setup({
       },
     },
     config = function()
-      local lspconfig = require("lspconfig")
-      
-      -- Python LSP with basedpyright
-      lspconfig.basedpyright.setup({
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+      vim.lsp.config('basedpyright', {
+        capabilities = capabilities,
         on_attach = function(client, bufnr)
           print("BasedPyright LSP attached to buffer " .. bufnr)
         end,
@@ -137,25 +136,26 @@ require("lazy").setup({
           }
         }
       })
-      
-      -- Ruff LSP for Python linting/formatting
-      lspconfig.ruff.setup({
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+
+      vim.lsp.config('ruff', {
+        capabilities = capabilities,
         on_attach = function(client, bufnr)
           print("Ruff LSP attached to buffer " .. bufnr)
-          -- Disable hover in favor of basedpyright
           client.server_capabilities.hoverProvider = false
         end,
       })
-      
-      -- Terraform LSP
-      lspconfig.terraformls.setup({
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+
+      vim.lsp.config('terraformls', {
+        capabilities = capabilities,
         on_attach = function(client, bufnr)
           print("Terraform LSP attached to buffer " .. bufnr)
         end,
         filetypes = { "terraform", "tf", "terraform-vars" },
       })
+
+      vim.lsp.enable('basedpyright')
+      vim.lsp.enable('ruff')
+      vim.lsp.enable('terraformls')
     end,
   },
   { "nvim-lua/plenary.nvim", lazy = true }, -- Utility functions library for Neovim plugins
@@ -191,7 +191,7 @@ require("lazy").setup({
       end,
     },
   },
-  { "nvim-lualine/lualine.nvim", -- Statusline plugin with customizable sections
+  { "nvim-lualine/lualine.nvim", event = "VeryLazy", -- Statusline plugin with customizable sections
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("lualine").setup({
@@ -250,7 +250,8 @@ require("lazy").setup({
   },
   { "majutsushi/tagbar", cmd = "TagbarToggle" }, -- Display tags (functions, variables) in a sidebar
   { "Raimondi/delimitMate", event = "InsertEnter" }, -- Auto-close brackets, quotes, etc.
-  { "mbbill/undotree", cmd = "UndotreeToggle" }, -- Visualize undo history as a tree
+  -- { "mbbill/undotree", cmd = "UndotreeToggle" }, -- Visualize undo history as a tree
+  { "XXiaoA/atone.nvim", cmd = "Atone" }, -- Modern undotree replacement
   { "justinmk/vim-sneak", event = "BufReadPost" }, -- Enhanced motion with two-character search
   { "lewis6991/gitsigns.nvim", event = "BufReadPost" }, -- Git signs (added/changed/deleted) in the gutter
   { "fatih/vim-go", ft = "go", -- Go development plugin with formatting and highlighting
@@ -337,14 +338,11 @@ require("lazy").setup({
       alpha.setup(theta.config)
     end,
   },
-  { "Rigellute/shades-of-purple.vim", -- Shades of Purple colorscheme
+  { "necrogoru/shades-of-purple.nvim", -- Shades of Purple colorscheme
     priority = 1000,
     lazy = false,
     config = function()
-      vim.cmd("colorscheme shades_of_purple")
-      vim.cmd([[
-        hi MatchParen cterm=underline,reverse ctermfg=NONE gui=underline,bold guibg=NONE guifg=NONE
-      ]])
+      vim.cmd("colorscheme shades-of-purple")
     end,
   },
   { "folke/tokyonight.nvim", -- Tokyo Night colorscheme with multiple styles
@@ -396,22 +394,22 @@ require("lazy").setup({
       vim.cmd("colorscheme onedark")
     end,
   },
-  { "liuchengxu/space-vim-dark", -- Space Vim Dark colorscheme
+  { "Th3Whit3Wolf/space-nvim", -- Space colorscheme
     lazy = true,
     config = function()
-      vim.cmd("colorscheme space-vim-dark")
+      vim.cmd("colorscheme space-nvim")
     end,
   },
-  { "altercation/vim-colors-solarized", -- Solarized colorscheme with light/dark modes
+  { "maxmx03/solarized.nvim", -- Solarized colorscheme with light/dark modes
     lazy = true,
     config = function()
-      vim.g.solarized_termcolors = 256
       vim.cmd("colorscheme solarized")
     end,
   },
-  { "jnurmine/Zenburn", -- Zenburn colorscheme with a warm, low-contrast look
+  { "phha/zenburn.nvim", -- Zenburn colorscheme with a warm, low-contrast look
     lazy = true,
     config = function()
+      require("zenburn").setup()
       vim.cmd("colorscheme zenburn")
     end,
   },
@@ -452,7 +450,7 @@ require("lazy").setup({
   { "nvim-telescope/telescope.nvim", cmd = "Telescope", -- Fuzzy finder for files, buffers, and more
     dependencies = {"nvim-lua/plenary.nvim"}
   },
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", -- Syntax highlighting and parsing with Treesitter
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", event = "VeryLazy", -- Lazy load treesitter
     config = function()
       require("nvim-treesitter.configs").setup({
         ensure_installed = {"python", "lua", "go", "javascript", "terraform" },
@@ -481,9 +479,36 @@ require("lazy").setup({
       vim.keymap.set("i", "<C-Right>", 'copilot#AcceptWord()', { expr = true, silent = true, replace_keycodes = false })
     end,
   },
+--  { "robitx/gp.nvim", cmd = {"GpChatNew", "GpChatToggle", "GpPrompt"}, event = "VeryLazy",
+--    config = function()
+--      require("gp").setup({
+--        providers = {
+--          ollama = { endpoint = "http://big-desktop:11434/api/generate" }
+--        },
+--        agents = {
+--          {
+--            name = "CodeLlama",
+--            model = { model = "codellama:7b" },
+--            chat = true,
+--            command = true,
+--            provider = "ollama",
+--            system_prompt = "You are a coding assistant specializing in Python and Terraform. Provide concise, accurate code snippets and explanations for tasks like code generation, debugging, and completion."
+--          },
+--          {
+--            name = "QwenCoder",
+--            model = { model="qwen3-coder:30b" },
+--            chat = true,
+--            command = true,
+--            provider = "ollama",
+--            system_prompt = "You are an expert coding assistant for complex programming tasks in Python, Terraform, and other languages. Provide detailed, optimized solutions and in-depth debugging help."
+--          }
+--        }
+--      })
+--    end
+--  },
 })
 
--- Autocommands
+-- Autocommands (deferred to avoid blocking startup)
 vim.defer_fn(function()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = {"javascript", "html", "ts"},
@@ -507,28 +532,19 @@ vim.defer_fn(function()
       -- Python-specific settings
       vim.b.python_highlight_all = 1     -- Enable all Python syntax highlighting features
 
-      -- For LSP
-      -- vim.b.coc_root_patterns = {".git", ".env", "pyproject.toml", "setup.py"}
-
       -- Format with Ruff
       vim.keymap.set("n", "<leader>pf", function()
         vim.lsp.buf.format({
-          filter = function(client)
-            return client.name == "ruff"
-          end,
+          filter = function(client) return client.name == "ruff" end,
           async = true
         })
       end, { buffer = true, desc = "Format Python with Ruff"})
-
-      -- Organize imports with Ruff
       vim.keymap.set("n", "<leader>pi", function()
         vim.lsp.buf.code_action({
           context = { only = { "source.organizeImports" } },
           apply = true,
         })
       end, { buffer = true, desc = "Organize Python imports"})
-
-      -- Fix all auto-fixable issues
       vim.keymap.set("n", "<leader>px", function()
         vim.lsp.buf.code_action({
           context = { only = { "source.fixAll" } },
@@ -541,6 +557,14 @@ vim.defer_fn(function()
     pattern = "go",
     callback = function() vim.keymap.set("n", "<leader>gi", "<Plug>(go-install)", { buffer = true }) end,
   })
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "lua",
+    callback = function()
+      vim.opt_local.tabstop = 2
+      vim.opt_local.shiftwidth = 2
+      vim.opt_local.expandtab = true
+    end,
+  })
   vim.api.nvim_create_autocmd("BufWritePre", {
     pattern = {"*.sh", "*.py", "*.js", "*.yaml", "*.html", "*.groovy"},
     callback = function() vim.cmd("%s/\\s\\+$//e") end,
@@ -549,16 +573,6 @@ vim.defer_fn(function()
     pattern = "*grep*",
     command = "cwindow",
   })
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = "lua",
-    callback = function()
-      vim.opt_local.tabstop = 2       -- Number of spaces a tab character represents
-      vim.opt_local.shiftwidth = 2    -- Number of spaces for each indentation level
-      vim.opt_local.softtabstop = 2   -- Number of spaces a tab counts for during editing
-      vim.opt_local.expandtab = true  -- Convert tabs to spaces
-    end,
-  })
-
 end, 100)
 
 -- functions
@@ -581,53 +595,40 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = {"*.sh", "*.py", "*.js", "*.yaml", "*.html", "*.groovy"},
   callback = function() vim.cmd("%s/\\s\\+$//e") end,
 })
-vim.api.nvim_create_autocmd("BufEnter", {
-  pattern = "*.py",
-  callback = function()
-    vim.lsp.start_client(require("lspconfig").pyright)
-  end,
-})
 vim.api.nvim_create_autocmd("QuickFixCmdPost", {
   pattern = "*grep*",
   command = "cwindow",
 })
 
--- Key mappings
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    vim.keymap.set("n", "<leader>gg", ":Neogit<CR>")
-    vim.keymap.set("n", "<leader>x", ":ccl<CR>")
-    vim.keymap.set("n", "<leader>z", ":Neotree toggle<CR>")
-    vim.keymap.set("n", "<leader>t", ":TagbarToggle<CR>")
-    vim.keymap.set("n", "<leader>y", ":tabprev<CR>")
-    vim.keymap.set("n", "<leader>u", ":tabfirst<CR>")
-    vim.keymap.set("n", "<leader>i", ":tablast<CR>")
-    vim.keymap.set("n", "<leader>o", ":tabnext<CR>")
-    vim.keymap.set("n", "<leader>w", ":w<CR>")
-    vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>")
-    vim.keymap.set("n", "<leader>j", ":wincmd j<CR>")
-    vim.keymap.set("n", "<leader>k", ":wincmd k<CR>")
-    vim.keymap.set("n", "<leader>h", ":wincmd h<CR>")
-    vim.keymap.set("n", "<leader>l", ":wincmd l<CR>")
-    vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show diagnostic message' })
-    vim.keymap.set({"n", "i"}, "<C-S>", ":w<CR>")
-    vim.keymap.set("n", "<M-w>", "<C-W>", { noremap = true, silent = true })  -- Map Alt-W to do the same as Ctrl-W, much easier to access
-    -- DAP mappings
-    vim.keymap.set("n", "<F5>", function() require('dap').continue() end)
-    vim.keymap.set("n", "<F10>", function() require('dap').step_over() end)
-    vim.keymap.set("n", "<F11>", function() require('dap').step_into() end)
-    vim.keymap.set("n", "<F12>", function() require('dap').step_out() end)
-    vim.keymap.set("n", "<Leader>b", function() require('dap').toggle_breakpoint() end)
-    vim.keymap.set("n", "<F4>", function() require('dapui').toggle() end)
-    -- Telescope mappings
-    vim.keymap.set('n', 'sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-    vim.keymap.set('n', 'rg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
-    vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-    vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
-
-    vim.keymap.set("n", "gd", require('telescope.builtin').lsp_definitions, { buffer = bufnr, desc = "Go to definition" })
-  end,
-})
+-- Key mappings (set once, not in autocmd)
+vim.keymap.set("n", "<leader>gg", ":Neogit<CR>")
+vim.keymap.set("n", "<leader>x", ":ccl<CR>")
+vim.keymap.set("n", "<leader>z", ":Neotree toggle<CR>")
+vim.keymap.set("n", "<leader>t", ":TagbarToggle<CR>")
+vim.keymap.set("n", "<leader>y", ":tabprev<CR>")
+vim.keymap.set("n", "<leader>u", ":tabfirst<CR>")
+vim.keymap.set("n", "<leader>i", ":tablast<CR>")
+vim.keymap.set("n", "<leader>o", ":tabnext<CR>")
+vim.keymap.set("n", "<leader>w", ":w<CR>")
+vim.keymap.set("n", "<leader>U", ":Atone<CR>")
+vim.keymap.set("n", "<leader>j", ":wincmd j<CR>")
+vim.keymap.set("n", "<leader>k", ":wincmd k<CR>")
+vim.keymap.set("n", "<leader>h", ":wincmd h<CR>")
+vim.keymap.set("n", "<leader>l", ":wincmd l<CR>")
+vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show diagnostic message' })
+vim.keymap.set({"n", "i"}, "<C-S>", ":w<CR>")
+vim.keymap.set("n", "<M-w>", "<C-W>", { noremap = true, silent = true })
+vim.keymap.set("n", "<F5>", function() require('dap').continue() end)
+vim.keymap.set("n", "<F10>", function() require('dap').step_over() end)
+vim.keymap.set("n", "<F11>", function() require('dap').step_into() end)
+vim.keymap.set("n", "<F12>", function() require('dap').step_out() end)
+vim.keymap.set("n", "<Leader>b", function() require('dap').toggle_breakpoint() end)
+vim.keymap.set("n", "<F4>", function() require('dapui').toggle() end)
+vim.keymap.set('n', 'sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', 'rg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
+vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set("n", "gd", require('telescope.builtin').lsp_definitions, { desc = "Go to definition" })
 
 -- Commands
 vim.api.nvim_create_user_command("Q", "q", {})

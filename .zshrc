@@ -16,6 +16,17 @@ setopt HIST_FIND_NO_DUPS
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY
 
+# Disable tmux auto-start for VSCode SSH sessions
+if [[ -n "$ZSH_DISABLE_TMUX" ]]; then
+  ZSH_TMUX_AUTOSTART=false
+  ZSH_TMUX_AUTOSTART_ONCE=false
+  ZSH_TMUX_AUTOQUIT=false
+else
+  ZSH_TMUX_AUTOSTART=true
+  ZSH_TMUX_AUTOSTART_ONCE=true
+  ZSH_TMUX_AUTOQUIT=true
+fi
+
 bindkey "^[OH" beginning-of-line
 bindkey "^[OF" end-of-line
 
@@ -123,6 +134,7 @@ export PROJECT_HOME=$HOME/src
 export XDG_CONFIG_HOME=$HOME/.config
 export EDITOR=$(which vim)
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS' --color=fg:#d0d0d0,bg:#121212,hl:#5f87af --color=fg+:#d0d0d0,bg+:#964e8a,hl+:#5fd7ff --color=info:#afaf87,prompt:#964e8a,pointer:#af5fff --color=marker:#87ff00,spinner:#af5fff,header:#87afaf'
+export GEMINI_API_KEY=$(cat $HOME/gemini_api_key)
 
 eval "$(dircolors $HOME/.dir_colors)"
 eval "$(direnv hook zsh)"
@@ -169,3 +181,8 @@ export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 [[ -e $HOME/.anthropic_api_key ]] && export ANTHROPIC_API_KEY=$(cat $HOME/.anthropic_api_key)
+
+alias claude="/home/aleksey/.claude/local/claude"
+[ -f $HOME/.gemini_api_key ] && export GEMINI_API_KEY=$(cat $HOME/.gemini_api_key)
+[ -f $HOME/.gemini_api_key ] && export GOOGLE_GENERATIVE_AI_API_KEY=$(cat $HOME/.gemini_api_key)
+export OPENCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT=1
