@@ -1,6 +1,5 @@
 #!/bin/zsh
 
-#zmodload zsh/zprof
 # Disable Ctrl-S
 stty -ixon
 
@@ -16,61 +15,15 @@ setopt HIST_FIND_NO_DUPS
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY
 
-# Disable tmux auto-start for VSCode SSH sessions
-if [[ -n "$ZSH_DISABLE_TMUX" ]]; then
-  ZSH_TMUX_AUTOSTART=false
-  ZSH_TMUX_AUTOSTART_ONCE=false
-  ZSH_TMUX_AUTOQUIT=false
-else
-  ZSH_TMUX_AUTOSTART=true
-  ZSH_TMUX_AUTOSTART_ONCE=true
-  ZSH_TMUX_AUTOQUIT=true
-fi
-
-bindkey "^[OH" beginning-of-line
-bindkey "^[OF" end-of-line
-
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-#export ZSH_THEME="robbyrussell"
-#export ZSH_THEME="juanghurtado"
-#export ZSH_THEME="duellj"
-#export ZSH_THEME="xiong-chiamiov-plus"
-# export ZSH_THEME="gentoo"
-# export ZSH_THEME="blinks"
-#
-export ZSH_THEME="agnoster"
-#export ZSH_THEME="agnoster-aleksey"
-#
-#export ZSH_THEME="agnoster-simple"
-#export ZSH_THEME="af-magic"
-#export ZSH_THEME="dracula"
-
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true"
-
-# Comment this out to disable weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment following line if you want to disable colors in ls
-# DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment following line if you want disable red dots displayed while waiting for completion
-# DISABLE_COMPLETION_WAITING_DOTS="true"
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Example format: plugins=(rails git textmate ruby lighthouse)
-ENABLE_CORRECTION=true
-ZSH_TMUX_AUTOSTART=true
-FZF_BASE=/usr/share/doc/fzf
+ZSH_DISABLE_COMPFIX=true
+DISABLE_AUTO_UPDATE=true
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
 
-plugins=(git python pip docker vi-mode kubectl tmux fzf bazel aws zsh-autosuggestions)
+plugins=(git python pip vi-mode zsh-autosuggestions)
+
+alias tma='tmux new-session -A -s human'
+alias tmd='tmux detach-client'
+ZSH_THEME="agnoster"
 
 source $ZSH/oh-my-zsh.sh
 
@@ -121,7 +74,7 @@ chpwd_functions=(${chpwd_functions[@]} "source_config")
 # source ~/.autoenv/activate.sh
 
 unsetopt correct_all
-autoload -U compinit; compinit
+# oh-my-zsh already handles compinit with -i (skips compaudit)
 [[ -s ~/.autojump/etc/profile.d/autojump.zsh ]] && source ~/.autojump/etc/profile.d/autojump.zsh
 
 #export VIMRUNTIME=/usr/local/share/vim/vim82
@@ -134,14 +87,10 @@ export PROJECT_HOME=$HOME/src
 export XDG_CONFIG_HOME=$HOME/.config
 export EDITOR=$(which vim)
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS' --color=fg:#d0d0d0,bg:#121212,hl:#5f87af --color=fg+:#d0d0d0,bg+:#964e8a,hl+:#5fd7ff --color=info:#afaf87,prompt:#964e8a,pointer:#af5fff --color=marker:#87ff00,spinner:#af5fff,header:#87afaf'
-export GEMINI_API_KEY=$(cat $HOME/gemini_api_key)
+[ -f $HOME/gemini_api_key ] && export GEMINI_API_KEY=$(cat $HOME/gemini_api_key)
 
 eval "$(dircolors $HOME/.dir_colors)"
 eval "$(direnv hook zsh)"
-
-#[ -e $HOME/src ] && cd $HOME/src
-
-#zprof
 # Invoke GnuPG-Agent the first time we login.
 # Does `~/.gpg-agent-info' exist and points to gpg-agent process accepting signals?
 if test -f $HOME/.gpg-agent-info && \
@@ -152,33 +101,27 @@ else
     #eval `gpg-agent --daemon --no-grab $HOME/.gpg-agent-info`
 fi
 export GPG_TTY=`tty`
-export GPG_AGENT_INFO
-eval "$(direnv hook zsh)"
-#zprof
+  export GPG_AGENT_INFO
 
-[ -f ~/.local/bin/virtualenvwrapper.sh ] && source ~/.local/bin/virtualenvwrapper.sh
-[ -f /usr/share/virtualenvwrapper/virtualenvwrapper.sh ] && source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # The next line updates PATH for the Google Cloud SDK.
-[ -f '$HOME/src/gcloud/google-cloud-sdk/path.zsh.inc' ] && source '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'
+[ -f "$HOME/src/gcloud/google-cloud-sdk/path.zsh.inc" ] && source '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'
 # The next line enables shell command completion for gcloud.
-[ -f '$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc' ] && source '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'
+[ -f "$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc" ] && source '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'
 
 autoload -U +X bashcompinit && bashcompinit
 [ -f /usr/bin/terraform ] && complete -o nospace -C /usr/bin/terraform terraform
-[ -f /etc/zsh_completion.d/fzf-key-bindings ] && complete -C '/usr/local/bin/aws_completer' aws
-# fzf shell keybindings
-# Fedora
-[ -f /usr/share/fzf/shell/key-bindings.zsh ] && source /usr/share/fzf/shell/key-bindings.zsh
-# SUSE
-[ -f /etc/zsh_completion.d/fzf-key-bindings ] && source /etc/zsh_completion.d/fzf-key-bindings
-# Ubuntu
-[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+
+# fzf completions & key bindings (Debian/Ubuntu layout)
+if (( $+commands[fzf] )); then
+  [[ -f /usr/share/doc/fzf/examples/completion.zsh ]] && source /usr/share/doc/fzf/examples/completion.zsh
+  [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+fi
 
 export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  source "$NVM_DIR/nvm.sh"
+fi
 
 [[ -e $HOME/.anthropic_api_key ]] && export ANTHROPIC_API_KEY=$(cat $HOME/.anthropic_api_key)
 

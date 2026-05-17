@@ -6,6 +6,15 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.loader.enable()  -- Enable the new bytecode loader for faster startup
 
+-- Diagnostics - show virtual text on the right side of error lines
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = "●",
+  },
+  signs = true,
+  update_in_insert = false,
+})
+
 -- Basic settings
 vim.opt.compatible = false          -- Disable Vi compatibility mode for modern Vim features
 vim.opt.encoding = "utf-8"          -- Set file encoding to UTF-8 for wide character support
@@ -120,7 +129,6 @@ require("lazy").setup({
       vim.lsp.config('basedpyright', {
         capabilities = capabilities,
         on_attach = function(client, bufnr)
-          print("BasedPyright LSP attached to buffer " .. bufnr)
         end,
         settings = {
           basedpyright = {
@@ -140,7 +148,6 @@ require("lazy").setup({
       vim.lsp.config('ruff', {
         capabilities = capabilities,
         on_attach = function(client, bufnr)
-          print("Ruff LSP attached to buffer " .. bufnr)
           client.server_capabilities.hoverProvider = false
         end,
       })
@@ -148,7 +155,6 @@ require("lazy").setup({
       vim.lsp.config('terraformls', {
         capabilities = capabilities,
         on_attach = function(client, bufnr)
-          print("Terraform LSP attached to buffer " .. bufnr)
         end,
         filetypes = { "terraform", "tf", "terraform-vars" },
       })
@@ -452,7 +458,7 @@ require("lazy").setup({
   },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", event = "VeryLazy", -- Lazy load treesitter
     config = function()
-      require("nvim-treesitter.configs").setup({
+      require("nvim-treesitter").setup({
         ensure_installed = {"python", "lua", "go", "javascript", "terraform" },
         highlight = { enable = true },    -- Enable syntax highlighting
         incremental_selection = { enable = true },
