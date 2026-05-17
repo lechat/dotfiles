@@ -2,3 +2,4 @@
 .vim/.cache
 *.swp
 tags
+*.zwc

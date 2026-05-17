@@ -3,8 +3,35 @@
 # Disable Ctrl-S
 stty -ixon
 
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
+# ── zi plugin manager ──
+source "$HOME/.zi/bin/zi.zsh"
+
+# Completions shipped with dotfiles
+fpath+=( "$HOME/.oh-my-zsh/completions" )
+
+# zsh-autosuggestions (auto-cloned by zi)
+zi wait lucid for zsh-users/zsh-autosuggestions
+
+# Local OMZ plugins (git, vi-mode, python, pip)
+autoload -Uz compinit && compinit -C
+source "$HOME/.oh-my-zsh/custom/git.plugin.zsh"
+source "$HOME/.oh-my-zsh/plugins/vi-mode.plugin.zsh"
+source "$HOME/.oh-my-zsh/plugins/python.plugin.zsh"
+source "$HOME/.oh-my-zsh/plugins/pip.plugin.zsh"
+
+# Theme (synchronous — must set prompt before first render)
+setopt prompt_subst
+
+# Stub functions for OMZ functions agnoster depends on
+parse_git_dirty() {
+  command git status --porcelain 2>/dev/null | command grep -q . && echo "±"
+}
+tf_prompt_info() { :; }
+
+source "$HOME/.oh-my-zsh/themes/agnoster.zsh-theme"
+
+# Custom scripts
+source "$HOME/.oh-my-zsh/custom/plugins/bashcomplete/bashcomplete.plugin.zsh"
 
 # export TERM=xterm-256color
 setopt HIST_IGNORE_DUPS
@@ -15,17 +42,10 @@ setopt HIST_FIND_NO_DUPS
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY
 
-ZSH_DISABLE_COMPFIX=true
-DISABLE_AUTO_UPDATE=true
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
-
-plugins=(git python pip vi-mode zsh-autosuggestions)
 
 alias tma='tmux new-session -A -s human'
 alias tmd='tmux detach-client'
-ZSH_THEME="agnoster"
-
-source $ZSH/oh-my-zsh.sh
 
 alias sudp='nocorrect sudo'
 alias ls-al='nocorrect ls -al'
@@ -90,7 +110,6 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS' --color=fg:#d0d0d0,bg:#121212,hl:#5f8
 [ -f $HOME/gemini_api_key ] && export GEMINI_API_KEY=$(cat $HOME/gemini_api_key)
 
 eval "$(dircolors $HOME/.dir_colors)"
-eval "$(direnv hook zsh)"
 # Invoke GnuPG-Agent the first time we login.
 # Does `~/.gpg-agent-info' exist and points to gpg-agent process accepting signals?
 if test -f $HOME/.gpg-agent-info && \
@@ -104,10 +123,7 @@ export GPG_TTY=`tty`
   export GPG_AGENT_INFO
 
 [ -f $HOME/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
-# The next line updates PATH for the Google Cloud SDK.
-[ -f "$HOME/src/gcloud/google-cloud-sdk/path.zsh.inc" ] && source '/home/aleksey/src/gcloud/google-cloud-sdk/path.zsh.inc'
-# The next line enables shell command completion for gcloud.
-[ -f "$HOME/src/gcloud/google-cloud-sdk/completion.zsh.inc" ] && source '/home/aleksey/src/gcloud/google-cloud-sdk/completion.zsh.inc'
+
 
 autoload -U +X bashcompinit && bashcompinit
 [ -f /usr/bin/terraform ] && complete -o nospace -C /usr/bin/terraform terraform
@@ -120,7 +136,26 @@ fi
 
 export NVM_DIR="$HOME/.config/nvm"
 if [ -s "$NVM_DIR/nvm.sh" ]; then
-  source "$NVM_DIR/nvm.sh"
+  nvm() {
+    unset -f nvm node npm npx
+    . "$NVM_DIR/nvm.sh"
+    nvm "$@"
+  }
+  node() {
+    unset -f nvm node npm npx
+    . "$NVM_DIR/nvm.sh"
+    node "$@"
+  }
+  npm() {
+    unset -f nvm node npm npx
+    . "$NVM_DIR/nvm.sh"
+    npm "$@"
+  }
+  npx() {
+    unset -f nvm node npm npx
+    . "$NVM_DIR/nvm.sh"
+    npx "$@"
+  }
 fi
 
 [[ -e $HOME/.anthropic_api_key ]] && export ANTHROPIC_API_KEY=$(cat $HOME/.anthropic_api_key)

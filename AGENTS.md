@@ -6,7 +6,7 @@ Run `./setup.sh` to symlink dotfiles to `$HOME`. Supports `--no-backup` and `--n
 
 ## Key Configs
 
-- `.zshrc` - zsh config using oh-my-zsh with agnoster theme
+- `.zshrc` - zsh config using zi plugin manager with agnoster theme
 - `.gitconfig` - git config with GPG signing (key: 73B247E7C736117E)
 - `.tmux.conf` - tmux configuration
 - `.config/nvim/init.lua` - Neovim Lua configuration
@@ -22,10 +22,9 @@ Run `./setup.sh` to symlink dotfiles to `$HOME`. Supports `--no-backup` and `--n
 
 ## Setup Requirements
 
-- oh-my-zsh is cloned to `~/.oh-my-zsh` during setup
-- zsh-autosuggestions plugin installed to `$ZSH_CUSTOM/plugins/`
+- zi is cloned to `~/.zi` during setup (auto-clones plugins on first load)
 - Nerd Fonts installed (skippable with `--no-fonts`)
-- direnv, fzf, and autojump expected in PATH
+- fzf and autojump expected in PATH
 
 ## Notes
 

@@ -43,25 +43,24 @@ function install_fonts() {
 }
 
 function do_clone() {
-    local OH_MY_ZSH_DIR="$HOME/.oh-my-zsh"
+    local ZI_DIR="$HOME/.zi"
 
-    if [ -d "$OH_MY_ZSH_DIR/.git" ]; then
-        echo "oh-my-zsh already installed at $OH_MY_ZSH_DIR"
+    if [ -d "$ZI_DIR/bin/.git" ]; then
+        echo "zi already installed at $ZI_DIR"
     else
-        if [ -d "$OH_MY_ZSH_DIR" ]; then
-            echo "Warning: $OH_MY_ZSH_DIR exists but is not a valid Git repo. Removing..."
-            rm -rf "$OH_MY_ZSH_DIR"
+        if [ -d "$ZI_DIR" ]; then
+            echo "Warning: $ZI_DIR exists but is not a valid Git repo. Removing..."
+            rm -rf "$ZI_DIR"
         fi
-        echo "Cloning oh-my-zsh to $OH_MY_ZSH_DIR"
-        git clone https://github.com/robbyrussell/oh-my-zsh.git "$OH_MY_ZSH_DIR"
+        echo "Installing zi (zsh plugin manager)..."
+        mkdir -p "$ZI_DIR"
+        git clone https://github.com/z-shell/zi.git "$ZI_DIR/bin"
     fi
 
-    local CUSTOM_PATH=${ZSH_CUSTOM:-$OH_MY_ZSH_DIR/custom}
-    if [ ! -d "$CUSTOM_PATH/plugins/zsh-autosuggestions" ]; then
-        echo "Cloning zsh-autosuggestions to $CUSTOM_PATH/plugins/zsh-autosuggestions"
-        git clone https://github.com/zsh-users/zsh-autosuggestions "$CUSTOM_PATH/plugins/zsh-autosuggestions"
-    else
-        echo "zsh-autosuggestions already installed"
+    # Pre-compile zi.zsh for faster startup
+    if command -v zcompile >/dev/null 2>&1; then
+        zcompile "$ZI_DIR/bin/zi.zsh"
+        echo "Pre-compiled zi.zsh"
     fi
 }
 
@@ -118,7 +117,26 @@ function main() {
     parse_args "$@"
     do_clone
     [ $DO_FONTS -eq 1 ] && install_fonts
+
+    # Remove old oh-my-zsh if present (no longer needed)
+    if [ -d "$HOME/.oh-my-zsh/.git" ]; then
+        echo "Removing old oh-my-zsh installation..."
+        rm -rf "$HOME/.oh-my-zsh"
+    fi
+
     make_links
+
+    # Pre-compile local zsh plugin files for faster startup
+    if command -v zcompile >/dev/null 2>&1; then
+        for f in "$DOTFILES"/.oh-my-zsh/plugins/*.plugin.zsh \
+                 "$DOTFILES"/.oh-my-zsh/custom/git.plugin.zsh \
+                 "$DOTFILES"/.oh-my-zsh/themes/agnoster.zsh-theme \
+                 "$DOTFILES"/.oh-my-zsh/custom/plugins/bashcomplete/bashcomplete.plugin.zsh \
+                 "$DOTFILES"/.oh-my-zsh/completions/*.zsh; do
+            [ -f "$f" ] && zcompile "$f"
+        done
+        echo "Pre-compiled plugin files"
+    fi
 }
 
 main "$@"
