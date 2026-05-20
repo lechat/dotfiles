@@ -3,35 +3,57 @@
 # Disable Ctrl-S
 stty -ixon
 
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=10000
+export SAVEHIST=10000
+
 # ── zi plugin manager ──
 source "$HOME/.zi/bin/zi.zsh"
+
+# fnm — Fast Node Manager
+export PATH="$HOME/.local/share/fnm:$PATH"
+eval "$(fnm env --use-on-cd --shell zsh)"
 
 # Completions shipped with dotfiles
 fpath+=( "$HOME/.oh-my-zsh/completions" )
 
 # zsh-autosuggestions (auto-cloned by zi)
-zi wait lucid for zsh-users/zsh-autosuggestions
+zi lucid for zsh-users/zsh-autosuggestions
 
-# Local OMZ plugins (git, vi-mode, python, pip)
+# ZSH cache dir (used by some plugins e.g. kubectl)
+export ZSH_CACHE_DIR="${HOME}/.cache/zsh"
+
+# Compile and source scripts to central cache
+csource() {
+  local src="$1"
+  local cache="$ZSH_CACHE_DIR/zwc/${src//\//__}"
+  local zwc="$cache.zwc"
+  if [[ ! -f "$zwc" || "$src" -nt "$zwc" ]]; then
+    mkdir -p "$ZSH_CACHE_DIR/zwc"
+    cp "$src" "$cache"
+    zcompile "$cache"
+  fi
+  source "$cache"
+}
+
+
+# Local OMZ plugins (git, vi-mode, python, pip, kubectl)
 autoload -Uz compinit && compinit -C
-source "$HOME/.oh-my-zsh/custom/git.plugin.zsh"
-source "$HOME/.oh-my-zsh/plugins/vi-mode.plugin.zsh"
-source "$HOME/.oh-my-zsh/plugins/python.plugin.zsh"
-source "$HOME/.oh-my-zsh/plugins/pip.plugin.zsh"
+csource "$HOME/.oh-my-zsh/custom/git.plugin.zsh"
+csource "$HOME/.oh-my-zsh/plugins/vi-mode.plugin.zsh"
+csource "$HOME/.oh-my-zsh/plugins/python.plugin.zsh"
+csource "$HOME/.oh-my-zsh/plugins/pip.plugin.zsh"
+mkdir -p "$ZSH_CACHE_DIR/completions"
+csource "$HOME/.oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh"
+
+# Custom aliases and functions
+csource "$HOME/.aliases.sh"
 
 # Theme (synchronous — must set prompt before first render)
 setopt prompt_subst
 
-# Stub functions for OMZ functions agnoster depends on
-parse_git_dirty() {
-  command git status --porcelain 2>/dev/null | command grep -q . && echo "±"
-}
-tf_prompt_info() { :; }
+csource "$HOME/.oh-my-zsh/themes/agnoster.zsh-theme"
 
-source "$HOME/.oh-my-zsh/themes/agnoster.zsh-theme"
-
-# Custom scripts
-source "$HOME/.oh-my-zsh/custom/plugins/bashcomplete/bashcomplete.plugin.zsh"
 
 # export TERM=xterm-256color
 setopt HIST_IGNORE_DUPS
@@ -44,19 +66,10 @@ setopt INC_APPEND_HISTORY
 
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
 
-alias tma='tmux new-session -A -s human'
-alias tmd='tmux detach-client'
 
-alias sudp='nocorrect sudo'
-alias ls-al='nocorrect ls -al'
-alias rsync='noglob rsync'
-alias docker='sudo docker $@'
-alias nvim='VIMRUNTIME=/usr/local/share/nvim/runtime nvim'
-alias pygrep='grep -r --include="*.py"'
-alias grep='grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv} --exclude=tags'
 
 # Customize to your needs...
-export PATH=$HOME/.local/bin:$HOME/.krew/bin:$HOME/bin:$HOME/.nvm/versions/node/v22.2.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH=$HOME/.local/bin:$HOME/.krew/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
 
@@ -81,15 +94,10 @@ bindkey '^h' backward-delete-char
 # ctrl-w removed word backwards
 bindkey '^w' backward-kill-word
 
-# ctrl-r starts searching history backward
-bindkey '^r' history-incremental-search-backward
+# UP/DOWN arrow: prefix-based history search
+bindkey '^[OA' history-beginning-search-backward
+bindkey '^[OB' history-beginning-search-forward
 
-function source_config() {
-    if [ -r $PWD/.zsh_config ]; then
-        print "Sourcing $PWD/.zsh_config"
-        source $PWD/.zsh_config
-    fi
-}
 chpwd_functions=(${chpwd_functions[@]} "source_config")
 # source ~/.autoenv/activate.sh
 
@@ -134,33 +142,14 @@ if (( $+commands[fzf] )); then
   [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]] && source /usr/share/doc/fzf/examples/key-bindings.zsh
 fi
 
-export NVM_DIR="$HOME/.config/nvm"
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-  nvm() {
-    unset -f nvm node npm npx
-    . "$NVM_DIR/nvm.sh"
-    nvm "$@"
-  }
-  node() {
-    unset -f nvm node npm npx
-    . "$NVM_DIR/nvm.sh"
-    node "$@"
-  }
-  npm() {
-    unset -f nvm node npm npx
-    . "$NVM_DIR/nvm.sh"
-    npm "$@"
-  }
-  npx() {
-    unset -f nvm node npm npx
-    . "$NVM_DIR/nvm.sh"
-    npx "$@"
-  }
-fi
-
 [[ -e $HOME/.anthropic_api_key ]] && export ANTHROPIC_API_KEY=$(cat $HOME/.anthropic_api_key)
-
-alias claude="/home/aleksey/.claude/local/claude"
 [ -f $HOME/.gemini_api_key ] && export GEMINI_API_KEY=$(cat $HOME/.gemini_api_key)
 [ -f $HOME/.gemini_api_key ] && export GOOGLE_GENERATIVE_AI_API_KEY=$(cat $HOME/.gemini_api_key)
 export OPENCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT=1
+
+# fnm
+FNM_PATH="/home/aleksey/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="$FNM_PATH:$PATH"
+  eval "$(fnm env --shell zsh)"
+fi

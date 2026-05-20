@@ -39,8 +39,8 @@ vim.opt.colorcolumn = "79,90,120"   -- Highlight columns 79, 90, and 120 for lin
 vim.opt.mouse = ""                  -- Explicitly disable mouse support
 vim.opt.number = true               -- Show line numbers
 
--- Ensure NVM's PATH is available to Neovim
-vim.env.PATH = vim.env.PATH .. ":/home/aleksey/.config/nvm/versions/node/v22.2.0/bin"
+-- Ensure fnm's Node PATH is available to Neovim
+vim.env.PATH = vim.env.PATH .. ":" .. os.getenv("HOME") .. "/.local/share/fnm/aliases/default/bin"
 
 -- Define the Fullpath function in Vimscript (for lualine component)
 vim.cmd([[

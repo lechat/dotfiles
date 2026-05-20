@@ -55,8 +55,8 @@ vim.g.matchparen_timeout = 20         -- Reduce timeout for matching parentheses
 vim.g.matchparen_insert_timeout = 20  -- Reduce timeout for matching parentheses in insert mode
 vim.opt.redrawtime = 1500             -- Maximum time spent trying to highlight syntax
 
--- Ensure NVM's PATH is available to Neovim
-vim.env.PATH = vim.env.PATH .. ":/home/aleksey/.config/nvm/versions/node/v22.2.0/bin"
+-- Ensure fnm's Node PATH is available to Neovim
+vim.env.PATH = vim.env.PATH .. ":" .. os.getenv("HOME") .. "/.local/share/fnm/aliases/default/bin"
 
 -- Define the Fullpath function in Vimscript (for lualine component)
 vim.cmd([[

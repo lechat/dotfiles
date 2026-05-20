@@ -129,10 +129,11 @@ function main() {
     # Pre-compile local zsh plugin files for faster startup
     if command -v zcompile >/dev/null 2>&1; then
         for f in "$DOTFILES"/.oh-my-zsh/plugins/*.plugin.zsh \
+                 "$DOTFILES"/.oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh \
                  "$DOTFILES"/.oh-my-zsh/custom/git.plugin.zsh \
                  "$DOTFILES"/.oh-my-zsh/themes/agnoster.zsh-theme \
-                 "$DOTFILES"/.oh-my-zsh/custom/plugins/bashcomplete/bashcomplete.plugin.zsh \
-                 "$DOTFILES"/.oh-my-zsh/completions/*.zsh; do
+                 "$DOTFILES"/.oh-my-zsh/completions/*.zsh \
+                 "$DOTFILES"/.aliases.sh; do
             [ -f "$f" ] && zcompile "$f"
         done
         echo "Pre-compiled plugin files"
