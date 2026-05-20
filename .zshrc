@@ -3,6 +3,7 @@
 # Disable Ctrl-S
 stty -ixon
 
+# ── This needs to be here so zsh-autosuggestion would work ──
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=10000
 export SAVEHIST=10000
@@ -36,7 +37,6 @@ csource() {
   source "$cache"
 }
 
-
 # Local OMZ plugins (git, vi-mode, python, pip, kubectl)
 autoload -Uz compinit && compinit -C
 csource "$HOME/.oh-my-zsh/custom/git.plugin.zsh"
@@ -51,9 +51,7 @@ csource "$HOME/.aliases.sh"
 
 # Theme (synchronous — must set prompt before first render)
 setopt prompt_subst
-
 csource "$HOME/.oh-my-zsh/themes/agnoster.zsh-theme"
-
 
 # export TERM=xterm-256color
 setopt HIST_IGNORE_DUPS
@@ -66,17 +64,14 @@ setopt INC_APPEND_HISTORY
 
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
 
-
-
 # Customize to your needs...
 export PATH=$HOME/.local/bin:$HOME/.krew/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
-
 export GREP_COLORS="ms=01;31:mc=01;31:sl=:cx=:fn=33:ln=01;32:bn=32:se=36"
-
 export PYTHONPATH=.
 
-autoload -U url-quote-magic
+autoload -Uz url-quote-magic bracketed-paste-magic
 zle -N self-insert url-quote-magic
+zle -N bracketed-paste bracketed-paste-magic
 zstyle -e :urlglobber url-other-schema '[[ $words[1] == scp ]] && reply=("*") || reply=(http https ftp)'
 
 zle_highlight=(isearch:bold)

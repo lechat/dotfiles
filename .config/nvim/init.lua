@@ -456,6 +456,7 @@ require("lazy").setup({
   { "nvim-telescope/telescope.nvim", cmd = "Telescope", -- Fuzzy finder for files, buffers, and more
     dependencies = {"nvim-lua/plenary.nvim"}
   },
+  { "mbbill/undotree", cmd = "UndotreeToggle" },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", event = "VeryLazy", -- Lazy load treesitter
     config = function()
       require("nvim-treesitter").setup({
@@ -606,38 +607,4 @@ vim.api.nvim_create_autocmd("QuickFixCmdPost", {
   command = "cwindow",
 })
 
--- Key mappings (set once, not in autocmd)
-vim.keymap.set("n", "<leader>gg", ":Neogit<CR>")
-vim.keymap.set("n", "<leader>x", ":ccl<CR>")
-vim.keymap.set("n", "<leader>z", ":Neotree toggle<CR>")
-vim.keymap.set("n", "<leader>t", ":TagbarToggle<CR>")
-vim.keymap.set("n", "<leader>y", ":tabprev<CR>")
-vim.keymap.set("n", "<leader>u", ":tabfirst<CR>")
-vim.keymap.set("n", "<leader>i", ":tablast<CR>")
-vim.keymap.set("n", "<leader>o", ":tabnext<CR>")
-vim.keymap.set("n", "<leader>w", ":w<CR>")
-vim.keymap.set("n", "<leader>U", ":Atone<CR>")
-vim.keymap.set("n", "<leader>j", ":wincmd j<CR>")
-vim.keymap.set("n", "<leader>k", ":wincmd k<CR>")
-vim.keymap.set("n", "<leader>h", ":wincmd h<CR>")
-vim.keymap.set("n", "<leader>l", ":wincmd l<CR>")
-vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show diagnostic message' })
-vim.keymap.set({"n", "i"}, "<C-S>", ":w<CR>")
-vim.keymap.set("n", "<M-w>", "<C-W>", { noremap = true, silent = true })
-vim.keymap.set("n", "<F5>", function() require('dap').continue() end)
-vim.keymap.set("n", "<F10>", function() require('dap').step_over() end)
-vim.keymap.set("n", "<F11>", function() require('dap').step_into() end)
-vim.keymap.set("n", "<F12>", function() require('dap').step_out() end)
-vim.keymap.set("n", "<Leader>b", function() require('dap').toggle_breakpoint() end)
-vim.keymap.set("n", "<F4>", function() require('dapui').toggle() end)
-vim.keymap.set('n', 'sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('n', 'rg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
-vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
-vim.keymap.set("n", "gd", require('telescope.builtin').lsp_definitions, { desc = "Go to definition" })
-
--- Commands
-vim.api.nvim_create_user_command("Q", "q", {})
-vim.api.nvim_create_user_command("W", "w", {})
-vim.api.nvim_create_user_command("Qa", "qa", {})
-vim.keymap.set("", "X", "x", { noremap = true })
+require('keymaps')
