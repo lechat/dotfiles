@@ -257,7 +257,11 @@ require("lazy").setup({
   { "majutsushi/tagbar", cmd = "TagbarToggle" }, -- Display tags (functions, variables) in a sidebar
   { "Raimondi/delimitMate", event = "InsertEnter" }, -- Auto-close brackets, quotes, etc.
   -- { "mbbill/undotree", cmd = "UndotreeToggle" }, -- Visualize undo history as a tree
-  { "XXiaoA/atone.nvim", cmd = "Atone" }, -- Modern undotree replacement
+  { "XXiaoA/atone.nvim", cmd = "Atone", -- Modern undotree replacement
+    config = function()
+      require("atone").setup()
+    end,
+  },
   { "justinmk/vim-sneak", event = "BufReadPost" }, -- Enhanced motion with two-character search
   { "lewis6991/gitsigns.nvim", event = "BufReadPost" }, -- Git signs (added/changed/deleted) in the gutter
   { "fatih/vim-go", ft = "go", -- Go development plugin with formatting and highlighting
@@ -454,13 +458,18 @@ require("lazy").setup({
     config = function() require("dapui").setup() end,
   },
   { "nvim-telescope/telescope.nvim", cmd = "Telescope", -- Fuzzy finder for files, buffers, and more
-    dependencies = {"nvim-lua/plenary.nvim"}
+    dependencies = {"nvim-lua/plenary.nvim"},
+    config = function()
+      local bordered = { fg = "#9A77C3" }
+      for _, hl in ipairs({ "TelescopeBorder", "TelescopePromptBorder", "TelescopeResultsBorder", "TelescopePreviewBorder" }) do
+        vim.api.nvim_set_hl(0, hl, bordered)
+      end
+    end,
   },
-  { "mbbill/undotree", cmd = "UndotreeToggle" },
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", event = "VeryLazy", -- Lazy load treesitter
+  { "nvim-treesitter/nvim-treesitter", branch = "main", build = ":TSUpdate", event = "VeryLazy", -- Lazy load treesitter
     config = function()
       require("nvim-treesitter").setup({
-        ensure_installed = {"python", "lua", "go", "javascript", "terraform" },
+        ensure_installed = {"python", "lua", "go", "javascript", "terraform", "markdown", "markdown_inline" },
         highlight = { enable = true },    -- Enable syntax highlighting
         incremental_selection = { enable = true },
         textobjects = { enable = true }   -- Enable text objects for easier code manipulation
@@ -470,7 +479,8 @@ require("lazy").setup({
   { "folke/which-key.nvim", event = "VeryLazy", -- Display keybinding hints in a popup
     config = function()
       require("which-key").setup({
-        notify = false
+        preset = "modern",
+        notify = false,
       })
       -- Register group descriptions
       require("which-key").register({
@@ -513,6 +523,56 @@ require("lazy").setup({
 --      })
 --    end
 --  },
+  {
+    "nickjvandyke/opencode.nvim",
+    version = "*", -- Latest stable release
+    dependencies = {
+      {
+        -- `snacks.nvim` integration is recommended, but optional
+        ---@module "snacks" <- Loads `snacks.nvim` types for configuration intellisense
+        "folke/snacks.nvim",
+        optional = true,
+        opts = {
+          input = {}, -- Enhances `ask()`
+          picker = { -- Enhances `select()`
+            actions = {
+              opencode_send = function(...) return require("opencode").snacks_picker_send(...) end,
+            },
+            win = {
+              input = {
+                keys = {
+                  ["<a-a>"] = { "opencode_send", mode = { "n", "i" } },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    config = function()
+      ---@type opencode.Opts
+      vim.g.opencode_opts = {
+        -- Your configuration, if any; goto definition on the type or field for details
+      }
+
+      vim.o.autoread = true -- Required for `opts.events.reload`
+
+      -- Recommended/example keymaps
+      vim.keymap.set({ "n", "x" }, "<C-a>", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask opencode…" })
+      vim.keymap.set({ "n", "x" }, "<C-x>", function() require("opencode").select() end,                          { desc = "Select opencode…" })
+      vim.keymap.set({ "n", "t" }, "<C-.>", function() require("opencode").toggle() end,                          { desc = "Toggle opencode" })
+
+      vim.keymap.set({ "n", "x" }, "go",  function() return require("opencode").operator("@this ") end,        { desc = "Add range to opencode", expr = true })
+      vim.keymap.set("n",          "goo", function() return require("opencode").operator("@this ") .. "_" end, { desc = "Add line to opencode", expr = true })
+
+      vim.keymap.set("n", "<S-C-u>", function() require("opencode").command("session.half.page.up") end,   { desc = "Scroll opencode up" })
+      vim.keymap.set("n", "<S-C-d>", function() require("opencode").command("session.half.page.down") end, { desc = "Scroll opencode down" })
+
+      -- You may want these if you use the opinionated `<C-a>` and `<C-x>` keymaps above — otherwise consider `<leader>o…` (and remove terminal mode from the `toggle` keymap)
+      vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
+      vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
+    end,
+  }
 })
 
 -- Autocommands (deferred to avoid blocking startup)

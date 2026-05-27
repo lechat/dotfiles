@@ -3,6 +3,8 @@
 # Disable Ctrl-S
 stty -ixon
 
+export COLORTERM=truecolor
+
 # ── This needs to be here so zsh-autosuggestion would work ──
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=10000
@@ -18,8 +20,9 @@ eval "$(fnm env --use-on-cd --shell zsh)"
 # Completions shipped with dotfiles
 fpath+=( "$HOME/.oh-my-zsh/completions" )
 
-# zsh-autosuggestions (auto-cloned by zi)
+# zsh-autosuggestions & history-substring-search (auto-cloned by zi)
 zi lucid for zsh-users/zsh-autosuggestions
+zi lucid for zsh-users/zsh-history-substring-search
 
 # ZSH cache dir (used by some plugins e.g. kubectl)
 export ZSH_CACHE_DIR="${HOME}/.cache/zsh"
@@ -39,6 +42,12 @@ csource() {
 
 # Local OMZ plugins (git, vi-mode, python, pip, kubectl)
 autoload -Uz compinit && compinit -C
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' special-dirs true
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/zcompcache"
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,comm'
 csource "$HOME/.oh-my-zsh/custom/git.plugin.zsh"
 csource "$HOME/.oh-my-zsh/plugins/vi-mode.plugin.zsh"
 csource "$HOME/.oh-my-zsh/plugins/python.plugin.zsh"
@@ -61,6 +70,14 @@ setopt HIST_EXPIRE_DUPS_FIRST
 setopt HIST_FIND_NO_DUPS
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+
+# ── OMZ lib: misc ──
+setopt interactive_comments
+setopt long_list_jobs
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt auto_cd
 
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8fa6ad,bg=black"
 
@@ -89,9 +106,10 @@ bindkey '^h' backward-delete-char
 # ctrl-w removed word backwards
 bindkey '^w' backward-kill-word
 
-# UP/DOWN arrow: prefix-based history search
-bindkey '^[OA' history-beginning-search-backward
-bindkey '^[OB' history-beginning-search-forward
+# UP/DOWN arrow: substring history search (zsh-history-substring-search)
+bindkey '^[OA' history-substring-search-up
+bindkey '^[OB' history-substring-search-down
+HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
 
 chpwd_functions=(${chpwd_functions[@]} "source_config")
 # source ~/.autoenv/activate.sh
@@ -148,3 +166,10 @@ if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
   eval "$(fnm env --shell zsh)"
 fi
+
+# bun completions
+[ -s "/home/aleksey/.oh-my-zsh/completions/_bun" ] && source "/home/aleksey/.oh-my-zsh/completions/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

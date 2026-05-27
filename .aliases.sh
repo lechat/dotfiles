@@ -12,6 +12,7 @@ alias pygrep='grep -r --include="*.py"'
 alias grep='grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv} --exclude=tags'
 
 alias claude="/home/aleksey/.claude/local/claude"
+alias history='fc -l 1'
 
 # ── Functions ──
 
@@ -50,4 +51,22 @@ source_config() {
 
 nvm() {
   echo "Use fnm instead: fnm install/use/list/uninstall/..."
+}
+
+# ── OMZ lib: directories ──
+alias -- -='cd -'
+alias l='ls -lh'
+alias ll='ls -lah'
+alias la='ls -A'
+d() { dirs -v | head -10; }
+take() { mkdir -p "$1" && cd "$1"; }
+for index ({1..9}) alias "$index"="cd +${index}"; unset index
+
+# ── OMZ lib: misc ──
+alias _='sudo '
+
+# ── OMZ lib: functions ──
+zsh_stats() {
+  fc -l 1 | awk '{CMD[$2]++;count++}END{for(a in CMD)print CMD[a]" "CMD[a]*100/count"% "a}' \
+    | grep -v "./" | sort -nr | head -20 | column -c3 -s " " -t | nl
 }
